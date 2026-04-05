@@ -1,0 +1,388 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>3D Graph Visualizer — Algorithm Explorer</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f2f5;color:#1a1a1a}
+.topbar{background:#1a1a2e;padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:44px}
+.logo-box{display:flex;align-items:center;gap:8px}
+.logo-icon{width:26px;height:26px;background:#185FA5;border-radius:6px;display:flex;align-items:center;justify-content:center}
+.logo-icon svg{width:14px;height:14px;fill:white}
+.logo-name{font-size:14px;font-weight:600;color:#fff}
+.logo-sub{font-size:11px;color:#8b9ec7;border-left:1px solid #3a3a5c;padding-left:10px;margin-left:4px}
+.tb-right{display:flex;align-items:center;gap:8px}
+.tb-pill{font-size:11px;padding:3px 10px;border-radius:20px;border:1px solid #3a3a5c;color:#8b9ec7}
+.root{display:grid;grid-template-columns:290px 1fr;gap:12px;padding:14px;height:calc(100vh - 44px)}
+.sidebar{display:flex;flex-direction:column;gap:10px;overflow-y:auto}
+.card{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:14px}
+.card-title{font-size:12px;font-weight:600;color:#1a1a1a;margin-bottom:10px}
+.section-label{font-size:11px;color:#888;margin-bottom:5px;font-weight:500}
+.row{display:flex;gap:6px;margin-bottom:7px;align-items:center}
+input[type=number]{width:52px;padding:5px 7px;border:1px solid #e0e0e0;border-radius:6px;font-size:12px;background:#fff;color:#1a1a1a;outline:none}
+input[type=text]{flex:1;padding:5px 7px;border:1px solid #e0e0e0;border-radius:6px;font-size:12px;background:#fff;color:#1a1a1a;outline:none}
+input:focus{border-color:#185FA5}
+.btn{padding:6px 12px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid #e0e0e0;background:#fff;color:#1a1a1a;transition:all 0.15s}
+.btn:hover{background:#f5f5f7}
+.btn.primary{background:#185FA5;color:#fff;border-color:#185FA5}
+.btn.primary:hover{background:#0c447c}
+.btn.danger{background:#a32d2d;color:#fff;border-color:#a32d2d}
+.btn.sm{padding:4px 9px;font-size:11px}
+.algo-grid{display:grid;grid-template-columns:1fr 1fr;gap:5px;margin-bottom:8px}
+.algo-btn{padding:8px 6px;border-radius:6px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid #e0e0e0;background:#fff;color:#1a1a1a;text-align:center;transition:all 0.15s}
+.algo-btn:hover{background:#f5f5f7}
+.algo-btn.active{background:#185FA5;color:#fff;border-color:#185FA5}
+.prop-box{background:#f8f8f8;border-radius:8px;padding:10px;font-size:11px;line-height:1.7;color:#666;margin-bottom:8px;min-height:70px;border:1px solid #ebebeb}
+.prop-box.error{background:#fcebeb;color:#791F1F;border-color:#f7c1c1}
+.prop-box.warn{background:#faeeda;color:#633806;border-color:#fac775}
+.prop-box.ok{background:#eaf3de;color:#27500A;border-color:#c0dd97}
+.log-box{background:#f8f8f8;border-radius:8px;padding:8px;font-size:11px;font-family:monospace;color:#555;height:130px;overflow-y:auto;line-height:1.8;border:1px solid #ebebeb}
+.log-line{padding:1px 0;border-bottom:1px solid #f0f0f0}
+.log-line.hl{color:#0f6e56;font-weight:500}
+.log-line.err{color:#a32d2d;font-weight:500}
+.log-line.warn{color:#854f0b}
+.canvas-wrap{background:#fff;border:1px solid #e5e5e5;border-radius:12px;overflow:hidden;position:relative}
+canvas{display:block;width:100%;height:100%;cursor:grab}
+canvas:active{cursor:grabbing}
+.canvas-hint{position:absolute;bottom:10px;right:14px;font-size:10px;color:#bbb}
+.canvas-legend{position:absolute;top:12px;left:14px;display:flex;flex-direction:column;gap:5px}
+.legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:#666}
+.legend-dot{width:10px;height:10px;border-radius:50%;flex-shrink:0}
+.step-controls{display:flex;gap:5px;align-items:center;margin-top:8px;flex-wrap:wrap}
+.speed-row{display:flex;align-items:center;gap:8px;margin-top:8px}
+.speed-row label{font-size:11px;color:#888;white-space:nowrap}
+.divider{border:none;border-top:1px solid #f0f0f0;margin:8px 0}
+select{padding:5px 7px;border:1px solid #e0e0e0;border-radius:6px;font-size:12px;background:#fff;color:#1a1a1a;outline:none;flex:1}
+.preset-row{display:flex;gap:5px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div class="logo-box">
+    <div class="logo-icon"><svg viewBox="0 0 24 24"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm-2 14.5v-9l6 4.5-6 4.5z"/></svg></div>
+    <span class="logo-name">3D Graph Visualizer</span>
+    <span class="logo-sub">Algorithm Explorer — C++ · OpenGL · STL</span>
+  </div>
+  <div class="tb-right">
+    <span class="tb-pill">8 Algorithms</span>
+    <span class="tb-pill">Interactive 3D</span>
+  </div>
+</div>
+<div class="root">
+  <div class="sidebar">
+    <div class="card">
+      <div class="card-title">Graph Builder</div>
+      <div class="section-label">Add node</div>
+      <div class="row">
+        <input type="text" id="node-label" placeholder="Label e.g. A" style="width:80px;flex:none"/>
+        <button class="btn primary sm" onclick="addNode()">Add Node</button>
+        <button class="btn sm danger" onclick="clearGraph()">Clear</button>
+      </div>
+      <div class="section-label">Add edge</div>
+      <div class="row">
+        <select id="edge-from"></select>
+        <span style="font-size:12px;color:#888">→</span>
+        <select id="edge-to"></select>
+      </div>
+      <div class="row">
+        <input type="number" id="edge-wt" value="1" style="width:60px"/>
+        <label style="font-size:11px;color:#555;display:flex;align-items:center;gap:4px"><input type="checkbox" id="directed" checked/> Directed</label>
+        <button class="btn primary sm" onclick="addEdge()">Add Edge</button>
+      </div>
+      <div class="divider"></div>
+      <div class="section-label">Presets</div>
+      <div class="preset-row">
+        <button class="btn sm" onclick="loadPreset('simple')">Simple</button>
+        <button class="btn sm" onclick="loadPreset('weighted')">Weighted</button>
+        <button class="btn sm" onclick="loadPreset('negcycle')">Neg Cycle</button>
+        <button class="btn sm" onclick="loadPreset('dag')">DAG</button>
+        <button class="btn sm" onclick="loadPreset('scc')">SCC</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Algorithm</div>
+      <div class="algo-grid">
+        <div class="algo-btn" id="algo-bfs" onclick="selectAlgo('bfs')">BFS</div>
+        <div class="algo-btn" id="algo-dfs" onclick="selectAlgo('dfs')">DFS</div>
+        <div class="algo-btn" id="algo-dijkstra" onclick="selectAlgo('dijkstra')">Dijkstra</div>
+        <div class="algo-btn" id="algo-bellman" onclick="selectAlgo('bellman')">Bellman-Ford</div>
+        <div class="algo-btn" id="algo-kahn" onclick="selectAlgo('kahn')">Kahn's</div>
+        <div class="algo-btn" id="algo-kosaraju" onclick="selectAlgo('kosaraju')">Kosaraju</div>
+        <div class="algo-btn" id="algo-tarjan" onclick="selectAlgo('tarjan')">Tarjan</div>
+        <div class="algo-btn" id="algo-floyd" onclick="selectAlgo('floyd')">Floyd-W</div>
+      </div>
+      <div class="section-label">Start node</div>
+      <div class="row">
+        <select id="start-node"></select>
+        <button class="btn primary" onclick="runAlgo()">Run</button>
+      </div>
+      <div class="speed-row">
+        <label>Speed</label>
+        <input type="range" min="100" max="1500" value="700" step="100" id="speed-slider" style="flex:1" oninput="document.getElementById('spd-lbl').textContent=this.value+'ms'"/>
+        <span style="font-size:11px;color:#888" id="spd-lbl">700ms</span>
+      </div>
+      <div class="step-controls">
+        <button class="btn sm" onclick="stepBack()">← Back</button>
+        <button class="btn sm" onclick="stepFwd()">Next →</button>
+        <button class="btn sm" onclick="resetViz()">Reset</button>
+      </div>
+    </div>
+    <div class="card">
+      <div class="card-title">Algorithm Properties</div>
+      <div class="prop-box" id="prop-box">Select an algorithm to see its properties and constraints.</div>
+      <div class="card-title">Step Log</div>
+      <div class="log-box" id="log-box"><div style="color:#ccc">Run an algorithm to see steps...</div></div>
+    </div>
+  </div>
+  <div class="canvas-wrap">
+    <canvas id="gc"></canvas>
+    <div class="canvas-legend">
+      <div class="legend-item"><div class="legend-dot" style="background:#185FA5"></div>Unvisited</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#1D9E75"></div>Visited</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#E24B4A"></div>Current / Error</div>
+      <div class="legend-item"><div class="legend-dot" style="background:#854F0B"></div>Back edge</div>
+    </div>
+    <div class="canvas-hint">Drag to rotate · Scroll to zoom</div>
+  </div>
+</div>
+<script>
+const canvas=document.getElementById('gc');
+const ctx=canvas.getContext('2d');
+let nodes=[],edges=[],nodeId=0;
+let rotX=0.3,rotY=0.4,zoom=1;
+let dragging=false,lastMX=0,lastMY=0;
+let selectedAlgo=null,vizSteps=[],currentStep=-1,animTimer=null;
+let nodeColors={},edgeColors={},nodeLabels={};
+const C={node:'#185FA5',visited:'#1D9E75',current:'#E24B4A',edge:'#C0C0C0',traversed:'#185FA5',negative:'#E24B4A',bridge:'#E24B4A',back:'#854F0B',scc:['#185FA5','#1D9E75','#854F0B','#534AB7','#993556','#D85A30']};
+
+function resizeCanvas(){canvas.width=canvas.parentElement.clientWidth;canvas.height=canvas.parentElement.clientHeight||680;draw();}
+
+function project(x,y,z){
+  const cosX=Math.cos(rotX),sinX=Math.sin(rotX),cosY=Math.cos(rotY),sinY=Math.sin(rotY);
+  const nx=x*cosY+z*sinY,ny=x*sinX*sinY+y*cosX-z*sinX*cosY;
+  const s=zoom*Math.min(canvas.width,canvas.height)*0.26;
+  return{px:canvas.width/2+nx*s,py:canvas.height/2-ny*s};
+}
+
+function drawArrow(x1,y1,x2,y2,col,w){
+  ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.strokeStyle=col;ctx.lineWidth=w;ctx.stroke();
+  const a=Math.atan2(y2-y1,x2-x1),al=11,aw=0.38;
+  ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-al*Math.cos(a-aw),y2-al*Math.sin(a-aw));ctx.lineTo(x2-al*Math.cos(a+aw),y2-al*Math.sin(a+aw));
+  ctx.closePath();ctx.fillStyle=col;ctx.fill();
+}
+
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  if(!nodes.length){ctx.fillStyle='#C0C0C0';ctx.font='14px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('Add nodes and edges, or select a preset',canvas.width/2,canvas.height/2);return;}
+  const dir=document.getElementById('directed').checked;
+  edges.forEach(e=>{
+    const n1=nodes.find(n=>n.id===e.from),n2=nodes.find(n=>n.id===e.to);if(!n1||!n2)return;
+    const p1=project(n1.x,n1.y,n1.z),p2=project(n2.x,n2.y,n2.z);
+    const col=edgeColors[`${e.from}-${e.to}`]||C.edge,w=edgeColors[`${e.from}-${e.to}`]?2.5:1.2;
+    const dx=p2.px-p1.px,dy=p2.py-p1.py,len=Math.sqrt(dx*dx+dy*dy)||1,r=22;
+    const ex1=p1.px+(dx/len)*r,ey1=p1.py+(dy/len)*r,ex2=p2.px-(dx/len)*r,ey2=p2.py-(dy/len)*r;
+    if(dir)drawArrow(ex1,ey1,ex2,ey2,col,w);
+    else{ctx.beginPath();ctx.moveTo(ex1,ey1);ctx.lineTo(ex2,ey2);ctx.strokeStyle=col;ctx.lineWidth=w;ctx.stroke();}
+    ctx.font='11px sans-serif';ctx.fillStyle=col;ctx.textAlign='center';ctx.textBaseline='middle';
+    ctx.fillText(e.weight,(p1.px+p2.px)/2,(p1.py+p2.py)/2-8);
+  });
+  nodes.forEach(n=>{
+    const p=project(n.x,n.y,n.z),col=nodeColors[n.id]||C.node;
+    ctx.beginPath();ctx.arc(p.px,p.py,22,0,Math.PI*2);ctx.fillStyle=col+'18';ctx.fill();
+    ctx.strokeStyle=col;ctx.lineWidth=2.5;ctx.stroke();
+    ctx.font='bold 13px sans-serif';ctx.fillStyle=col;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(n.label,p.px,p.py);
+    if(nodeLabels[n.id]){ctx.font='10px sans-serif';ctx.fillStyle='#888';ctx.textBaseline='top';ctx.fillText(nodeLabels[n.id],p.px,p.py+26);}
+  });
+}
+
+canvas.addEventListener('mousedown',e=>{dragging=true;lastMX=e.clientX;lastMY=e.clientY;});
+canvas.addEventListener('mousemove',e=>{if(!dragging)return;rotY+=(e.clientX-lastMX)*0.01;rotX+=(e.clientY-lastMY)*0.01;lastMX=e.clientX;lastMY=e.clientY;draw();});
+canvas.addEventListener('mouseup',()=>dragging=false);
+canvas.addEventListener('mouseleave',()=>dragging=false);
+canvas.addEventListener('wheel',e=>{zoom*=e.deltaY>0?0.9:1.1;zoom=Math.max(0.3,Math.min(3,zoom));draw();e.preventDefault();},{passive:false});
+
+function spherePos(i,t){const phi=Math.acos(1-2*(i+0.5)/Math.max(t,1)),theta=Math.PI*(1+Math.sqrt(5))*i;return{x:2.2*Math.sin(phi)*Math.cos(theta),y:2.2*Math.sin(phi)*Math.sin(theta),z:2.2*Math.cos(phi)};}
+
+function updateSelects(){
+  ['edge-from','edge-to','start-node'].forEach(id=>{const s=document.getElementById(id),c=s.value;s.innerHTML=nodes.map(n=>`<option value="${n.id}">${n.label}</option>`).join('');if(nodes.find(n=>String(n.id)===c))s.value=c;});
+}
+
+function addNode(){
+  const label=document.getElementById('node-label').value.trim()||(nodes.length<26?String.fromCharCode(65+nodes.length):String(nodes.length));
+  const pos=spherePos(nodes.length,Math.max(nodes.length+1,6));
+  nodes.push({id:nodeId++,label,x:pos.x,y:pos.y,z:pos.z});
+  document.getElementById('node-label').value='';updateSelects();resetViz();draw();
+}
+
+function addEdge(){
+  const from=parseInt(document.getElementById('edge-from').value),to=parseInt(document.getElementById('edge-to').value);
+  const wt=parseFloat(document.getElementById('edge-wt').value)||1;
+  if(isNaN(from)||isNaN(to)||from===to||edges.find(e=>e.from===from&&e.to===to))return;
+  edges.push({from,to,weight:wt});resetViz();draw();
+}
+
+function clearGraph(){nodes=[];edges=[];nodeId=0;nodeColors={};edgeColors={};nodeLabels={};updateSelects();resetViz();draw();logClear();}
+
+function loadPreset(name){
+  clearGraph();
+  const P={
+    simple:{n:['A','B','C','D','E','F'],e:[[0,1,1],[0,2,1],[1,3,1],[2,3,1],[3,4,1],[1,5,1],[4,5,1]],d:true},
+    weighted:{n:['S','A','B','C','T'],e:[[0,1,4],[0,2,2],[1,2,1],[1,3,5],[2,4,10],[3,4,2],[2,3,8]],d:true},
+    negcycle:{n:['A','B','C','D'],e:[[0,1,1],[1,2,-3],[2,3,2],[3,1,1]],d:true},
+    dag:{n:['A','B','C','D','E','F'],e:[[0,1,1],[0,2,1],[1,3,1],[1,4,1],[2,4,1],[3,5,1],[4,5,1]],d:true},
+    scc:{n:['A','B','C','D','E','F'],e:[[0,1,1],[1,2,1],[2,0,1],[1,3,1],[3,4,1],[4,3,1],[4,5,1]],d:true}
+  };
+  const p=P[name];document.getElementById('directed').checked=p.d;
+  p.n.forEach(label=>{const pos=spherePos(nodes.length,p.n.length);nodes.push({id:nodeId++,label,x:pos.x,y:pos.y,z:pos.z});});
+  p.e.forEach(([f,t,w])=>edges.push({from:f,to:t,weight:w}));
+  updateSelects();draw();log(`Preset "${name}" — ${nodes.length} nodes, ${edges.length} edges`,'hl');
+}
+
+function selectAlgo(name){
+  selectedAlgo=name;document.querySelectorAll('.algo-btn').forEach(b=>b.classList.remove('active'));
+  document.getElementById('algo-'+name).classList.add('active');showProps(name);resetViz();
+}
+
+const PROPS={
+  bfs:{t:'BFS explores level by level using a queue. Works on directed/undirected, weighted/unweighted. Finds shortest path in unweighted graphs. Time: O(V+E).',c:'ok'},
+  dfs:{t:'DFS explores as deep as possible before backtracking. Back edges = cycles. Used for cycle detection, topological sort, SCC. Time: O(V+E).',c:'ok'},
+  dijkstra:{t:'Finds shortest paths from source. CONSTRAINT: All weights must be ≥ 0. Fails with negative weights — use Bellman-Ford instead. Time: O(E log V).',c:'warn'},
+  bellman:{t:'Handles negative edge weights. Detects negative cycles — if found, shortest path is undefined (−∞). Slower than Dijkstra: O(VE).',c:'ok'},
+  kahn:{t:"Topological ordering via in-degree. CONSTRAINT: Graph must be a DAG (no cycles). If cycle exists → topological sort is impossible. Time: O(V+E).",c:'warn'},
+  kosaraju:{t:"Finds Strongly Connected Components. CONSTRAINT: Directed graph only. Two-pass DFS — original graph then reversed. Time: O(V+E).",c:'ok'},
+  tarjan:{t:"Finds bridges (critical edges). A bridge disconnects the graph when removed. Uses disc[] and low[] arrays. Time: O(V+E).",c:'ok'},
+  floyd:{t:"All-pairs shortest paths. Works with negative weights. CONSTRAINT: Fails with negative cycles — results become −∞. Time: O(V³).",c:'warn'}
+};
+
+function showProps(name){const p=PROPS[name],b=document.getElementById('prop-box');b.textContent=p.t;b.className='prop-box '+p.c;}
+
+function log(msg,type=''){
+  const box=document.getElementById('log-box');
+  if(box.firstChild&&box.firstChild.tagName!=='DIV'||box.firstChild?.style?.color==='rgb(192,192,192)'){}
+  const d=document.createElement('div');d.className='log-line'+(type?' '+type:'');d.textContent=msg;box.prepend(d);
+}
+function logClear(){document.getElementById('log-box').innerHTML='<div style="color:#ccc">Run an algorithm to see steps...</div>';}
+
+function getAdj(){
+  const adj={},dir=document.getElementById('directed').checked;
+  nodes.forEach(n=>adj[n.id]=[]);
+  edges.forEach(e=>{adj[e.from].push({to:e.to,w:e.weight});if(!dir)adj[e.to].push({to:e.from,w:e.weight});});
+  return adj;
+}
+
+function buildSteps(algo,sid){
+  const steps=[],adj=getAdj(),dir=document.getElementById('directed').checked;
+  const lbl=id=>nodes.find(n=>n.id===id)?.label||id;
+
+  if(algo==='bfs'){
+    const vis=new Set(),q=[sid],nc={},ec={},nl={};nc[sid]=C.current;nl[sid]='start';vis.add(sid);
+    steps.push({nc:{...nc},ec:{},nl:{...nl},msg:`BFS from ${lbl(sid)}`});
+    while(q.length){
+      const u=q.shift();nc[u]=C.visited;steps.push({nc:{...nc},ec:{...ec},nl:{...nl},msg:`Visit ${lbl(u)}`});
+      for(const {to:v} of adj[u])if(!vis.has(v)){vis.add(v);q.push(v);nc[v]=C.current;ec[`${u}-${v}`]=C.traversed;const d=(parseInt(nl[u]?.replace(/\D/g,''))||0)+1;nl[v]=`d:${d}`;steps.push({nc:{...nc},ec:{...ec},nl:{...nl},msg:`Enqueue ${lbl(v)} depth=${d}`});}
+    }
+  }
+
+  else if(algo==='dfs'){
+    const vis=new Set(),nc={},ec={},nl={};nc[sid]=C.current;nl[sid]='start';steps.push({nc:{...nc},ec:{},nl:{...nl},msg:`DFS from ${lbl(sid)}`});
+    function dfs(u,par){vis.add(u);nc[u]=C.visited;steps.push({nc:{...nc},ec:{...ec},nl:{...nl},msg:`Visit ${lbl(u)}`});for(const {to:v} of adj[u]){if(!vis.has(v)){ec[`${u}-${v}`]=C.traversed;steps.push({nc:{...nc},ec:{...ec},nl:{...nl},msg:`Tree: ${lbl(u)}→${lbl(v)}`});dfs(v,u);}else if(v!==par){ec[`${u}-${v}`]=C.back;steps.push({nc:{...nc},ec:{...ec},nl:{...nl},msg:`Back edge: ${lbl(u)}→${lbl(v)} cycle!`,warn:true});}}}
+    dfs(sid,-1);
+  }
+
+  else if(algo==='dijkstra'){
+    if(edges.some(e=>e.weight<0)){steps.push({nc:{},ec:{},nl:{},msg:'ERROR: Negative weight! Dijkstra fails.',err:true,propErr:'Dijkstra cannot handle negative weights! Use Bellman-Ford instead.'});return steps;}
+    const dist={},vis=new Set(),nc={},ec={},nl={};nodes.forEach(n=>dist[n.id]=Infinity);dist[sid]=0;nl[sid]='0';nc[sid]=C.current;
+    steps.push({nc:{...nc},ec:{},nl:{...nl},msg:`Dijkstra from ${lbl(sid)}`});
+    while(true){let u=-1,m=Infinity;nodes.forEach(n=>{if(!vis.has(n.id)&&dist[n.id]<m){m=dist[n.id];u=n.id;}});if(u===-1)break;
+      vis.add(u);nc[u]=C.visited;steps.push({nc:{...nc},ec:{...ec},nl:{...nl},msg:`Process ${lbl(u)} dist=${dist[u]}`});
+      for(const {to:v,w} of adj[u])if(dist[u]+w<dist[v]){dist[v]=dist[u]+w;nl[v]=String(dist[v]);nc[v]=C.current;ec[`${u}-${v}`]=C.traversed;steps.push({nc:{...nc},ec:{...ec},nl:{...nl},msg:`Relax ${lbl(v)}=${dist[v]}`});}
+    }
+    steps.push({nc:{...nc},ec:{...ec},nl:{...nl},msg:'Dijkstra complete!',ok:true});
+  }
+
+  else if(algo==='bellman'){
+    const dist={},nc={},ec={},nl={};nodes.forEach(n=>dist[n.id]=Infinity);dist[sid]=0;nl[sid]='0';
+    steps.push({nc:{},ec:{},nl:{...nl},msg:`Bellman-Ford from ${lbl(sid)}, ${nodes.length-1} passes`});
+    for(let i=0;i<nodes.length-1;i++){let up=false;for(const e of edges){if(dist[e.from]!==Infinity&&dist[e.from]+e.weight<dist[e.to]){dist[e.to]=dist[e.from]+e.weight;nl[e.to]=String(dist[e.to]);nc[e.to]=C.current;ec[`${e.from}-${e.to}`]=C.traversed;steps.push({nc:{...nc},ec:{...ec},nl:{...nl},msg:`Pass ${i+1}: ${lbl(e.to)}=${dist[e.to]}`});up=true;}}if(!up)break;}
+    let neg=false;for(const e of edges){if(dist[e.from]!==Infinity&&dist[e.from]+e.weight<dist[e.to]){neg=true;ec[`${e.from}-${e.to}`]=C.negative;steps.push({nc:{...nc},ec:{...ec},nl:{...nl},msg:`NEGATIVE CYCLE: ${lbl(e.from)}→${lbl(e.to)}`,err:true,propErr:'Negative cycle! Shortest paths are undefined (-∞).'});}}
+    if(!neg)steps.push({nc:{...nc},ec:{...ec},nl:{...nl},msg:'No negative cycle — complete!',ok:true});
+  }
+
+  else if(algo==='kahn'){
+    if(!dir){steps.push({nc:{},ec:{},nl:{},msg:'ERROR: Need directed graph!',err:true,propErr:"Kahn's requires directed graph. Enable 'Directed'."});return steps;}
+    const indeg={},nc={},ec={},nl={};nodes.forEach(n=>indeg[n.id]=0);edges.forEach(e=>indeg[e.to]++);nodes.forEach(n=>nl[n.id]=`in:${indeg[n.id]}`);
+    const q=nodes.filter(n=>indeg[n.id]===0).map(n=>n.id);steps.push({nc:{},ec:{},nl:{...nl},msg:`in-degree=0: [${q.map(lbl).join(',')}]`});
+    let ord=0,cnt=0;
+    while(q.length){const u=q.shift();cnt++;nc[u]=C.visited;nl[u]=`#${ord++}`;steps.push({nc:{...nc},ec:{...ec},nl:{...nl},msg:`Process ${lbl(u)} → #${ord-1}`});for(const {to:v} of adj[u]){ec[`${u}-${v}`]=C.traversed;indeg[v]--;nl[v]=`in:${indeg[v]}`;if(indeg[v]===0){q.push(v);nc[v]=C.current;}steps.push({nc:{...nc},ec:{...ec},nl:{...nl},msg:`${lbl(v)} in-deg→${indeg[v]}`});}}
+    if(cnt<nodes.length){nodes.filter(n=>!nc[n.id]).forEach(n=>nc[n.id]=C.negative);steps.push({nc:{...nc},ec:{...ec},nl:{...nl},msg:'CYCLE! Topo sort impossible.',err:true,propErr:'Cycle detected! Topological sort only works on DAGs. Try the DAG preset.'});}
+    else steps.push({nc:{...nc},ec:{...ec},nl:{...nl},msg:'Topological sort complete!',ok:true});
+  }
+
+  else if(algo==='kosaraju'){
+    if(!dir){steps.push({nc:{},ec:{},nl:{},msg:'ERROR: Need directed graph!',err:true,propErr:"Kosaraju requires directed graph. Enable 'Directed'."});return steps;}
+    const vis=new Set(),order=[],nc={},ec={},nl={};
+    function d1(u){vis.add(u);for(const {to:v} of adj[u])if(!vis.has(v))d1(v);order.push(u);}
+    nodes.forEach(n=>{if(!vis.has(n.id))d1(n.id);});
+    steps.push({nc:{},ec:{},nl:{},msg:`Pass 1: ${order.map(lbl).join('→')}`});
+    const radj={};nodes.forEach(n=>radj[n.id]=[]);edges.forEach(e=>radj[e.to].push(e.from));
+    const vis2=new Set();let si=0;
+    for(const start of [...order].reverse()){
+      if(vis2.has(start))continue;const scc=[];
+      function d2(u){vis2.add(u);scc.push(u);for(const v of radj[u])if(!vis2.has(v))d2(v);}
+      d2(start);const col=C.scc[si%C.scc.length];scc.forEach(u=>{nc[u]=col;nl[u]=`SCC${si}`;});
+      steps.push({nc:{...nc},ec:{...ec},nl:{...nl},msg:`SCC${si}: {${scc.map(lbl).join(',')}}`,ok:true});si++;
+    }
+  }
+
+  else if(algo==='tarjan'){
+    let timer=0;const disc={},low={},nc={},ec={},nl={},bridges=[];nodes.forEach(n=>{disc[n.id]=-1;low[n.id]=0;});
+    function dfs(u,par){disc[u]=low[u]=timer++;nc[u]=C.current;nl[u]=`d:${disc[u]}`;steps.push({nc:{...nc},ec:{...ec},nl:{...nl},msg:`Visit ${lbl(u)} disc=${disc[u]}`});for(const {to:v} of adj[u]){if(disc[v]===-1){ec[`${u}-${v}`]=C.traversed;dfs(v,u);low[u]=Math.min(low[u],low[v]);nl[u]=`low:${low[u]}`;if(low[v]>disc[u]){bridges.push([u,v]);ec[`${u}-${v}`]=C.bridge;steps.push({nc:{...nc},ec:{...ec},nl:{...nl},msg:`BRIDGE: ${lbl(u)}→${lbl(v)}`,warn:true});}}else if(v!==par){low[u]=Math.min(low[u],disc[v]);ec[`${u}-${v}`]=C.back;}}nc[u]=C.visited;steps.push({nc:{...nc},ec:{...ec},nl:{...nl},msg:`Done ${lbl(u)} low=${low[u]}`});}
+    nodes.forEach(n=>{if(disc[n.id]===-1)dfs(n.id,-1);});
+    if(!bridges.length)steps.push({nc:{...nc},ec:{...ec},nl:{...nl},msg:'No bridges — 2-edge-connected',ok:true});
+    else steps.push({nc:{...nc},ec:{...ec},nl:{...nl},msg:`${bridges.length} bridge(s) found — shown red`,warn:true});
+  }
+
+  else if(algo==='floyd'){
+    const ids=nodes.map(n=>n.id),dist={};ids.forEach(i=>{dist[i]={};ids.forEach(j=>dist[i][j]=i===j?0:Infinity);});
+    edges.forEach(e=>{dist[e.from][e.to]=Math.min(dist[e.from][e.to],e.weight);if(!dir)dist[e.to][e.from]=Math.min(dist[e.to][e.from],e.weight);});
+    steps.push({nc:{},ec:{},nl:{},msg:'Floyd-Warshall: all-pairs shortest paths...'});
+    for(const k of ids)for(const i of ids)for(const j of ids)if(dist[i][k]+dist[k][j]<dist[i][j])dist[i][j]=dist[i][k]+dist[k][j];
+    if(ids.some(i=>dist[i][i]<0)){const nc={};nodes.forEach(n=>nc[n.id]=C.negative);steps.push({nc:{...nc},ec:{},nl:{},msg:'NEGATIVE CYCLE! Results invalid.',err:true,propErr:'Negative cycle! Floyd-Warshall fails — distances become -∞.'});}
+    else{const nc={},nl={};nodes.forEach(n=>{nc[n.id]=C.visited;nl[n.id]='ok';});steps.push({nc:{...nc},ec:{},nl:{...nl},msg:'Floyd-Warshall complete!',ok:true});}
+  }
+  return steps;
+}
+
+function runAlgo(){
+  if(!selectedAlgo){log('Select an algorithm first','warn');return;}
+  if(!nodes.length){log('Add nodes first or use a preset','warn');return;}
+  resetViz();logClear();
+  const sid=parseInt(document.getElementById('start-node').value);
+  vizSteps=buildSteps(selectedAlgo,sid);currentStep=-1;
+  const spd=parseInt(document.getElementById('speed-slider').value);
+  function next(){if(currentStep<vizSteps.length-1){currentStep++;applyStep(vizSteps[currentStep]);animTimer=setTimeout(next,spd);}}
+  next();
+}
+
+function applyStep(s){
+  nodeColors={...s.nc};edgeColors={...s.ec};nodeLabels={...s.nl};draw();
+  if(s.msg){log(s.msg,s.err?'err':s.ok?'hl':s.warn?'warn':'');}
+  if(s.propErr){const b=document.getElementById('prop-box');b.textContent=s.propErr;b.className='prop-box error';}
+}
+
+function stepFwd(){
+  if(animTimer){clearTimeout(animTimer);animTimer=null;}
+  if(!vizSteps.length){const sid=parseInt(document.getElementById('start-node').value);vizSteps=buildSteps(selectedAlgo,sid);currentStep=-1;logClear();}
+  if(currentStep<vizSteps.length-1){currentStep++;applyStep(vizSteps[currentStep]);}
+}
+function stepBack(){if(animTimer){clearTimeout(animTimer);animTimer=null;}if(currentStep>0){currentStep--;applyStep(vizSteps[currentStep]);}}
+function resetViz(){if(animTimer){clearTimeout(animTimer);animTimer=null;}vizSteps=[];currentStep=-1;nodeColors={};edgeColors={};nodeLabels={};if(selectedAlgo)showProps(selectedAlgo);draw();}
+
+window.addEventListener('resize',resizeCanvas);
+resizeCanvas();
+loadPreset('simple');
+</script>
+</body>
+</html>  
