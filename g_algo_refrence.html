@@ -1,0 +1,302 @@
+ <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>Graph Algorithms Reference</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f2f5;color:#1a1a1a;padding:20px}
+.topbar{background:#1a1a2e;padding:0 20px;display:flex;align-items:center;justify-content:space-between;height:44px;border-radius:10px;margin-bottom:20px}
+.logo-name{font-size:14px;font-weight:600;color:#fff}
+.back-btn{font-size:11px;padding:4px 12px;border-radius:20px;border:1px solid #3a3a5c;color:#8b9ec7;cursor:pointer;text-decoration:none}
+.back-btn:hover{background:#3a3a5c;color:#fff}
+.page-title{font-size:20px;font-weight:600;margin-bottom:4px}
+.page-sub{font-size:13px;color:#888;margin-bottom:20px}
+.section{margin-bottom:24px}
+.section-title{font-size:14px;font-weight:600;color:#185FA5;margin-bottom:10px;padding-bottom:5px;border-bottom:2px solid #e6f1fb;display:flex;align-items:center;gap:8px}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(320px,1fr));gap:12px}
+.algo-card{background:#fff;border:1px solid #e5e5e5;border-radius:10px;overflow:hidden}
+.algo-head{padding:12px 14px;border-bottom:1px solid #f0f0f0;display:flex;align-items:center;justify-content:space-between}
+.algo-name{font-size:13px;font-weight:600;color:#1a1a1a}
+.algo-type{font-size:10px;padding:2px 8px;border-radius:20px;font-weight:500}
+.t-trav{background:#e6f1fb;color:#185fa5}
+.t-cyc{background:#eaf3de;color:#3b6d11}
+.t-sp{background:#faeeda;color:#854f0b}
+.t-topo{background:#eeedfe;color:#534ab7}
+.t-scc{background:#fcebeb;color:#a32d2d}
+.t-mst{background:#e1f5ee;color:#085041}
+.algo-body{padding:12px 14px}
+.algo-desc{font-size:12px;color:#555;line-height:1.6;margin-bottom:10px}
+.cx-row{display:flex;gap:6px;margin-bottom:10px}
+.cx{flex:1;background:#f8f8f8;border:1px solid #ebebeb;border-radius:6px;padding:6px;text-align:center}
+.cx-label{font-size:9px;color:#aaa;margin-bottom:2px}
+.cx-val{font-size:11px;font-weight:600;color:#185FA5}
+.constraint{background:#faeeda;border:1px solid #fac775;border-radius:6px;padding:7px 10px;font-size:11px;color:#633806;margin-bottom:8px}
+.constraint.ok{background:#eaf3de;border-color:#c0dd97;color:#27500A}
+.usecase{font-size:11px;color:#888;font-style:italic}
+.code-snippet{background:#1a1a2e;border-radius:6px;padding:8px 10px;font-family:monospace;font-size:10px;color:#c9d1d9;margin-top:8px;line-height:1.7;overflow-x:auto}
+.code-snippet .kw{color:#ff7b72}
+.code-snippet .cm{color:#8b949e}
+.code-snippet .fn{color:#79c0ff}
+.badge{font-size:10px;padding:2px 7px;border-radius:20px;background:#f0f0f0;color:#888}
+.summary-table{width:100%;border-collapse:collapse;background:#fff;border-radius:10px;overflow:hidden;border:1px solid #e5e5e5;margin-bottom:20px}
+.summary-table th{padding:10px 12px;text-align:left;font-size:11px;font-weight:600;color:#888;background:#fafafa;border-bottom:1px solid #f0f0f0}
+.summary-table td{padding:8px 12px;font-size:12px;border-bottom:1px solid #f8f8f8;color:#333}
+.summary-table tr:hover td{background:#fafcff}
+.tag{font-size:10px;padding:1px 6px;border-radius:20px;font-weight:500;display:inline-block}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <span class="logo-name">3D Graph Visualizer — Algorithm Reference</span>
+  <a href="index.html" class="back-btn">← Back to Visualizer</a>
+</div>
+
+<div class="page-title">Graph Algorithm Reference</div>
+<div class="page-sub">Complete guide — all 13 algorithms with complexity, constraints, and C++ implementation notes</div>
+
+<!-- SUMMARY TABLE -->
+<table class="summary-table">
+  <thead><tr><th>Algorithm</th><th>Category</th><th>Time</th><th>Space</th><th>Key Constraint</th></tr></thead>
+  <tbody>
+    <tr><td><b>BFS</b></td><td><span class="tag t-trav">Traversal</span></td><td>O(V+E)</td><td>O(V)</td><td>None</td></tr>
+    <tr><td><b>DFS</b></td><td><span class="tag t-trav">Traversal</span></td><td>O(V+E)</td><td>O(V)</td><td>None</td></tr>
+    <tr><td><b>Cycle Detection BFS</b></td><td><span class="tag t-cyc">Cycle</span></td><td>O(V+E)</td><td>O(V)</td><td>Undirected</td></tr>
+    <tr><td><b>Cycle Detection DFS</b></td><td><span class="tag t-cyc">Cycle</span></td><td>O(V+E)</td><td>O(V)</td><td>Undirected</td></tr>
+    <tr><td><b>Dijkstra</b></td><td><span class="tag t-sp">Shortest Path</span></td><td>O(E log V)</td><td>O(V)</td><td>No negative weights</td></tr>
+    <tr><td><b>Bellman-Ford</b></td><td><span class="tag t-sp">Shortest Path</span></td><td>O(V·E)</td><td>O(V)</td><td>No negative cycles</td></tr>
+    <tr><td><b>Floyd-Warshall</b></td><td><span class="tag t-sp">Shortest Path</span></td><td>O(V³)</td><td>O(V²)</td><td>No negative cycles</td></tr>
+    <tr><td><b>DAG Shortest Path</b></td><td><span class="tag t-sp">Shortest Path</span></td><td>O(V+E)</td><td>O(V)</td><td>DAG only</td></tr>
+    <tr><td><b>Topo Sort DFS</b></td><td><span class="tag t-topo">Topo Sort</span></td><td>O(V+E)</td><td>O(V)</td><td>DAG only</td></tr>
+    <tr><td><b>Kahn's BFS</b></td><td><span class="tag t-topo">Topo Sort</span></td><td>O(V+E)</td><td>O(V)</td><td>DAG only</td></tr>
+    <tr><td><b>Kosaraju's</b></td><td><span class="tag t-scc">SCC</span></td><td>O(V+E)</td><td>O(V)</td><td>Directed only</td></tr>
+    <tr><td><b>Tarjan's Bridges</b></td><td><span class="tag t-scc">Bridges</span></td><td>O(V+E)</td><td>O(V)</td><td>None</td></tr>
+    <tr><td><b>Prim's MST</b></td><td><span class="tag t-mst">MST</span></td><td>O(E log V)</td><td>O(V)</td><td>Undirected weighted</td></tr>
+    <tr><td><b>Kruskal's MST</b></td><td><span class="tag t-mst">MST</span></td><td>O(E log E)</td><td>O(V)</td><td>Undirected weighted</td></tr>
+  </tbody>
+</table>
+
+<!-- TRAVERSAL -->
+<div class="section">
+  <div class="section-title">Traversal Algorithms</div>
+  <div class="grid">
+    <div class="algo-card">
+      <div class="algo-head"><span class="algo-name">BFS — Breadth First Search</span><span class="algo-type t-trav">Traversal</span></div>
+      <div class="algo-body">
+        <div class="algo-desc">Explores all nodes level by level using a queue. Visits all nodes at distance k before nodes at distance k+1. Guarantees shortest path in unweighted graphs.</div>
+        <div class="cx-row">
+          <div class="cx"><div class="cx-label">Time</div><div class="cx-val">O(V+E)</div></div>
+          <div class="cx"><div class="cx-label">Space</div><div class="cx-val">O(V)</div></div>
+          <div class="cx"><div class="cx-label">Data Struct</div><div class="cx-val">Queue</div></div>
+        </div>
+        <div class="constraint ok">Works on: directed + undirected, weighted + unweighted</div>
+        <div class="usecase">Use for: shortest path (unweighted), level-order traversal, finding connected components</div>
+      </div>
+    </div>
+    <div class="algo-card">
+      <div class="algo-head"><span class="algo-name">DFS — Depth First Search</span><span class="algo-type t-trav">Traversal</span></div>
+      <div class="algo-body">
+        <div class="algo-desc">Goes as deep as possible before backtracking. Back edges indicate cycles. Foundation for topological sort, SCC, bridges.</div>
+        <div class="cx-row">
+          <div class="cx"><div class="cx-label">Time</div><div class="cx-val">O(V+E)</div></div>
+          <div class="cx"><div class="cx-label">Space</div><div class="cx-val">O(V)</div></div>
+          <div class="cx"><div class="cx-label">Data Struct</div><div class="cx-val">Stack/Rec</div></div>
+        </div>
+        <div class="constraint ok">Works on: directed + undirected, weighted + unweighted</div>
+        <div class="usecase">Use for: cycle detection, topological sort, SCC, path finding, maze solving</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- CYCLE -->
+<div class="section">
+  <div class="section-title">Cycle Detection</div>
+  <div class="grid">
+    <div class="algo-card">
+      <div class="algo-head"><span class="algo-name">Cycle Detection — BFS</span><span class="algo-type t-cyc">Cycle</span></div>
+      <div class="algo-body">
+        <div class="algo-desc">Uses BFS with parent tracking. If we visit a node that's already visited and it's not the parent of current node — cycle found.</div>
+        <div class="cx-row">
+          <div class="cx"><div class="cx-label">Time</div><div class="cx-val">O(V+E)</div></div>
+          <div class="cx"><div class="cx-label">Space</div><div class="cx-val">O(V)</div></div>
+          <div class="cx"><div class="cx-label">Data Struct</div><div class="cx-val">Queue+Map</div></div>
+        </div>
+        <div class="constraint">Key: if vis[nbr]==true AND nbr != parent[node] → CYCLE</div>
+      </div>
+    </div>
+    <div class="algo-card">
+      <div class="algo-head"><span class="algo-name">Cycle Detection — DFS</span><span class="algo-type t-cyc">Cycle</span></div>
+      <div class="algo-body">
+        <div class="algo-desc">Uses DFS recursion with parent parameter. If neighbor is visited and not parent → back edge → cycle exists.</div>
+        <div class="cx-row">
+          <div class="cx"><div class="cx-label">Time</div><div class="cx-val">O(V+E)</div></div>
+          <div class="cx"><div class="cx-label">Space</div><div class="cx-val">O(V)</div></div>
+          <div class="cx"><div class="cx-label">Data Struct</div><div class="cx-val">Recursion</div></div>
+        </div>
+        <div class="constraint">Key: if vis[nbr]==true AND nbr != parent → CYCLE (back edge)</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SHORTEST PATH -->
+<div class="section">
+  <div class="section-title">Shortest Path Algorithms</div>
+  <div class="grid">
+    <div class="algo-card">
+      <div class="algo-head"><span class="algo-name">Dijkstra's Algorithm</span><span class="algo-type t-sp">Shortest Path</span></div>
+      <div class="algo-body">
+        <div class="algo-desc">Greedy algorithm. Always picks the node with minimum distance. Uses a priority queue (min-heap or set). Single source shortest path.</div>
+        <div class="cx-row">
+          <div class="cx"><div class="cx-label">Time</div><div class="cx-val">O(E log V)</div></div>
+          <div class="cx"><div class="cx-label">Space</div><div class="cx-val">O(V)</div></div>
+          <div class="cx"><div class="cx-label">Type</div><div class="cx-val">Greedy</div></div>
+        </div>
+        <div class="constraint">CONSTRAINT: All edge weights must be ≥ 0. Negative weights break the greedy assumption.</div>
+        <div class="usecase">Use for: GPS navigation, network routing, single-source shortest path with non-negative weights</div>
+      </div>
+    </div>
+    <div class="algo-card">
+      <div class="algo-head"><span class="algo-name">Bellman-Ford</span><span class="algo-type t-sp">Shortest Path</span></div>
+      <div class="algo-body">
+        <div class="algo-desc">Relaxes all edges V-1 times. Can handle negative weights. If after V-1 passes we can still relax → negative cycle exists.</div>
+        <div class="cx-row">
+          <div class="cx"><div class="cx-label">Time</div><div class="cx-val">O(V·E)</div></div>
+          <div class="cx"><div class="cx-label">Space</div><div class="cx-val">O(V)</div></div>
+          <div class="cx"><div class="cx-label">Type</div><div class="cx-val">DP</div></div>
+        </div>
+        <div class="constraint">DETECTS negative cycles. If cycle exists — shortest path = undefined (-∞)</div>
+        <div class="usecase">Use for: graphs with negative weights, currency arbitrage detection</div>
+      </div>
+    </div>
+    <div class="algo-card">
+      <div class="algo-head"><span class="algo-name">Floyd-Warshall</span><span class="algo-type t-sp">Shortest Path</span></div>
+      <div class="algo-body">
+        <div class="algo-desc">All-pairs shortest paths. Uses DP: dist[i][j] = min(dist[i][j], dist[i][k]+dist[k][j]) for each intermediate node k.</div>
+        <div class="cx-row">
+          <div class="cx"><div class="cx-label">Time</div><div class="cx-val">O(V³)</div></div>
+          <div class="cx"><div class="cx-label">Space</div><div class="cx-val">O(V²)</div></div>
+          <div class="cx"><div class="cx-label">Type</div><div class="cx-val">DP</div></div>
+        </div>
+        <div class="constraint">CONSTRAINT: No negative cycles. Handles negative weights but not cycles.</div>
+        <div class="usecase">Use for: all-pairs shortest path, small dense graphs, transitive closure</div>
+      </div>
+    </div>
+    <div class="algo-card">
+      <div class="algo-head"><span class="algo-name">DAG Shortest Path</span><span class="algo-type t-sp">Shortest Path</span></div>
+      <div class="algo-body">
+        <div class="algo-desc">Uses topological order + relaxation. Faster than Dijkstra. Works with negative weights since DAG has no cycles.</div>
+        <div class="cx-row">
+          <div class="cx"><div class="cx-label">Time</div><div class="cx-val">O(V+E)</div></div>
+          <div class="cx"><div class="cx-label">Space</div><div class="cx-val">O(V)</div></div>
+          <div class="cx"><div class="cx-label">Type</div><div class="cx-val">Topo+DP</div></div>
+        </div>
+        <div class="constraint">CONSTRAINT: DAG only (Directed Acyclic Graph). No cycles allowed.</div>
+        <div class="usecase">Use for: project scheduling, build dependency resolution</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- TOPO SORT -->
+<div class="section">
+  <div class="section-title">Topological Sort</div>
+  <div class="grid">
+    <div class="algo-card">
+      <div class="algo-head"><span class="algo-name">Topological Sort — DFS</span><span class="algo-type t-topo">Topo Sort</span></div>
+      <div class="algo-body">
+        <div class="algo-desc">DFS-based. After visiting all neighbors of a node, push it to stack. Stack gives reverse topological order. Pop stack for final order.</div>
+        <div class="cx-row">
+          <div class="cx"><div class="cx-label">Time</div><div class="cx-val">O(V+E)</div></div>
+          <div class="cx"><div class="cx-label">Space</div><div class="cx-val">O(V)</div></div>
+          <div class="cx"><div class="cx-label">Data Struct</div><div class="cx-val">Stack+DFS</div></div>
+        </div>
+        <div class="constraint">CONSTRAINT: DAG only. If cycle exists → topological sort is impossible (undefined).</div>
+      </div>
+    </div>
+    <div class="algo-card">
+      <div class="algo-head"><span class="algo-name">Kahn's Algorithm — BFS</span><span class="algo-type t-topo">Topo Sort</span></div>
+      <div class="algo-body">
+        <div class="algo-desc">BFS-based using in-degree. Start with nodes of in-degree 0. Process each, reduce neighbor in-degrees. If count processed < V → cycle exists.</div>
+        <div class="cx-row">
+          <div class="cx"><div class="cx-label">Time</div><div class="cx-val">O(V+E)</div></div>
+          <div class="cx"><div class="cx-label">Space</div><div class="cx-val">O(V)</div></div>
+          <div class="cx"><div class="cx-label">Data Struct</div><div class="cx-val">Queue</div></div>
+        </div>
+        <div class="constraint">DETECTS cycles: if processed_count &lt; V → cycle exists → not a DAG.</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- SCC -->
+<div class="section">
+  <div class="section-title">SCC & Bridge Finding</div>
+  <div class="grid">
+    <div class="algo-card">
+      <div class="algo-head"><span class="algo-name">Kosaraju's SCC</span><span class="algo-type t-scc">SCC</span></div>
+      <div class="algo-body">
+        <div class="algo-desc">Two DFS passes. Pass 1: DFS on original graph, push to stack in finish order. Pass 2: DFS on reversed graph in finish order — each DFS tree = one SCC.</div>
+        <div class="cx-row">
+          <div class="cx"><div class="cx-label">Time</div><div class="cx-val">O(V+E)</div></div>
+          <div class="cx"><div class="cx-label">Space</div><div class="cx-val">O(V)</div></div>
+          <div class="cx"><div class="cx-label">Passes</div><div class="cx-val">2×DFS</div></div>
+        </div>
+        <div class="constraint">CONSTRAINT: Directed graph only. Reverses all edges in Pass 2.</div>
+        <div class="usecase">Use for: finding strongly connected components, web crawling, social network analysis</div>
+      </div>
+    </div>
+    <div class="algo-card">
+      <div class="algo-head"><span class="algo-name">Tarjan's Bridge Finding</span><span class="algo-type t-scc">Bridges</span></div>
+      <div class="algo-body">
+        <div class="algo-desc">Uses disc[] (discovery time) and low[] (lowest reachable). Bridge condition: low[v] > disc[u] means edge u→v is a bridge — removing it disconnects graph.</div>
+        <div class="cx-row">
+          <div class="cx"><div class="cx-label">Time</div><div class="cx-val">O(V+E)</div></div>
+          <div class="cx"><div class="cx-label">Space</div><div class="cx-val">O(V)</div></div>
+          <div class="cx"><div class="cx-label">Arrays</div><div class="cx-val">disc+low</div></div>
+        </div>
+        <div class="constraint ok">Works on undirected graphs. Bridge = critical connection in network.</div>
+        <div class="usecase">Use for: network reliability, critical infrastructure, finding weak points</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- MST -->
+<div class="section">
+  <div class="section-title">Minimum Spanning Tree</div>
+  <div class="grid">
+    <div class="algo-card">
+      <div class="algo-head"><span class="algo-name">Prim's Algorithm</span><span class="algo-type t-mst">MST</span></div>
+      <div class="algo-body">
+        <div class="algo-desc">Grows MST from a source. At each step picks the minimum weight edge connecting MST to a non-MST node. Uses priority queue.</div>
+        <div class="cx-row">
+          <div class="cx"><div class="cx-label">Time</div><div class="cx-val">O(E log V)</div></div>
+          <div class="cx"><div class="cx-label">Space</div><div class="cx-val">O(V)</div></div>
+          <div class="cx"><div class="cx-label">Type</div><div class="cx-val">Greedy</div></div>
+        </div>
+        <div class="constraint">CONSTRAINT: Undirected weighted graph. Better for dense graphs.</div>
+        <div class="usecase">Use for: network design, cable laying, circuit design</div>
+      </div>
+    </div>
+    <div class="algo-card">
+      <div class="algo-head"><span class="algo-name">Kruskal's Algorithm</span><span class="algo-type t-mst">MST</span></div>
+      <div class="algo-body">
+        <div class="algo-desc">Sort all edges by weight. Add edge if it doesn't form a cycle (check using DSU/Union-Find). Continue until V-1 edges added.</div>
+        <div class="cx-row">
+          <div class="cx"><div class="cx-label">Time</div><div class="cx-val">O(E log E)</div></div>
+          <div class="cx"><div class="cx-label">Space</div><div class="cx-val">O(V)</div></div>
+          <div class="cx"><div class="cx-label">Type</div><div class="cx-val">DSU+Sort</div></div>
+        </div>
+        <div class="constraint">CONSTRAINT: Undirected weighted graph. Better for sparse graphs.</div>
+        <div class="usecase">Use for: network design, clustering, image segmentation</div>
+      </div>
+    </div>
+  </div>
+</div>
+
+</body>
+</html>
+ 
