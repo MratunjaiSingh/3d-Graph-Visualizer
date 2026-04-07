@@ -1,3 +1,1118 @@
+ <!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>3D Graph Visualizer — Algorithm Explorer</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f2f5;color:#1a1a1a;height:100vh;overflow:hidden}
+.topbar{background:#1a1a2e;padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:42px}
+.logo-name{font-size:13px;font-weight:600;color:#fff}
+.logo-sub{font-size:10px;color:#8b9ec7;border-left:1px solid #3a3a5c;padding-left:8px;margin-left:4px}
+.tb-pill{font-size:10px;padding:2px 8px;border-radius:20px;border:1px solid #3a3a5c;color:#8b9ec7}
+.main{display:grid;grid-template-columns:220px 1fr 280px;gap:8px;padding:8px;height:calc(100vh - 42px)}
+.sidebar{display:flex;flex-direction:column;gap:7px;overflow-y:auto}
+.card{background:#fff;border:1px solid #e5e5e5;border-radius:10px;padding:11px;flex-shrink:0}
+.ct{font-size:11px;font-weight:600;color:#1a1a1a;margin-bottom:7px}
+.sl{font-size:10px;color:#888;margin-bottom:3px;font-weight:500}
+.row{display:flex;gap:4px;margin-bottom:5px;align-items:center}
+input[type=text],input[type=number]{padding:4px 6px;border:1px solid #e0e0e0;border-radius:5px;font-size:11px;background:#fff;color:#1a1a1a;outline:none}
+input[type=text]{flex:1}
+input[type=number]{width:44px}
+input:focus{border-color:#185FA5}
+.btn{padding:4px 9px;border-radius:5px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid #e0e0e0;background:#fff;color:#1a1a1a;transition:all 0.15s;white-space:nowrap}
+.btn:hover{background:#f5f5f7}
+.btn.p{background:#185FA5;color:#fff;border-color:#185FA5}
+.btn.p:hover{background:#0c447c}
+.btn.d{background:#a32d2d;color:#fff;border-color:#a32d2d}
+.btn.sm{padding:3px 7px;font-size:10px}
+.ag{font-size:9px;color:#aaa;margin-bottom:3px;margin-top:5px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em}
+.algo-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-bottom:2px}
+.ab{padding:5px 4px;border-radius:5px;font-size:10px;font-weight:500;cursor:pointer;border:1px solid #e0e0e0;background:#fff;color:#1a1a1a;text-align:center;transition:all 0.15s;line-height:1.3}
+.ab:hover{background:#f5f5f7}
+.ab.active{background:#185FA5;color:#fff;border-color:#185FA5}
+.prop{background:#f8f8f8;border-radius:6px;padding:7px;font-size:10px;line-height:1.6;color:#666;min-height:48px;border:1px solid #ebebeb}
+.prop.err{background:#fcebeb;color:#791F1F;border-color:#f7c1c1}
+.prop.warn{background:#faeeda;color:#633806;border-color:#fac775}
+.prop.ok{background:#eaf3de;color:#27500A;border-color:#c0dd97}
+.cx-row{display:flex;gap:4px;margin-top:5px}
+.cx{flex:1;background:#f8f8f8;border:1px solid #ebebeb;border-radius:5px;padding:5px;text-align:center}
+.cx-label{font-size:9px;color:#aaa;margin-bottom:2px}
+.cx-val{font-size:10px;font-weight:600;color:#185FA5}
+.log{background:#1a1a2e;border-radius:6px;padding:6px;font-size:10px;font-family:monospace;color:#c9d1d9;height:90px;overflow-y:auto;line-height:1.7}
+.ll{padding:1px 0;border-bottom:1px solid #2a2a3e}
+.ll.hl{color:#3fb950;font-weight:500}
+.ll.er{color:#f85149;font-weight:500}
+.ll.wn{color:#e3b341}
+.canvas-wrap{background:#fff;border:1px solid #e5e5e5;border-radius:10px;overflow:hidden;position:relative}
+canvas{display:block;width:100%;height:100%;cursor:grab}
+canvas:active{cursor:grabbing}
+.hint{position:absolute;bottom:8px;right:10px;font-size:9px;color:#ccc}
+.legend{position:absolute;top:10px;left:10px;background:rgba(255,255,255,0.95);padding:7px 9px;border-radius:7px;border:0.5px solid #e5e5e5;display:flex;flex-direction:column;gap:3px}
+.li{display:flex;align-items:center;gap:5px;font-size:9px;color:#666}
+.ld{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.cx-canvas{position:absolute;top:10px;right:10px;background:rgba(26,26,46,0.92);padding:8px 12px;border-radius:8px;display:none}
+.cx-canvas.show{display:block}
+.cx-canvas-row{display:flex;gap:12px}
+.cx-c{text-align:center}
+.cx-c-label{font-size:9px;color:#8b9ec7;margin-bottom:2px}
+.cx-c-val{font-size:11px;font-weight:600;color:#79c0ff}
+.overlay-msg{position:absolute;top:50px;right:10px;background:#fff;border:1px solid #e5e5e5;border-radius:8px;padding:8px 10px;font-size:10px;max-width:190px;display:none;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+.overlay-msg.show{display:block}
+.path-overlay{position:absolute;bottom:28px;left:10px;background:#fff;border:1px solid #e5e5e5;border-radius:8px;padding:7px 10px;font-size:10px;display:none;max-width:320px}
+.path-overlay.show{display:block}
+.right-panel{display:flex;flex-direction:column;gap:7px;overflow-y:auto}
+.code-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
+.fold-btn{font-size:10px;color:#888;padding:2px 6px;border-radius:4px;border:1px solid #e0e0e0;background:#f8f8f8}
+.code-body{overflow:hidden;max-height:2000px;transition:max-height 0.3s}
+.code-box{background:#1a1a2e;border-radius:6px;padding:10px;font-family:monospace;font-size:10px;line-height:1.7;color:#c9d1d9;overflow-x:auto;margin-top:6px}
+.code-box .kw{color:#ff7b72}
+.code-box .fn{color:#79c0ff}
+.code-box .cm{color:#8b949e}
+.code-box .str{color:#a5d6ff}
+.code-box .num{color:#f2cc60}
+.code-box .tp{color:#ffa657}
+.badge{font-size:9px;padding:2px 6px;border-radius:20px;font-weight:500}
+.b-bl{background:#e6f1fb;color:#185fa5}
+.b-gn{background:#eaf3de;color:#3b6d11}
+.b-rd{background:#fcebeb;color:#a32d2d}
+.b-am{background:#faeeda;color:#854f0b}
+.b-pu{background:#eeedfe;color:#534ab7}
+.editor-wrap{flex:1;display:flex;flex-direction:column;min-height:180px}
+.editor-area{flex:1;background:#1a1a2e;border-radius:6px;padding:8px;font-family:monospace;font-size:10px;color:#c9d1d9;border:1px solid #3a3a5c;outline:none;resize:none;min-height:120px;line-height:1.7}
+.divider{border:none;border-top:1px solid #f0f0f0;margin:5px 0}
+select{padding:4px 6px;border:1px solid #e0e0e0;border-radius:5px;font-size:11px;background:#fff;color:#1a1a1a;outline:none;flex:1}
+.preset-row{display:flex;gap:3px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:6px">
+    <span class="logo-name">3D Graph Visualizer</span>
+    <span class="logo-sub">All Graph Algorithms — C++ · OpenGL · STL</span>
+  </div>
+  <div style="display:flex;gap:5px">
+    <span class="tb-pill">17 Algorithms</span>
+    <span class="tb-pill">C++ Code</span>
+    <span class="tb-pill">Live Editor</span>
+    <a href="g_algo_refrence.html" style="text-decoration:none"><span class="tb-pill" style="cursor:pointer;color:#79c0ff;border-color:#185FA5">Reference →</span></a>
+  </div>
+</div>
+
+<div class="main">
+  <div class="sidebar">
+    <div class="card">
+      <div class="ct">Graph Builder</div>
+      <div class="sl">Add node</div>
+      <div class="row">
+        <input type="text" id="nl" placeholder="A or 1"/>
+        <button class="btn p sm" onclick="addNode()">+Node</button>
+        <button class="btn d sm" onclick="clearGraph()">Clear</button>
+      </div>
+      <div class="sl">Add edge</div>
+      <div class="row">
+        <select id="ef"></select>
+        <span style="font-size:10px;color:#888">→</span>
+        <select id="et"></select>
+      </div>
+      <div class="row">
+        <input type="number" id="ew" value="1"/>
+        <label style="font-size:10px;color:#555;display:flex;align-items:center;gap:3px"><input type="checkbox" id="dir" checked/> Dir</label>
+        <button class="btn p sm" onclick="addEdge()">+Edge</button>
+      </div>
+      <div class="divider"></div>
+      <div class="sl">Presets</div>
+      <div class="preset-row">
+        <button class="btn sm" onclick="loadPreset('simple')">Simple</button>
+        <button class="btn sm" onclick="loadPreset('weighted')">Wtd</button>
+        <button class="btn sm" onclick="loadPreset('negcycle')">NegCyc</button>
+        <button class="btn sm" onclick="loadPreset('dag')">DAG</button>
+        <button class="btn sm" onclick="loadPreset('scc')">SCC</button>
+        <button class="btn sm" onclick="loadPreset('mst')">MST</button>
+        <button class="btn sm" onclick="loadPreset('bipartite')">Bip</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ct">Algorithms</div>
+      <div class="ag">Traversal</div>
+      <div class="algo-grid">
+        <div class="ab" id="ab-bfs" onclick="selAlgo('bfs')">BFS</div>
+        <div class="ab" id="ab-dfs" onclick="selAlgo('dfs')">DFS</div>
+      </div>
+      <div class="ag">Cycle Detection</div>
+      <div class="algo-grid">
+        <div class="ab" id="ab-cycle_bfs" onclick="selAlgo('cycle_bfs')">Cycle BFS</div>
+        <div class="ab" id="ab-cycle_dfs" onclick="selAlgo('cycle_dfs')">Cycle DFS</div>
+        <div class="ab" id="ab-cycle_dir" onclick="selAlgo('cycle_dir')">Cycle Dir</div>
+        <div class="ab" id="ab-bipartite" onclick="selAlgo('bipartite')">Bipartite</div>
+      </div>
+      <div class="ag">Shortest Path</div>
+      <div class="algo-grid">
+        <div class="ab" id="ab-dijkstra" onclick="selAlgo('dijkstra')">Dijkstra</div>
+        <div class="ab" id="ab-bellman" onclick="selAlgo('bellman')">Bellman-Ford</div>
+        <div class="ab" id="ab-floyd" onclick="selAlgo('floyd')">Floyd-W</div>
+        <div class="ab" id="ab-dag_sp" onclick="selAlgo('dag_sp')">DAG SP</div>
+      </div>
+      <div class="ag">Topological Sort</div>
+      <div class="algo-grid">
+        <div class="ab" id="ab-topo_dfs" onclick="selAlgo('topo_dfs')">Topo DFS</div>
+        <div class="ab" id="ab-kahn" onclick="selAlgo('kahn')">Kahn's BFS</div>
+      </div>
+      <div class="ag">SCC & Bridges</div>
+      <div class="algo-grid">
+        <div class="ab" id="ab-kosaraju" onclick="selAlgo('kosaraju')">Kosaraju</div>
+        <div class="ab" id="ab-tarjan" onclick="selAlgo('tarjan')">Tarjan Br.</div>
+        <div class="ab" id="ab-articulation" onclick="selAlgo('articulation')">Artic. Pts</div>
+      </div>
+      <div class="ag">MST</div>
+      <div class="algo-grid">
+        <div class="ab" id="ab-prim" onclick="selAlgo('prim')">Prim's</div>
+        <div class="ab" id="ab-kruskal" onclick="selAlgo('kruskal')">Kruskal</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ct">Run</div>
+      <div class="row">
+        <select id="sn"></select>
+        <button class="btn p" onclick="runAlgo()">Run</button>
+      </div>
+      <div class="row" style="margin-top:5px">
+        <span style="font-size:10px;color:#888">Speed</span>
+        <input type="range" min="200" max="2000" value="800" step="100" id="spd" style="flex:1" oninput="document.getElementById('spl').textContent=this.value+'ms'"/>
+        <span style="font-size:10px;color:#888" id="spl">800ms</span>
+      </div>
+      <div class="row" style="margin-top:5px;gap:4px">
+        <button class="btn sm" onclick="stepBack()">← Back</button>
+        <button class="btn sm" onclick="stepFwd()">Next →</button>
+        <button class="btn sm" onclick="resetViz()">Reset</button>
+      </div>
+    </div>
+
+    <div class="card" style="flex:1">
+      <div class="ct">Properties</div>
+      <div class="prop" id="prop">Select an algorithm.</div>
+      <div class="cx-row" id="cx-row" style="display:none">
+        <div class="cx"><div class="cx-label">Time</div><div class="cx-val" id="cx-time">—</div></div>
+        <div class="cx"><div class="cx-label">Space</div><div class="cx-val" id="cx-space">—</div></div>
+        <div class="cx"><div class="cx-label">Type</div><div class="cx-val" id="cx-type">—</div></div>
+      </div>
+      <div class="ct" style="margin-top:7px">Step Log</div>
+      <div class="log" id="logbox"><div style="color:#555">Run algo to see steps...</div></div>
+    </div>
+  </div>
+
+  <div class="canvas-wrap">
+    <canvas id="gc"></canvas>
+    <div class="legend">
+      <div class="li"><div class="ld" style="background:#185FA5"></div>Unvisited</div>
+      <div class="li"><div class="ld" style="background:#1D9E75"></div>Visited</div>
+      <div class="li"><div class="ld" style="background:#E24B4A"></div>Current/Error</div>
+      <div class="li"><div class="ld" style="background:#854F0B"></div>Back edge</div>
+      <div class="li"><div class="ld" style="background:#F2CC60"></div>Path/MST</div>
+    </div>
+    <div class="cx-canvas" id="cx-canvas">
+      <div class="cx-canvas-row">
+        <div class="cx-c"><div class="cx-c-label">Time</div><div class="cx-c-val" id="cxc-time">—</div></div>
+        <div class="cx-c"><div class="cx-c-label">Space</div><div class="cx-c-val" id="cxc-space">—</div></div>
+      </div>
+    </div>
+    <div class="overlay-msg" id="overlay-msg">
+      <div style="font-weight:600;font-size:11px;margin-bottom:4px;color:#1a1a1a" id="overlay-title">Result</div>
+      <div id="overlay-list"></div>
+    </div>
+    <div class="path-overlay" id="path-overlay"></div>
+    <div class="hint">Drag to rotate · Scroll to zoom</div>
+  </div>
+
+  <div class="right-panel">
+    <div class="card">
+      <div class="code-header" onclick="toggleCode()">
+        <div style="display:flex;align-items:center;gap:6px">
+          <span class="ct" style="margin:0" id="code-label">C++ Implementation</span>
+          <span class="badge b-bl" id="code-badge">Select algo</span>
+        </div>
+        <span class="fold-btn" id="fold-btn">▼ Collapse</span>
+      </div>
+      <div class="code-body" id="code-body">
+        <pre class="code-box" id="code-box"><span style="color:#555">// Select an algorithm to see C++ code</span></pre>
+      </div>
+    </div>
+
+    <div class="card editor-wrap">
+      <div class="ct">Live Code Editor</div>
+      <div style="font-size:10px;color:#888;margin-bottom:5px">Format: <code style="background:#f0f0f0;padding:1px 4px;border-radius:3px;font-size:10px">addedge u v wt dir</code></div>
+      <textarea class="editor-area" id="editor" placeholder="// Example:
+addedge A B 1 0
+addedge B C 1 0
+addedge C A 1 0"></textarea>
+      <div class="row" style="margin-top:5px">
+        <button class="btn p sm" onclick="parseEditor()">Build Graph</button>
+        <button class="btn sm" onclick="clearEditor()">Clear</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const canvas=document.getElementById('gc');
+const ctx=canvas.getContext('2d');
+let nodes=[],edges=[],nid=0;
+let rotX=0.3,rotY=0.4,zoom=1;
+let drag=false,lmx=0,lmy=0;
+let algo=null,steps=[],cur=-1,tmr=null;
+let NC={},EC={},NL={},NLvl={};
+let codeCollapsed=false;
+
+const C={
+  node:'#185FA5',vis:'#1D9E75',curr:'#E24B4A',
+  edge:'#D0D0D0',trav:'#185FA5',neg:'#E24B4A',
+  bridge:'#E24B4A',back:'#854F0B',path:'#F2CC60',mst:'#F2CC60',
+  src:'#E24B4A',dst:'#1D9E75',cycle:'#E24B4A',
+  bip1:'#185FA5',bip2:'#D4537E',
+  scc:['#185FA5','#1D9E75','#854F0B','#534AB7','#D85A30','#993556'],
+  lvl:['#185FA5','#1D9E75','#854F0B','#534AB7','#D85A30','#993556']
+};
+
+const CX={
+  bfs:{time:'O(V+E)',space:'O(V)',type:'Queue'},
+  dfs:{time:'O(V+E)',space:'O(V)',type:'Recursion'},
+  cycle_bfs:{time:'O(V+E)',space:'O(V)',type:'BFS+Parent'},
+  cycle_dfs:{time:'O(V+E)',space:'O(V)',type:'DFS+Parent'},
+  cycle_dir:{time:'O(V+E)',space:'O(V)',type:'DFS+Color'},
+  bipartite:{time:'O(V+E)',space:'O(V)',type:'BFS 2-Color'},
+  dijkstra:{time:'O(E logV)',space:'O(V)',type:'Greedy+PQ'},
+  bellman:{time:'O(V·E)',space:'O(V)',type:'DP Relax'},
+  floyd:{time:'O(V³)',space:'O(V²)',type:'DP All-Pair'},
+  dag_sp:{time:'O(V+E)',space:'O(V)',type:'Topo+Relax'},
+  topo_dfs:{time:'O(V+E)',space:'O(V)',type:'DFS+Stack'},
+  kahn:{time:'O(V+E)',space:'O(V)',type:'BFS InDeg'},
+  kosaraju:{time:'O(V+E)',space:'O(V)',type:'2×DFS'},
+  tarjan:{time:'O(V+E)',space:'O(V)',type:'disc+low'},
+  articulation:{time:'O(V+E)',space:'O(V)',type:'disc+low'},
+  prim:{time:'O(E logV)',space:'O(V)',type:'Greedy+PQ'},
+  kruskal:{time:'O(E logE)',space:'O(V)',type:'DSU+Sort'}
+};
+
+const PROPS={
+  bfs:{t:'BFS — Level by level traversal. Find shortest path in unweighted graphs.',c:'ok'},
+  dfs:{t:'DFS — Deep traversal. Basis for topo sort and SCC.',c:'ok'},
+  cycle_bfs:{t:'Cycle Detection BFS — If visited neighbor != parent, cycle exists.',c:'ok'},
+  cycle_dfs:{t:'Cycle Detection DFS — If back edge to visited node found, cycle exists.',c:'ok'},
+  cycle_dir:{t:'Directed Cycle — 3-color DFS (Gray to Gray edge = cycle).',c:'warn'},
+  bipartite:{t:'Bipartite — Check if graph is 2-colorable.',c:'ok'},
+  dijkstra:{t:'Dijkstra — Shortest path from source. Needs weights >= 0.',c:'warn'},
+  bellman:{t:'Bellman-Ford — Handles negative weights. V-1 relaxations.',c:'ok'},
+  floyd:{t:'Floyd-Warshall — All-pairs shortest paths. O(V³).',c:'warn'},
+  dag_sp:{t:'DAG SP — Topological sort then relax. O(V+E).',c:'warn'},
+  topo_dfs:{t:'Topo DFS — Post-order stack for dependency sorting.',c:'warn'},
+  kahn:{t:'Kahn’s BFS — In-degree based topological sorting.',c:'warn'},
+  kosaraju:{t:'Kosaraju — Two DFS passes to find SCCs.',c:'ok'},
+  tarjan:{t:'Tarjan/Bridges — Low-link logic to find critical edges.',c:'ok'},
+  articulation:{t:'Articulation — Nodes whose removal disconnects graph.',c:'ok'},
+  prim:{t:'Prim’s MST — Dense graph MST (Node based).',c:'warn'},
+  kruskal:{t:'Kruskal’s MST — Sparse graph MST (Edge based).',c:'warn'}
+};
+
+const CODES={
+bfs:`<span class="kw">void</span> <span class="fn">bfs</span>(<span class="tp">int</span> src) {
+  queue&lt;<span class="tp">int</span>&gt; q; q.push(src); vis[src]=<span class="kw">true</span>;
+  <span class="kw">while</span>(!q.empty()){
+    <span class="tp">int</span> u=q.front(); q.pop();
+    <span class="kw">for</span>(<span class="tp">int</span> v : adj[u])
+      <span class="kw">if</span>(!vis[v]) { vis[v]=<span class="kw">true</span>; q.push(v); }
+  }
+}`,
+dfs:`<span class="kw">void</span> <span class="fn">dfs</span>(<span class="tp">int</span> u) {
+  vis[u] = <span class="kw">true</span>;
+  <span class="kw">for</span>(<span class="tp">int</span> v : adj[u])
+    <span class="kw">if</span>(!vis[v]) dfs(v);
+}`,
+dijkstra:`<span class="kw">void</span> <span class="fn">dijkstra</span>(<span class="tp">int</span> src) {
+  dist[src] = <span class="num">0</span>;
+  pq.push({<span class="num">0</span>, src});
+  <span class="kw">while</span>(!pq.empty()){
+    <span class="tp">int</span> u = pq.top().second; pq.pop();
+    <span class="kw">for</span>(<span class="kw">auto</span>& [v, w] : adj[u])
+      <span class="kw">if</span>(dist[u]+w &lt; dist[v]){
+        dist[v] = dist[u]+w;
+        pq.push({dist[v], v});
+      }
+  }
+}`,
+kruskal:`<span class="kw">void</span> <span class="fn">kruskal</span>() {
+  sort(edges.begin(), edges.end());
+  vector&lt;<span class="tp">int</span>&gt; par(nodes.size());
+  iota(par.begin(), par.end(), <span class="num">0</span>);
+  <span class="kw">for</span>(<span class="kw">auto</span>& e : edges){
+    <span class="tp">int</span> rootU = find(par, e.u), rootV = find(par, e.v);
+    <span class="kw">if</span>(rootU != rootV) { unite(rootU, rootV); mst += e.w; }
+  }
+}`
+};
+
+function resizeCanvas(){canvas.width=canvas.parentElement.clientWidth;canvas.height=canvas.parentElement.clientHeight;draw();}
+
+function project(x,y,z){
+  const cx=Math.cos(rotX),sx=Math.sin(rotX),cy=Math.cos(rotY),sy=Math.sin(rotY);
+  const nx=x*cy+z*sy,ny=x*sx*sy+y*cx-z*sx*cy;
+  const s=zoom*Math.min(canvas.width,canvas.height)*0.24;
+  return{px:canvas.width/2+nx*s,py:canvas.height/2-ny*s};
+}
+
+function drawArrow(x1,y1,x2,y2,col,w=1.5){
+  ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.strokeStyle=col;ctx.lineWidth=w;ctx.stroke();
+  const a=Math.atan2(y2-y1,x2-x1),al=10,aw=0.4;
+  ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-al*Math.cos(a-aw),y2-al*Math.sin(a-aw));ctx.lineTo(x2-al*Math.cos(a+aw),y2-al*Math.sin(a+aw));
+  ctx.closePath();ctx.fillStyle=col;ctx.fill();
+}
+
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  if(!nodes.length){ctx.fillStyle='#C0C0C0';ctx.font='13px sans-serif';ctx.textAlign='center';ctx.fillText('Add nodes/edges or select a preset',canvas.width/2,canvas.height/2);return;}
+  const dir=document.getElementById('dir').checked;
+  edges.forEach(e=>{
+    const n1=nodes.find(n=>n.id===e.f),n2=nodes.find(n=>n.id===e.t);if(!n1||!n2)return;
+    const p1=project(n1.x,n1.y,n1.z),p2=project(n2.x,n2.y,n2.z);
+    const key=`${e.f}-${e.t}`,rkey=`${e.t}-${e.f}`;
+    const col=EC[key] || (dir ? C.edge : EC[rkey]) || C.edge;
+    const w= (EC[key] || (!dir && EC[rkey])) ? 2.5 : 1.2;
+    
+    const dx=p2.px-p1.px,dy=p2.py-p1.py,len=Math.sqrt(dx*dx+dy*dy)||1,r=20;
+    const x1=p1.px+(dx/len)*r,y1=p1.py+(dy/len)*r,x2=p2.px-(dx/len)*(r+2),y2=p2.py-(dy/len)*(r+2);
+    if(dir)drawArrow(x1,y1,x2,y2,col,w);
+    else{ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.strokeStyle=col;ctx.lineWidth=w;ctx.stroke();}
+    
+    const wx=(p1.px+p2.px)/2,wy=(p1.py+p2.py)/2;
+    ctx.font='bold 11px sans-serif';ctx.textAlign='center';ctx.fillStyle='#333';
+    ctx.fillText(String(e.w),wx,wy);
+  });
+  nodes.forEach(n=>{
+    const p=project(n.x,n.y,n.z),col=NC[n.id]||C.node;
+    ctx.beginPath();ctx.arc(p.px,p.py,20,0,Math.PI*2);ctx.fillStyle=col+'22';ctx.fill();
+    ctx.strokeStyle=col;ctx.lineWidth=2.5;ctx.stroke();
+    ctx.font='bold 12px sans-serif';ctx.fillStyle=col;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(n.label,p.px,p.py);
+    if(NL[n.id]){ctx.font='9px sans-serif';ctx.fillStyle='#888';ctx.fillText(NL[n.id],p.px,p.py+22);}
+  });
+}
+
+canvas.addEventListener('mousedown',e=>{drag=true;lmx=e.clientX;lmy=e.clientY;});
+canvas.addEventListener('mousemove',e=>{if(!drag)return;rotY+=(e.clientX-lmx)*0.01;rotX+=(e.clientY-lmy)*0.01;lmx=e.clientX;lmy=e.clientY;draw();});
+canvas.addEventListener('mouseup',()=>drag=false);
+canvas.addEventListener('wheel',e=>{zoom*=e.deltaY>0?0.9:1.1;zoom=Math.max(0.3,Math.min(3,zoom));draw();e.preventDefault();},{passive:false});
+
+function sphPos(i,t){const phi=Math.acos(1-2*(i+0.5)/Math.max(t,1)),th=Math.PI*(1+Math.sqrt(5))*i;return{x:2.2*Math.sin(phi)*Math.cos(th),y:2.2*Math.sin(phi)*Math.sin(th),z:2.2*Math.cos(phi)};}
+
+function updSel(){['ef','et','sn'].forEach(id=>{const s=document.getElementById(id),c=s.value;s.innerHTML=nodes.map(n=>`<option value="${n.id}">${n.label}</option>`).join('');if(nodes.find(n=>String(n.id)===c))s.value=c;});}
+function addNode(){const label=document.getElementById('nl').value.trim()||String.fromCharCode(65+(nodes.length%26));const pos=sphPos(nodes.length,nodes.length+1);nodes.push({id:nid++,label,x:pos.x,y:pos.y,z:pos.z});updSel();draw();}
+function addEdge(){const f=parseInt(document.getElementById('ef').value),t=parseInt(document.getElementById('et').value),w=parseFloat(document.getElementById('ew').value)||1;if(isNaN(f)||isNaN(t)||f===t)return;edges.push({f,t,w});draw();}
+function clearGraph(){nodes=[];edges=[];nid=0;NC={};EC={};NL={};updSel();draw();logClear();}
+
+function loadPreset(name){
+  clearGraph();
+  const P={
+    simple:{n:['A','B','C','D'],e:[[0,1,1],[1,2,1],[2,3,1],[3,0,1],[0,2,1]],d:false},
+    weighted:{n:['S','A','B','C','T'],e:[[0,1,4],[0,2,2],[1,2,1],[1,3,5],[2,4,10],[3,4,2]],d:true},
+    negcycle:{n:['A','B','C'],e:[[0,1,1],[1,2,-5],[2,0,1]],d:true},
+    dag:{n:['A','B','C','D'],e:[[0,1,1],[0,2,1],[1,3,1],[2,3,1]],d:true},
+    scc:{n:['A','B','C','D'],e:[[0,1,1],[1,2,1],[2,0,1],[1,3,1]],d:true},
+    mst:{n:['A','B','C','D'],e:[[0,1,10],[0,2,6],[0,3,5],[1,3,15],[2,3,4]],d:false},
+    bipartite:{n:['A','B','C','D'],e:[[0,1,1],[1,2,1],[2,3,1],[3,0,1]],d:false}
+  };
+  const p=P[name];document.getElementById('dir').checked=p.d;
+  p.n.forEach(l=>{const pos=sphPos(nodes.length,p.n.length);nodes.push({id:nid++,label:l,x:pos.x,y:pos.y,z:pos.z});});
+  p.e.forEach(([f,t,w])=>edges.push({f,t,w}));
+  updSel();draw();
+}
+
+function selAlgo(name){
+  algo=name;document.querySelectorAll('.ab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('ab-'+name).classList.add('active');
+  const p=PROPS[name];document.getElementById('prop').textContent=p.t;document.getElementById('prop').className='prop '+p.c;
+  document.getElementById('code-box').innerHTML=CODES[name]||'// Code coming soon...';
+  document.getElementById('cx-row').style.display='flex';
+  document.getElementById('cx-time').textContent=CX[name].time;
+  document.getElementById('cx-space').textContent=CX[name].space;
+}
+
+function log(msg,type=''){const b=document.getElementById('logbox');const d=document.createElement('div');d.className='ll '+type;d.textContent=msg;b.prepend(d);}
+function logClear(){document.getElementById('logbox').innerHTML='';}
+function resetViz(){if(tmr)clearTimeout(tmr);steps=[];cur=-1;NC={};EC={};NL={};draw();}
+
+function buildSteps(a,sid){
+  const S=[],adj={},dir=document.getElementById('dir').checked;
+  nodes.forEach(n=>adj[n.id]=[]);
+  edges.forEach(e=>{adj[e.f].push({to:e.t,w:e.w});if(!dir)adj[e.t].push({to:e.f,w:e.w});});
+
+  if(a==='bfs'){
+    const vis=new Set(),q=[sid];vis.add(sid);
+    while(q.length){
+      const u=q.shift();const nc={...NC};nc[u]=C.vis;
+      S.push({nc,msg:`Visit ${nodes.find(n=>n.id===u).label}`});
+      adj[u].forEach(nb=>{
+        if(!vis.has(nb.to)){vis.add(nb.to);q.push(nb.to);const ec={...EC};ec[`${u}-${nb.to}`]=C.trav;S.push({nc,ec,msg:`Found ${nodes.find(n=>n.id===nb.to).label}`});}
+      });
+    }
+  }
+  else if(a==='dijkstra'){
+    const dist={},vis=new Set();nodes.forEach(n=>dist[n.id]=Infinity);dist[sid]=0;
+    for(let i=0;i<nodes.length;i++){
+      let u=-1,min=Infinity;nodes.forEach(n=>{if(!vis.has(n.id)&&dist[n.id]<min){min=dist[n.id];u=n.id;}});
+      if(u===-1)break;vis.add(u);const nc={...NC},nl={...NL};nc[u]=C.vis;nl[u]=`d:${dist[u]}`;
+      S.push({nc,nl,msg:`Process ${nodes.find(n=>n.id===u).label}`});
+      adj[u].forEach(nb=>{
+        if(dist[u]+nb.w < dist[nb.to]){dist[nb.to]=dist[u]+nb.w;const ec={...EC};ec[`${u}-${nb.to}`]=C.trav;S.push({nc,nl,ec,msg:`Update ${nodes.find(n=>n.id===nb.to).label} to ${dist[nb.to]}`});}
+      });
+    }
+  }
+  else if (a === 'kruskal') {
+    const par = {}; nodes.forEach(n => par[n.id] = n.id);
+    function find(x) { if (par[x] !== x) par[x] = find(par[x]); return par[x]; }
+    const sortedEdges = [...edges].sort((a, b) => a.w - b.w);
+    let totalW = 0; const nc = {}, ec = {};
+    sortedEdges.forEach(e => {
+      const u = e.f, v = e.t;
+      const rootU = find(u), rootV = find(v);
+      if (rootU !== rootV) {
+        par[rootU] = rootV; totalW += e.w;
+        nc[u] = C.vis; nc[v] = C.vis; ec[`${u}-${v}`] = C.mst;
+        S.push({ nc: { ...nc }, ec: { ...ec }, msg: `Add edge ${nodes.find(n => n.id === u).label}-${nodes.find(n => n.id === v).label} (wt: ${e.w})` });
+      } else { S.push({ msg: `Skip edge ${nodes.find(n => n.id === u).label}-${nodes.find(n => n.id === v).label} (Cycle)`, t: 'wn' }); }
+    });
+  }
+  if(S.length===0) S.push({msg:"Animation logic for this algorithm is coming in the next update!"});
+  return S;
+}
+
+function runAlgo(){
+  if(!algo)return;
+  resetViz();
+  const sid=parseInt(document.getElementById('sn').value);
+  steps=buildSteps(algo,sid);
+  let i=0;
+  function next(){
+    if(i<steps.length){
+      const s=steps[i++];NC=s.nc||NC;EC=s.ec||EC;NL=s.nl||NL;
+      if(s.msg)log(s.msg, s.t);draw();
+      tmr=setTimeout(next,parseInt(document.getElementById('spd').value));
+    }
+  }
+  next();
+}
+
+function stepFwd(){ if(cur < steps.length-1) applyStep(steps[++cur]); }
+function stepBack(){ if(cur > 0) applyStep(steps[--cur]); }
+
+function toggleCode(){codeCollapsed=!codeCollapsed;document.getElementById('code-body').style.maxHeight=codeCollapsed?'0':'2000px';}
+
+function parseEditor(){
+  const text = document.getElementById('editor').value;
+  nodes = []; edges = []; nid = 0;
+  text.split('\n').forEach(line => {
+    line = line.trim();
+    if (!line || line.startsWith('//')) return;
+    const parts = line.split(/\s+/);
+    if (parts[0].toLowerCase() === 'addedge' && parts.length >= 4) {
+      const uLabel = String(parts[1]), vLabel = String(parts[2]), weight = parseFloat(parts[3]) || 1, isDirected = parseInt(parts[4]);
+      [uLabel, vLabel].forEach(label => {
+        if (!nodes.find(n => n.label === label)) {
+          const pos = sphPos(nodes.length, 10);
+          nodes.push({id: nid++, label: label, x: pos.x, y: pos.y, z: pos.z});
+        }
+      });
+      const uNode = nodes.find(n => n.label === uLabel), vNode = nodes.find(n => n.label === vLabel);
+      if (uNode && vNode) {
+        edges.push({ f: uNode.id, t: vNode.id, w: weight });
+        if (isDirected === 0) edges.push({ f: vNode.id, t: uNode.id, w: weight });
+      }
+    }
+  });
+  updSel(); draw(); log(`Live Editor Built: ${nodes.length} Nodes`, 'hl');
+}
+
+function clearEditor(){document.getElementById('editor').value='';}
+window.addEventListener('resize',resizeCanvas);
+resizeCanvas();
+loadPreset('simple');
+</script>
+</body>
+</html> -->
+
+//
+<!-- <!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8"/>
+<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+<title>3D Graph Visualizer — Algorithm Explorer</title>
+<style>
+*{box-sizing:border-box;margin:0;padding:0}
+body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f2f5;color:#1a1a1a;height:100vh;overflow:hidden}
+.topbar{background:#1a1a2e;padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:42px}
+.logo-name{font-size:13px;font-weight:600;color:#fff}
+.logo-sub{font-size:10px;color:#8b9ec7;border-left:1px solid #3a3a5c;padding-left:8px;margin-left:4px}
+.tb-pill{font-size:10px;padding:2px 8px;border-radius:20px;border:1px solid #3a3a5c;color:#8b9ec7}
+.main{display:grid;grid-template-columns:220px 1fr 280px;gap:8px;padding:8px;height:calc(100vh - 42px)}
+.sidebar{display:flex;flex-direction:column;gap:7px;overflow-y:auto}
+.card{background:#fff;border:1px solid #e5e5e5;border-radius:10px;padding:11px;flex-shrink:0}
+.ct{font-size:11px;font-weight:600;color:#1a1a1a;margin-bottom:7px}
+.sl{font-size:10px;color:#888;margin-bottom:3px;font-weight:500}
+.row{display:flex;gap:4px;margin-bottom:5px;align-items:center}
+input[type=text],input[type=number]{padding:4px 6px;border:1px solid #e0e0e0;border-radius:5px;font-size:11px;background:#fff;color:#1a1a1a;outline:none}
+input[type=text]{flex:1}
+input[type=number]{width:44px}
+input:focus{border-color:#185FA5}
+.btn{padding:4px 9px;border-radius:5px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid #e0e0e0;background:#fff;color:#1a1a1a;transition:all 0.15s;white-space:nowrap}
+.btn:hover{background:#f5f5f7}
+.btn.p{background:#185FA5;color:#fff;border-color:#185FA5}
+.btn.p:hover{background:#0c447c}
+.btn.d{background:#a32d2d;color:#fff;border-color:#a32d2d}
+.btn.sm{padding:3px 7px;font-size:10px}
+.ag{font-size:9px;color:#aaa;margin-bottom:3px;margin-top:5px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em}
+.algo-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-bottom:2px}
+.ab{padding:5px 4px;border-radius:5px;font-size:10px;font-weight:500;cursor:pointer;border:1px solid #e0e0e0;background:#fff;color:#1a1a1a;text-align:center;transition:all 0.15s;line-height:1.3}
+.ab:hover{background:#f5f5f7}
+.ab.active{background:#185FA5;color:#fff;border-color:#185FA5}
+.prop{background:#f8f8f8;border-radius:6px;padding:7px;font-size:10px;line-height:1.6;color:#666;min-height:48px;border:1px solid #ebebeb}
+.prop.err{background:#fcebeb;color:#791F1F;border-color:#f7c1c1}
+.prop.warn{background:#faeeda;color:#633806;border-color:#fac775}
+.prop.ok{background:#eaf3de;color:#27500A;border-color:#c0dd97}
+.cx-row{display:flex;gap:4px;margin-top:5px}
+.cx{flex:1;background:#f8f8f8;border:1px solid #ebebeb;border-radius:5px;padding:5px;text-align:center}
+.cx-label{font-size:9px;color:#aaa;margin-bottom:2px}
+.cx-val{font-size:10px;font-weight:600;color:#185FA5}
+.log{background:#1a1a2e;border-radius:6px;padding:6px;font-size:10px;font-family:monospace;color:#c9d1d9;height:90px;overflow-y:auto;line-height:1.7}
+.ll{padding:1px 0;border-bottom:1px solid #2a2a3e}
+.ll.hl{color:#3fb950;font-weight:500}
+.ll.er{color:#f85149;font-weight:500}
+.ll.wn{color:#e3b341}
+.canvas-wrap{background:#fff;border:1px solid #e5e5e5;border-radius:10px;overflow:hidden;position:relative}
+canvas{display:block;width:100%;height:100%;cursor:grab}
+canvas:active{cursor:grabbing}
+.hint{position:absolute;bottom:8px;right:10px;font-size:9px;color:#ccc}
+.legend{position:absolute;top:10px;left:10px;background:rgba(255,255,255,0.95);padding:7px 9px;border-radius:7px;border:0.5px solid #e5e5e5;display:flex;flex-direction:column;gap:3px}
+.li{display:flex;align-items:center;gap:5px;font-size:9px;color:#666}
+.ld{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.cx-canvas{position:absolute;top:10px;right:10px;background:rgba(26,26,46,0.92);padding:8px 12px;border-radius:8px;display:none}
+.cx-canvas.show{display:block}
+.cx-canvas-row{display:flex;gap:12px}
+.cx-c{text-align:center}
+.cx-c-label{font-size:9px;color:#8b9ec7;margin-bottom:2px}
+.cx-c-val{font-size:11px;font-weight:600;color:#79c0ff}
+.overlay-msg{position:absolute;top:50px;right:10px;background:#fff;border:1px solid #e5e5e5;border-radius:8px;padding:8px 10px;font-size:10px;max-width:190px;display:none;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+.overlay-msg.show{display:block}
+.path-overlay{position:absolute;bottom:28px;left:10px;background:#fff;border:1px solid #e5e5e5;border-radius:8px;padding:7px 10px;font-size:10px;display:none;max-width:320px}
+.path-overlay.show{display:block}
+.right-panel{display:flex;flex-direction:column;gap:7px;overflow-y:auto}
+.code-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
+.fold-btn{font-size:10px;color:#888;padding:2px 6px;border-radius:4px;border:1px solid #e0e0e0;background:#f8f8f8}
+.code-body{overflow:hidden;max-height:2000px;transition:max-height 0.3s}
+.code-box{background:#1a1a2e;border-radius:6px;padding:10px;font-family:monospace;font-size:10px;line-height:1.7;color:#c9d1d9;overflow-x:auto;margin-top:6px}
+.code-box .kw{color:#ff7b72}
+.code-box .fn{color:#79c0ff}
+.code-box .cm{color:#8b949e}
+.code-box .str{color:#a5d6ff}
+.code-box .num{color:#f2cc60}
+.code-box .tp{color:#ffa657}
+.badge{font-size:9px;padding:2px 6px;border-radius:20px;font-weight:500}
+.b-bl{background:#e6f1fb;color:#185fa5}
+.b-gn{background:#eaf3de;color:#3b6d11}
+.b-rd{background:#fcebeb;color:#a32d2d}
+.b-am{background:#faeeda;color:#854f0b}
+.b-pu{background:#eeedfe;color:#534ab7}
+.editor-wrap{flex:1;display:flex;flex-direction:column;min-height:180px}
+.editor-area{flex:1;background:#1a1a2e;border-radius:6px;padding:8px;font-family:monospace;font-size:10px;color:#c9d1d9;border:1px solid #3a3a5c;outline:none;resize:none;min-height:120px;line-height:1.7}
+.divider{border:none;border-top:1px solid #f0f0f0;margin:5px 0}
+select{padding:4px 6px;border:1px solid #e0e0e0;border-radius:5px;font-size:11px;background:#fff;color:#1a1a1a;outline:none;flex:1}
+.preset-row{display:flex;gap:3px;flex-wrap:wrap}
+</style>
+</head>
+<body>
+<div class="topbar">
+  <div style="display:flex;align-items:center;gap:6px">
+    <span class="logo-name">3D Graph Visualizer</span>
+    <span class="logo-sub">All Graph Algorithms — C++ · OpenGL · STL</span>
+  </div>
+  <div style="display:flex;gap:5px">
+    <span class="tb-pill">17 Algorithms</span>
+    <span class="tb-pill">C++ Code</span>
+    <span class="tb-pill">Live Editor</span>
+    <a href="graph-reference.html" style="text-decoration:none"><span class="tb-pill" style="cursor:pointer;color:#79c0ff;border-color:#185FA5">Reference →</span></a>
+  </div>
+</div>
+
+<div class="main">
+  <div class="sidebar">
+    <div class="card">
+      <div class="ct">Graph Builder</div>
+      <div class="sl">Manage Node</div>
+      <div class="row">
+        <input type="text" id="nl" placeholder="A or 1"/>
+        <button class="btn p sm" onclick="addNode()">+Node</button>
+        <button class="btn d sm" onclick="removeNode()">-Node</button>
+      </div>
+      <div class="sl">Manage Edge</div>
+      <div class="row">
+        <select id="ef"></select>
+        <span style="font-size:10px;color:#888">→</span>
+        <select id="et"></select>
+      </div>
+      <div class="row">
+        <input type="number" id="ew" value="1"/>
+        <label style="font-size:10px;color:#555;display:flex;align-items:center;gap:3px"><input type="checkbox" id="dir" checked/> Dir</label>
+        <button class="btn p sm" onclick="addEdge()">+Edge</button>
+        <button class="btn d sm" onclick="removeEdge()">-Edge</button>
+      </div>
+      <div class="row">
+        <button class="btn d sm" style="width:100%" onclick="clearGraph()">Clear All</button>
+      </div>
+      <div class="divider"></div>
+      <div class="sl">Presets</div>
+      <div class="preset-row">
+        <button class="btn sm" onclick="loadPreset('simple')">Simple</button>
+        <button class="btn sm" onclick="loadPreset('weighted')">Wtd</button>
+        <button class="btn sm" onclick="loadPreset('negcycle')">NegCyc</button>
+        <button class="btn sm" onclick="loadPreset('dag')">DAG</button>
+        <button class="btn sm" onclick="loadPreset('scc')">SCC</button>
+        <button class="btn sm" onclick="loadPreset('mst')">MST</button>
+        <button class="btn sm" onclick="loadPreset('bipartite')">Bip</button>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ct">Algorithms</div>
+      <div class="ag">Traversal</div>
+      <div class="algo-grid">
+        <div class="ab" id="ab-bfs" onclick="selAlgo('bfs')">BFS</div>
+        <div class="ab" id="ab-dfs" onclick="selAlgo('dfs')">DFS</div>
+      </div>
+      <div class="ag">Cycle Detection</div>
+      <div class="algo-grid">
+        <div class="ab" id="ab-cycle_bfs" onclick="selAlgo('cycle_bfs')">Cycle BFS</div>
+        <div class="ab" id="ab-cycle_dfs" onclick="selAlgo('cycle_dfs')">Cycle DFS</div>
+        <div class="ab" id="ab-cycle_dir" onclick="selAlgo('cycle_dir')">Cycle Dir</div>
+        <div class="ab" id="ab-bipartite" onclick="selAlgo('bipartite')">Bipartite</div>
+      </div>
+      <div class="ag">Shortest Path</div>
+      <div class="algo-grid">
+        <div class="ab" id="ab-dijkstra" onclick="selAlgo('dijkstra')">Dijkstra</div>
+        <div class="ab" id="ab-bellman" onclick="selAlgo('bellman')">Bellman-Ford</div>
+        <div class="ab" id="ab-floyd" onclick="selAlgo('floyd')">Floyd-W</div>
+        <div class="ab" id="ab-dag_sp" onclick="selAlgo('dag_sp')">DAG SP</div>
+      </div>
+      <div class="ag">Topological Sort</div>
+      <div class="algo-grid">
+        <div class="ab" id="ab-topo_dfs" onclick="selAlgo('topo_dfs')">Topo DFS</div>
+        <div class="ab" id="ab-kahn" onclick="selAlgo('kahn')">Kahn's BFS</div>
+      </div>
+      <div class="ag">SCC & Bridges</div>
+      <div class="algo-grid">
+        <div class="ab" id="ab-kosaraju" onclick="selAlgo('kosaraju')">Kosaraju</div>
+        <div class="ab" id="ab-tarjan" onclick="selAlgo('tarjan')">Tarjan Br.</div>
+        <div class="ab" id="ab-articulation" onclick="selAlgo('articulation')">Artic. Pts</div>
+      </div>
+      <div class="ag">MST</div>
+      <div class="algo-grid">
+        <div class="ab" id="ab-prim" onclick="selAlgo('prim')">Prim's</div>
+        <div class="ab" id="ab-kruskal" onclick="selAlgo('kruskal')">Kruskal</div>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="ct">Run</div>
+      <div class="row">
+        <select id="sn"></select>
+        <button class="btn p" onclick="runAlgo()">Run</button>
+      </div>
+      <div class="row" style="margin-top:5px">
+        <span style="font-size:10px;color:#888">Speed</span>
+        <input type="range" min="200" max="2000" value="800" step="100" id="spd" style="flex:1" oninput="document.getElementById('spl').textContent=this.value+'ms'"/>
+        <span style="font-size:10px;color:#888" id="spl">800ms</span>
+      </div>
+      <div class="row" style="margin-top:5px;gap:4px">
+        <button class="btn sm" onclick="stepBack()">← Back</button>
+        <button class="btn sm" onclick="stepFwd()">Next →</button>
+        <button class="btn sm" onclick="resetViz()">Reset</button>
+      </div>
+    </div>
+
+    <div class="card" style="flex:1">
+      <div class="ct">Properties</div>
+      <div class="prop" id="prop">Select an algorithm.</div>
+      <div class="cx-row" id="cx-row" style="display:none">
+        <div class="cx"><div class="cx-label">Time</div><div class="cx-val" id="cx-time">—</div></div>
+        <div class="cx"><div class="cx-label">Space</div><div class="cx-val" id="cx-space">—</div></div>
+        <div class="cx"><div class="cx-label">Type</div><div class="cx-val" id="cx-type">—</div></div>
+      </div>
+      <div class="ct" style="margin-top:7px">Step Log</div>
+      <div class="log" id="logbox"><div style="color:#555">Run algo to see steps...</div></div>
+    </div>
+  </div>
+
+  <div class="canvas-wrap">
+    <canvas id="gc"></canvas>
+    <div class="legend">
+      <div class="li"><div class="ld" style="background:#185FA5"></div>Unvisited</div>
+      <div class="li"><div class="ld" style="background:#1D9E75"></div>Visited</div>
+      <div class="li"><div class="ld" style="background:#E24B4A"></div>Current/Error</div>
+      <div class="li"><div class="ld" style="background:#854F0B"></div>Back edge</div>
+      <div class="li"><div class="ld" style="background:#F2CC60"></div>Path/MST</div>
+    </div>
+    <div class="cx-canvas" id="cx-canvas">
+      <div class="cx-canvas-row">
+        <div class="cx-c"><div class="cx-c-label">Time</div><div class="cx-c-val" id="cxc-time">—</div></div>
+        <div class="cx-c"><div class="cx-c-label">Space</div><div class="cx-c-val" id="cxc-space">—</div></div>
+      </div>
+    </div>
+    <div class="overlay-msg" id="overlay-msg">
+      <div style="font-weight:600;font-size:11px;margin-bottom:4px;color:#1a1a1a" id="overlay-title">Result</div>
+      <div id="overlay-list"></div>
+    </div>
+    <div class="path-overlay" id="path-overlay"></div>
+    <div class="hint">Drag to rotate · Scroll to zoom</div>
+  </div>
+
+  <div class="right-panel">
+    <div class="card">
+      <div class="code-header" onclick="toggleCode()">
+        <div style="display:flex;align-items:center;gap:6px">
+          <span class="ct" style="margin:0" id="code-label">C++ Implementation</span>
+          <span class="badge b-bl" id="code-badge">Select algo</span>
+        </div>
+        <span class="fold-btn" id="fold-btn">▼ Collapse</span>
+      </div>
+      <div class="code-body" id="code-body">
+        <pre class="code-box" id="code-box"><span style="color:#555">// Select an algorithm to see C++ code</span></pre>
+      </div>
+    </div>
+
+    <div class="card editor-wrap">
+      <div class="ct">Live Code Editor</div>
+      <div style="font-size:10px;color:#888;margin-bottom:5px">Format: <code style="background:#f0f0f0;padding:1px 4px;border-radius:3px;font-size:10px">addedge u v wt dir</code></div>
+      <textarea class="editor-area" id="editor" placeholder="// Example:
+addedge A B 1 0
+addedge B C 1 0
+addedge C A 1 0"></textarea>
+      <div class="row" style="margin-top:5px">
+        <button class="btn p sm" onclick="parseEditor()">Build Graph</button>
+        <button class="btn sm" onclick="clearEditor()">Clear</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const canvas=document.getElementById('gc');
+const ctx=canvas.getContext('2d');
+let nodes=[],edges=[],nid=0;
+let rotX=0.3,rotY=0.4,zoom=1;
+let drag=false,lmx=0,lmy=0;
+let algo=null,steps=[],cur=-1,tmr=null;
+let NC={},EC={},NL={},NLvl={};
+let codeCollapsed=false;
+
+const C={
+  node:'#185FA5',vis:'#1D9E75',curr:'#E24B4A',
+  edge:'#D0D0D0',trav:'#185FA5',neg:'#E24B4A',
+  bridge:'#E24B4A',back:'#854F0B',path:'#F2CC60',mst:'#F2CC60',
+  src:'#E24B4A',dst:'#1D9E75',cycle:'#E24B4A',
+  bip1:'#185FA5',bip2:'#D4537E',
+  scc:['#185FA5','#1D9E75','#854F0B','#534AB7','#D85A30','#993556'],
+  lvl:['#185FA5','#1D9E75','#854F0B','#534AB7','#D85A30','#993556']
+};
+
+const CX={
+  bfs:{time:'O(V+E)',space:'O(V)',type:'Queue'},
+  dfs:{time:'O(V+E)',space:'O(V)',type:'Recursion'},
+  cycle_bfs:{time:'O(V+E)',space:'O(V)',type:'BFS+Parent'},
+  cycle_dfs:{time:'O(V+E)',space:'O(V)',type:'DFS+Parent'},
+  cycle_dir:{time:'O(V+E)',space:'O(V)',type:'DFS+Color'},
+  bipartite:{time:'O(V+E)',space:'O(V)',type:'BFS 2-Color'},
+  dijkstra:{time:'O(E logV)',space:'O(V)',type:'Greedy+PQ'},
+  bellman:{time:'O(V·E)',space:'O(V)',type:'DP Relax'},
+  floyd:{time:'O(V³)',space:'O(V²)',type:'DP All-Pair'},
+  dag_sp:{time:'O(V+E)',space:'O(V)',type:'Topo+Relax'},
+  topo_dfs:{time:'O(V+E)',space:'O(V)',type:'DFS+Stack'},
+  kahn:{time:'O(V+E)',space:'O(V)',type:'BFS InDeg'},
+  kosaraju:{time:'O(V+E)',space:'O(V)',type:'2×DFS'},
+  tarjan:{time:'O(V+E)',space:'O(V)',type:'disc+low'},
+  articulation:{time:'O(V+E)',space:'O(V)',type:'disc+low'},
+  prim:{time:'O(E logV)',space:'O(V)',type:'Greedy+PQ'},
+  kruskal:{time:'O(E logE)',space:'O(V)',type:'DSU+Sort'}
+};
+
+const PROPS={
+  bfs:{t:'BFS — Level by level traversal. Find shortest path in unweighted graphs.',c:'ok'},
+  dfs:{t:'DFS — Deep traversal. Basis for topo sort and SCC.',c:'ok'},
+  cycle_bfs:{t:'Cycle Detection BFS — If visited neighbor != parent, cycle exists.',c:'ok'},
+  cycle_dfs:{t:'Cycle Detection DFS — If back edge to visited node found, cycle exists.',c:'ok'},
+  cycle_dir:{t:'Directed Cycle — 3-color DFS (Gray to Gray edge = cycle).',c:'warn'},
+  bipartite:{t:'Bipartite — Check if graph is 2-colorable.',c:'ok'},
+  dijkstra:{t:'Dijkstra — Shortest path from source. Needs weights >= 0.',c:'warn'},
+  bellman:{t:'Bellman-Ford — Handles negative weights. V-1 relaxations.',c:'ok'},
+  floyd:{t:'Floyd-Warshall — All-pairs shortest paths. O(V³).',c:'warn'},
+  dag_sp:{t:'DAG SP — Topological sort then relax. O(V+E).',c:'warn'},
+  topo_dfs:{t:'Topo DFS — Post-order stack for dependency sorting.',c:'warn'},
+  kahn:{t:'Kahn’s BFS — In-degree based topological sorting.',c:'warn'},
+  kosaraju:{t:'Kosaraju — Two DFS passes to find SCCs.',c:'ok'},
+  tarjan:{t:'Tarjan/Bridges — Low-link logic to find critical edges.',c:'ok'},
+  articulation:{t:'Articulation — Nodes whose removal disconnects graph.',c:'ok'},
+  prim:{t:'Prim’s MST — Dense graph MST (Node based).',c:'warn'},
+  kruskal:{t:'Kruskal’s MST — Sparse graph MST (Edge based).',c:'warn'}
+};
+
+const CODES={
+bfs:`<span class="kw">void</span> <span class="fn">bfs</span>(<span class="tp">int</span> src) {
+  queue&lt;<span class="tp">int</span>&gt; q; q.push(src); vis[src]=<span class="kw">true</span>;
+  <span class="kw">while</span>(!q.empty()){
+    <span class="tp">int</span> u=q.front(); q.pop();
+    <span class="kw">for</span>(<span class="tp">int</span> v : adj[u])
+      <span class="kw">if</span>(!vis[v]) { vis[v]=<span class="kw">true</span>; q.push(v); }
+  }
+}`,
+dfs:`<span class="kw">void</span> <span class="fn">dfs</span>(<span class="tp">int</span> u) {
+  vis[u] = <span class="kw">true</span>;
+  <span class="kw">for</span>(<span class="tp">int</span> v : adj[u])
+    <span class="kw">if</span>(!vis[v]) dfs(v);
+}`,
+dijkstra:`<span class="kw">void</span> <span class="fn">dijkstra</span>(<span class="tp">int</span> src) {
+  dist[src] = <span class="num">0</span>;
+  pq.push({<span class="num">0</span>, src});
+  <span class="kw">while</span>(!pq.empty()){
+    <span class="tp">int</span> u = pq.top().second; pq.pop();
+    <span class="kw">for</span>(<span class="kw">auto</span>& [v, w] : adj[u])
+      <span class="kw">if</span>(dist[u]+w &lt; dist[v]){
+        dist[v] = dist[u]+w;
+        pq.push({dist[v], v});
+      }
+  }
+}`,
+kruskal:`<span class="kw">void</span> <span class="fn">kruskal</span>() {
+  sort(edges.begin(), edges.end());
+  vector&lt;<span class="tp">int</span>&gt; par(nodes.size());
+  iota(par.begin(), par.end(), <span class="num">0</span>);
+  <span class="kw">for</span>(<span class="kw">auto</span>& e : edges){
+    <span class="tp">int</span> rootU = find(par, e.u), rootV = find(par, e.v);
+    <span class="kw">if</span>(rootU != rootV) { unite(rootU, rootV); mst += e.w; }
+  }
+}`
+};
+
+function resizeCanvas(){canvas.width=canvas.parentElement.clientWidth;canvas.height=canvas.parentElement.clientHeight;draw();}
+
+function project(x,y,z){
+  const cx=Math.cos(rotX),sx=Math.sin(rotX),cy=Math.cos(rotY),sy=Math.sin(rotY);
+  const nx=x*cy+z*sy,ny=x*sx*sy+y*cx-z*sx*cy;
+  const s=zoom*Math.min(canvas.width,canvas.height)*0.24;
+  return{px:canvas.width/2+nx*s,py:canvas.height/2-ny*s};
+}
+
+function drawArrow(x1,y1,x2,y2,col,w=1.5){
+  ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.strokeStyle=col;ctx.lineWidth=w;ctx.stroke();
+  const a=Math.atan2(y2-y1,x2-x1),al=10,aw=0.4;
+  ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-al*Math.cos(a-aw),y2-al*Math.sin(a-aw));ctx.lineTo(x2-al*Math.cos(a+aw),y2-al*Math.sin(a+aw));
+  ctx.closePath();ctx.fillStyle=col;ctx.fill();
+}
+
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  if(!nodes.length){ctx.fillStyle='#C0C0C0';ctx.font='13px sans-serif';ctx.textAlign='center';ctx.fillText('Add nodes/edges or select a preset',canvas.width/2,canvas.height/2);return;}
+  const dir=document.getElementById('dir').checked;
+  edges.forEach(e=>{
+    const n1=nodes.find(n=>n.id===e.f),n2=nodes.find(n=>n.id===e.t);if(!n1||!n2)return;
+    const p1=project(n1.x,n1.y,n1.z),p2=project(n2.x,n2.y,n2.z);
+    const key=`${e.f}-${e.t}`,rkey=`${e.t}-${e.f}`;
+    const col=EC[key] || (dir ? C.edge : EC[rkey]) || C.edge;
+    const w= (EC[key] || (!dir && EC[rkey])) ? 2.5 : 1.2;
+    
+    const dx=p2.px-p1.px,dy=p2.py-p1.py,len=Math.sqrt(dx*dx+dy*dy)||1,r=20;
+    const x1=p1.px+(dx/len)*r,y1=p1.py+(dy/len)*r,x2=p2.px-(dx/len)*(r+2),y2=p2.py-(dy/len)*(r+2);
+    if(dir)drawArrow(x1,y1,x2,y2,col,w);
+    else{ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.strokeStyle=col;ctx.lineWidth=w;ctx.stroke();}
+    
+    const wx=(p1.px+p2.px)/2,wy=(p1.py+p2.py)/2;
+    ctx.font='bold 11px sans-serif';ctx.textAlign='center';ctx.fillStyle='#333';
+    ctx.fillText(String(e.w),wx,wy);
+  });
+  nodes.forEach(n=>{
+    const p=project(n.x,n.y,n.z),col=NC[n.id]||C.node;
+    ctx.beginPath();ctx.arc(p.px,p.py,20,0,Math.PI*2);ctx.fillStyle=col+'22';ctx.fill();
+    ctx.strokeStyle=col;ctx.lineWidth=2.5;ctx.stroke();
+    ctx.font='bold 12px sans-serif';ctx.fillStyle=col;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(n.label,p.px,p.py);
+    if(NL[n.id]){ctx.font='9px sans-serif';ctx.fillStyle='#888';ctx.fillText(NL[n.id],p.px,p.py+22);}
+  });
+}
+
+canvas.addEventListener('mousedown',e=>{drag=true;lmx=e.clientX;lmy=e.clientY;});
+canvas.addEventListener('mousemove',e=>{if(!drag)return;rotY+=(e.clientX-lmx)*0.01;rotX+=(e.clientY-lmy)*0.01;lmx=e.clientX;lmy=e.clientY;draw();});
+canvas.addEventListener('mouseup',()=>drag=false);
+canvas.addEventListener('wheel',e=>{zoom*=e.deltaY>0?0.9:1.1;zoom=Math.max(0.3,Math.min(3,zoom));draw();e.preventDefault();},{passive:false});
+
+function sphPos(i,t){const phi=Math.acos(1-2*(i+0.5)/Math.max(t,1)),th=Math.PI*(1+Math.sqrt(5))*i;return{x:2.2*Math.sin(phi)*Math.cos(th),y:2.2*Math.sin(phi)*Math.sin(th),z:2.2*Math.cos(phi)};}
+
+function updSel(){['ef','et','sn'].forEach(id=>{const s=document.getElementById(id),c=s.value;s.innerHTML=nodes.map(n=>`<option value="${n.id}">${n.label}</option>`).join('');if(nodes.find(n=>String(n.id)===c))s.value=c;});}
+
+function addNode(){const label=document.getElementById('nl').value.trim()||String.fromCharCode(65+(nodes.length%26));const pos=sphPos(nodes.length,nodes.length+1);nodes.push({id:nid++,label,x:pos.x,y:pos.y,z:pos.z});updSel();draw();}
+
+// NEW FUNCTION: Remove specific node and its edges
+function removeNode(){
+  const label = document.getElementById('nl').value.trim();
+  const nodeIndex = nodes.findIndex(n => n.label === label);
+  if(nodeIndex !== -1) {
+    const nodeId = nodes[nodeIndex].id;
+    nodes.splice(nodeIndex, 1);
+    edges = edges.filter(e => e.f !== nodeId && e.t !== nodeId);
+    updSel(); draw(); log(`Node ${label} removed`, 'wn');
+  } else { log(`Node ${label} not found`, 'er'); }
+}
+
+function addEdge(){const f=parseInt(document.getElementById('ef').value),t=parseInt(document.getElementById('et').value),w=parseFloat(document.getElementById('ew').value)||1;if(isNaN(f)||isNaN(t)||f===t)return;edges.push({f,t,w});draw();}
+
+// NEW FUNCTION: Remove specific edge
+function removeEdge(){
+  const f=parseInt(document.getElementById('ef').value),t=parseInt(document.getElementById('et').value);
+  const dir = document.getElementById('dir').checked;
+  const initialLen = edges.length;
+  edges = edges.filter(e => !(e.f === f && e.t === t));
+  if(!dir) edges = edges.filter(e => !(e.f === t && e.t === f));
+  if(edges.length < initialLen) { draw(); log('Edge removed', 'wn'); }
+}
+
+function clearGraph(){nodes=[];edges=[];nid=0;NC={};EC={};NL={};updSel();draw();logClear();}
+
+function loadPreset(name){
+  clearGraph();
+  const P={
+    simple:{n:['A','B','C','D'],e:[[0,1,1],[1,2,1],[2,3,1],[3,0,1],[0,2,1]],d:false},
+    weighted:{n:['S','A','B','C','T'],e:[[0,1,4],[0,2,2],[1,2,1],[1,3,5],[2,4,10],[3,4,2]],d:true},
+    negcycle:{n:['A','B','C'],e:[[0,1,1],[1,2,-5],[2,0,1]],d:true},
+    dag:{n:['A','B','C','D'],e:[[0,1,1],[0,2,1],[1,3,1],[2,3,1]],d:true},
+    scc:{n:['A','B','C','D'],e:[[0,1,1],[1,2,1],[2,0,1],[1,3,1]],d:true},
+    mst:{n:['A','B','C','D'],e:[[0,1,10],[0,2,6],[0,3,5],[1,3,15],[2,3,4]],d:false},
+    bipartite:{n:['A','B','C','D'],e:[[0,1,1],[1,2,1],[2,3,1],[3,0,1]],d:false}
+  };
+  const p=P[name];document.getElementById('dir').checked=p.d;
+  p.n.forEach(l=>{const pos=sphPos(nodes.length,p.n.length);nodes.push({id:nid++,label:l,x:pos.x,y:pos.y,z:pos.z});});
+  p.e.forEach(([f,t,w])=>edges.push({f,t,w}));
+  updSel();draw();
+}
+
+function selAlgo(name){
+  algo=name;document.querySelectorAll('.ab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('ab-'+name).classList.add('active');
+  const p=PROPS[name];document.getElementById('prop').textContent=p.t;document.getElementById('prop').className='prop '+p.c;
+  document.getElementById('code-box').innerHTML=CODES[name]||'// Code coming soon...';
+  document.getElementById('cx-row').style.display='flex';
+  document.getElementById('cx-time').textContent=CX[name].time;
+  document.getElementById('cx-space').textContent=CX[name].space;
+}
+
+function log(msg,type=''){const b=document.getElementById('logbox');const d=document.createElement('div');d.className='ll '+type;d.textContent=msg;b.prepend(d);}
+function logClear(){document.getElementById('logbox').innerHTML='';}
+function resetViz(){if(tmr)clearTimeout(tmr);steps=[];cur=-1;NC={};EC={};NL={};draw();}
+
+function buildSteps(a,sid){
+  const S=[],adj={},dir=document.getElementById('dir').checked;
+  nodes.forEach(n=>adj[n.id]=[]);
+  edges.forEach(e=>{adj[e.f].push({to:e.t,w:e.w});if(!dir)adj[e.t].push({to:e.f,w:e.w});});
+
+  if(a==='bfs'){
+    const vis=new Set(),q=[sid];vis.add(sid);
+    while(q.length){
+      const u=q.shift();const nc={...NC};nc[u]=C.vis;
+      S.push({nc,msg:`Visit ${nodes.find(n=>n.id===u).label}`});
+      adj[u].forEach(nb=>{
+        if(!vis.has(nb.to)){vis.add(nb.to);q.push(nb.to);const ec={...EC};ec[`${u}-${nb.to}`]=C.trav;S.push({nc,ec,msg:`Found ${nodes.find(n=>n.id===nb.to).label}`});}
+      });
+    }
+  }
+  else if(a==='dijkstra'){
+    const dist={},vis=new Set();nodes.forEach(n=>dist[n.id]=Infinity);dist[sid]=0;
+    for(let i=0;i<nodes.length;i++){
+      let u=-1,min=Infinity;nodes.forEach(n=>{if(!vis.has(n.id)&&dist[n.id]<min){min=dist[n.id];u=n.id;}});
+      if(u===-1)break;vis.add(u);const nc={...NC},nl={...NL};nc[u]=C.vis;nl[u]=`d:${dist[u]}`;
+      S.push({nc,nl,msg:`Process ${nodes.find(n=>n.id===u).label}`});
+      adj[u].forEach(nb=>{
+        if(dist[u]+nb.w < dist[nb.to]){dist[nb.to]=dist[u]+nb.w;const ec={...EC};ec[`${u}-${nb.to}`]=C.trav;S.push({nc,nl,ec,msg:`Update ${nodes.find(n=>n.id===nb.to).label} to ${dist[nb.to]}`});}
+      });
+    }
+  }
+  else if (a === 'kruskal') {
+    const par = {}; nodes.forEach(n => par[n.id] = n.id);
+    function find(p, x) { if (p[x] !== x) p[x] = find(p, p[x]); return p[x]; }
+    const sortedEdges = [...edges].sort((a, b) => a.w - b.w);
+    let totalW = 0; const nc = {}, ec = {};
+    sortedEdges.forEach(e => {
+      const u = e.f, v = e.t;
+      const rootU = find(par, u), rootV = find(par, v);
+      if (rootU !== rootV) {
+        par[rootU] = rootV; totalW += e.w;
+        nc[u] = C.vis; nc[v] = C.vis; ec[`${u}-${v}`] = C.mst;
+        S.push({ nc: { ...nc }, ec: { ...ec }, msg: `Add edge ${nodes.find(n => n.id === u).label}-${nodes.find(n => n.id === v).label} (wt: ${e.w})` });
+      } else { S.push({ msg: `Skip edge ${nodes.find(n => n.id === u).label}-${nodes.find(n => n.id === v).label} (Cycle)`, t: 'wn' }); }
+    });
+  }
+  if(S.length===0) S.push({msg:"Animation logic for this algorithm is coming in the next update!"});
+  return S;
+}
+
+function runAlgo(){
+  if(!algo)return;
+  resetViz();
+  const sid=parseInt(document.getElementById('sn').value);
+  steps=buildSteps(algo,sid);
+  let i=0;
+  function next(){
+    if(i<steps.length){
+      const s=steps[i++];NC=s.nc||NC;EC=s.ec||EC;NL=s.nl||NL;
+      if(s.msg)log(s.msg, s.t);draw();
+      tmr=setTimeout(next,parseInt(document.getElementById('spd').value));
+    }
+  }
+  next();
+}
+
+function stepFwd(){ if(cur < steps.length-1) applyStep(steps[++cur]); }
+function stepBack(){ if(cur > 0) applyStep(steps[--cur]); }
+
+function toggleCode(){codeCollapsed=!codeCollapsed;document.getElementById('code-body').style.maxHeight=codeCollapsed?'0':'2000px';}
+
+function parseEditor(){
+  const text = document.getElementById('editor').value;
+  nodes = []; edges = []; nid = 0;
+  text.split('\n').forEach(line => {
+    line = line.trim();
+    if (!line || line.startsWith('//')) return;
+    const parts = line.split(/\s+/);
+    if (parts[0].toLowerCase() === 'addedge' && parts.length >= 4) {
+      const uLabel = String(parts[1]), vLabel = String(parts[2]), weight = parseFloat(parts[3]) || 1, isDirected = parseInt(parts[4]);
+      [uLabel, vLabel].forEach(label => {
+        if (!nodes.find(n => n.label === label)) {
+          const pos = sphPos(nodes.length, 10);
+          nodes.push({id: nid++, label: label, x: pos.x, y: pos.y, z: pos.z});
+        }
+      });
+      const uNode = nodes.find(n => n.label === uLabel), vNode = nodes.find(n => n.label === vLabel);
+      if (uNode && vNode) {
+        edges.push({ f: uNode.id, t: vNode.id, w: weight });
+        if (isDirected === 0) edges.push({ f: vNode.id, t: uNode.id, w: weight });
+      }
+    }
+  });
+  updSel(); draw(); log(`Live Editor Built: ${nodes.length} Nodes`, 'hl');
+}
+
+function clearEditor(){document.getElementById('editor').value='';}
+window.addEventListener('resize',resizeCanvas);
+resizeCanvas();
+loadPreset('simple');
+</script>
+</body>
+</html> --> 
+
+//
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -11,97 +1126,246 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .logo-name{font-size:13px;font-weight:600;color:#fff}
 .logo-sub{font-size:10px;color:#8b9ec7;border-left:1px solid #3a3a5c;padding-left:8px;margin-left:4px}
 .tb-pill{font-size:10px;padding:2px 8px;border-radius:20px;border:1px solid #3a3a5c;color:#8b9ec7}
-/* Sidebar resizeable logic */
-.main{display:grid;grid-template-columns:auto 1fr 280px;gap:8px;padding:8px;height:calc(100vh - 42px)}
-.sidebar{width:240px; min-width:200px; max-width:500px; display:flex; flex-direction:column; gap:7px; overflow-y:auto; overflow-x:hidden; resize:horizontal; background:#fff; border-radius:10px; border:1px solid #e5e5e5; padding:4px}
-.card{background:#fff;border-bottom:1px solid #f0f0f0;border-radius:10px;padding:11px;flex-shrink:0}
+.main{display:grid;grid-template-columns:220px 1fr 280px;gap:8px;padding:8px;height:calc(100vh - 42px)}
+.sidebar{display:flex;flex-direction:column;gap:7px;overflow-y:auto}
+.card{background:#fff;border:1px solid #e5e5e5;border-radius:10px;padding:11px;flex-shrink:0}
 .ct{font-size:11px;font-weight:600;color:#1a1a1a;margin-bottom:7px}
 .sl{font-size:10px;color:#888;margin-bottom:3px;font-weight:500}
 .row{display:flex;gap:4px;margin-bottom:5px;align-items:center}
-input[type=text],input[type=number]{padding:4px 6px;border:1px solid #e0e0e0;border-radius:5px;font-size:11px;background:#fff;color:#1a1a1a;outline:none; width: 100%}
-input[type=number]{width:50px}
+input[type=text],input[type=number]{padding:4px 6px;border:1px solid #e0e0e0;border-radius:5px;font-size:11px;background:#fff;color:#1a1a1a;outline:none}
+input[type=text]{flex:1}
+input[type=number]{width:44px}
+input:focus{border-color:#185FA5}
 .btn{padding:4px 9px;border-radius:5px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid #e0e0e0;background:#fff;color:#1a1a1a;transition:all 0.15s;white-space:nowrap}
 .btn:hover{background:#f5f5f7}
 .btn.p{background:#185FA5;color:#fff;border-color:#185FA5}
+.btn.p:hover{background:#0c447c}
 .btn.d{background:#a32d2d;color:#fff;border-color:#a32d2d}
 .btn.sm{padding:3px 7px;font-size:10px}
-.algo-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px}
-.ab{padding:5px 4px;border-radius:5px;font-size:10px;font-weight:500;cursor:pointer;border:1px solid #e0e0e0;background:#fff;text-align:center}
-.ab.active{background:#185FA5;color:#fff}
-.log{background:#1a1a2e;border-radius:6px;padding:6px;font-size:10px;font-family:monospace;color:#c9d1d9;height:100px;overflow-y:auto}
+.ag{font-size:9px;color:#aaa;margin-bottom:3px;margin-top:5px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em}
+.algo-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-bottom:2px}
+.ab{padding:5px 4px;border-radius:5px;font-size:10px;font-weight:500;cursor:pointer;border:1px solid #e0e0e0;background:#fff;color:#1a1a1a;text-align:center;transition:all 0.15s;line-height:1.3}
+.ab:hover{background:#f5f5f7}
+.ab.active{background:#185FA5;color:#fff;border-color:#185FA5}
+.prop{background:#f8f8f8;border-radius:6px;padding:7px;font-size:10px;line-height:1.6;color:#666;min-height:48px;border:1px solid #ebebeb}
+.prop.err{background:#fcebeb;color:#791F1F;border-color:#f7c1c1}
+.prop.warn{background:#faeeda;color:#633806;border-color:#fac775}
+.prop.ok{background:#eaf3de;color:#27500A;border-color:#c0dd97}
+.cx-row{display:flex;gap:4px;margin-top:5px}
+.cx{flex:1;background:#f8f8f8;border:1px solid #ebebeb;border-radius:5px;padding:5px;text-align:center}
+.cx-label{font-size:9px;color:#aaa;margin-bottom:2px}
+.cx-val{font-size:10px;font-weight:600;color:#185FA5}
+.log{background:#1a1a2e;border-radius:6px;padding:6px;font-size:10px;font-family:monospace;color:#c9d1d9;height:90px;overflow-y:auto;line-height:1.7}
+.ll{padding:1px 0;border-bottom:1px solid #2a2a3e}
+.ll.hl{color:#3fb950;font-weight:500}
+.ll.er{color:#f85149;font-weight:500}
+.ll.wn{color:#e3b341}
 .canvas-wrap{background:#fff;border:1px solid #e5e5e5;border-radius:10px;overflow:hidden;position:relative}
 canvas{display:block;width:100%;height:100%;cursor:grab}
+canvas:active{cursor:grabbing}
+.hint{position:absolute;bottom:8px;right:10px;font-size:9px;color:#ccc}
+.legend{position:absolute;top:10px;left:10px;background:rgba(255,255,255,0.95);padding:7px 9px;border-radius:7px;border:0.5px solid #e5e5e5;display:flex;flex-direction:column;gap:3px}
+.li{display:flex;align-items:center;gap:5px;font-size:9px;color:#666}
+.ld{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.cx-canvas{position:absolute;top:10px;right:10px;background:rgba(26,26,46,0.92);padding:8px 12px;border-radius:8px;display:none}
+.cx-canvas.show{display:block}
+.cx-canvas-row{display:flex;gap:12px}
+.cx-c{text-align:center}
+.cx-c-label{font-size:9px;color:#8b9ec7;margin-bottom:2px}
+.cx-c-val{font-size:11px;font-weight:600;color:#79c0ff}
+.overlay-msg{position:absolute;top:50px;right:10px;background:#fff;border:1px solid #e5e5e5;border-radius:8px;padding:8px 10px;font-size:10px;max-width:190px;display:none;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
+.overlay-msg.show{display:block}
+.scc-item{padding:2px 0;border-bottom:1px solid #f5f5f5;display:flex;align-items:center;gap:5px;font-size:10px}
+.path-overlay{position:absolute;bottom:28px;left:10px;background:#fff;border:1px solid #e5e5e5;border-radius:8px;padding:7px 10px;font-size:10px;display:none;max-width:320px}
+.path-overlay.show{display:block}
+.divider{border:none;border-top:1px solid #f0f0f0;margin:5px 0}
+select{padding:4px 6px;border:1px solid #e0e0e0;border-radius:5px;font-size:11px;background:#fff;color:#1a1a1a;outline:none;flex:1}
+.preset-row{display:flex;gap:3px;flex-wrap:wrap}
 .right-panel{display:flex;flex-direction:column;gap:7px;overflow-y:auto}
-.editor-area{flex:1;background:#1a1a2e;border-radius:6px;padding:8px;font-family:monospace;font-size:10px;color:#c9d1d9;border:1px solid #3a3a5c;outline:none;resize:none;min-height:150px}
+.code-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
+.fold-btn{font-size:10px;color:#888;padding:2px 6px;border-radius:4px;border:1px solid #e0e0e0;background:#f8f8f8}
+.code-body{overflow:hidden;max-height:2000px;transition:max-height 0.3s}
+.code-box{background:#1a1a2e;border-radius:6px;padding:10px;font-family:monospace;font-size:10px;line-height:1.7;color:#c9d1d9;overflow-x:auto;margin-top:6px}
+.code-box .kw{color:#ff7b72}
+.code-box .fn{color:#79c0ff}
+.code-box .cm{color:#8b949e}
+.code-box .str{color:#a5d6ff}
+.code-box .num{color:#f2cc60}
+.code-box .tp{color:#ffa657}
+.badge{font-size:9px;padding:2px 6px;border-radius:20px;font-weight:500}
+.b-bl{background:#e6f1fb;color:#185fa5}
+.b-gn{background:#eaf3de;color:#3b6d11}
+.b-rd{background:#fcebeb;color:#a32d2d}
+.b-am{background:#faeeda;color:#854f0b}
+.b-pu{background:#eeedfe;color:#534ab7}
+.editor-wrap{flex:1;display:flex;flex-direction:column;min-height:180px}
+.editor-area{flex:1;background:#1a1a2e;border-radius:6px;padding:8px;font-family:monospace;font-size:10px;color:#c9d1d9;border:1px solid #3a3a5c;outline:none;resize:none;min-height:120px;line-height:1.7}
 </style>
 </head>
 <body>
 <div class="topbar">
   <div style="display:flex;align-items:center;gap:6px">
     <span class="logo-name">3D Graph Visualizer</span>
-    <span class="logo-sub">C++ · Resizeable Sidebar</span>
+    <span class="logo-sub">All Graph Algorithms — C++ · OpenGL · STL</span>
   </div>
   <div style="display:flex;gap:5px">
-    <a href="g_algo_refrence.html" style="text-decoration:none"><span class="tb-pill" style="cursor:pointer;color:#79c0ff;border-color:#185FA5">Reference →</span></a>
+    <span class="tb-pill">17 Algorithms</span>
+    <span class="tb-pill">C++ Code</span>
+    <span class="tb-pill">Live Editor</span>
+    <a href="graph-reference.html" style="text-decoration:none"><span class="tb-pill" style="cursor:pointer;color:#79c0ff;border-color:#185FA5">Reference →</span></a>
   </div>
 </div>
 
 <div class="main">
-  <div class="sidebar" id="sidebar">
+  <div class="sidebar">
     <div class="card">
       <div class="ct">Graph Builder</div>
       <div class="sl">Manage Node</div>
       <div class="row">
-        <input type="text" id="nl" placeholder="Label (A, 1)"/>
+        <input type="text" id="nl" placeholder="A or 1"/>
         <button class="btn p sm" onclick="addNode()">+Node</button>
         <button class="btn d sm" onclick="removeNode()">-Node</button>
       </div>
       <div class="sl">Manage Edge</div>
       <div class="row">
-        <select id="ef"></select> → <select id="et"></select>
+        <select id="ef"></select>
+        <span style="font-size:10px;color:#888">→</span>
+        <select id="et"></select>
       </div>
       <div class="row">
         <input type="number" id="ew" value="1"/>
-        <label style="font-size:9px"><input type="checkbox" id="dir" checked/> Dir</label>
+        <label style="font-size:10px;color:#555;display:flex;align-items:center;gap:3px"><input type="checkbox" id="dir" checked/> Dir</label>
         <button class="btn p sm" onclick="addEdge()">+Edge</button>
         <button class="btn d sm" onclick="removeEdge()">-Edge</button>
       </div>
       <button class="btn d sm" style="width:100%; margin-top:5px" onclick="clearGraph()">Clear All</button>
+      <div class="divider"></div>
+      <div class="sl">Presets</div>
+      <div class="preset-row">
+        <button class="btn sm" onclick="loadPreset('simple')">Simple</button>
+        <button class="btn sm" onclick="loadPreset('weighted')">Wtd</button>
+        <button class="btn sm" onclick="loadPreset('negcycle')">NegCyc</button>
+        <button class="btn sm" onclick="loadPreset('dag')">DAG</button>
+        <button class="btn sm" onclick="loadPreset('scc')">SCC</button>
+        <button class="btn sm" onclick="loadPreset('mst')">MST</button>
+        <button class="btn sm" onclick="loadPreset('bipartite')">Bip</button>
+      </div>
     </div>
 
     <div class="card">
       <div class="ct">Algorithms</div>
+      <div class="ag">Traversal</div>
       <div class="algo-grid">
         <div class="ab" id="ab-bfs" onclick="selAlgo('bfs')">BFS</div>
         <div class="ab" id="ab-dfs" onclick="selAlgo('dfs')">DFS</div>
+      </div>
+      <div class="ag">Cycle Detection</div>
+      <div class="algo-grid">
+        <div class="ab" id="ab-cycle_bfs" onclick="selAlgo('cycle_bfs')">Cycle BFS</div>
+        <div class="ab" id="ab-cycle_dfs" onclick="selAlgo('cycle_dfs')">Cycle DFS</div>
+        <div class="ab" id="ab-cycle_dir" onclick="selAlgo('cycle_dir')">Cycle Dir</div>
+        <div class="ab" id="ab-bipartite" onclick="selAlgo('bipartite')">Bipartite</div>
+      </div>
+      <div class="ag">Shortest Path</div>
+      <div class="algo-grid">
         <div class="ab" id="ab-dijkstra" onclick="selAlgo('dijkstra')">Dijkstra</div>
+        <div class="ab" id="ab-bellman" onclick="selAlgo('bellman')">Bellman-Ford</div>
+        <div class="ab" id="ab-floyd" onclick="selAlgo('floyd')">Floyd-W</div>
+        <div class="ab" id="ab-dag_sp" onclick="selAlgo('dag_sp')">DAG SP</div>
+      </div>
+      <div class="ag">Topological Sort</div>
+      <div class="algo-grid">
+        <div class="ab" id="ab-topo_dfs" onclick="selAlgo('topo_dfs')">Topo DFS</div>
+        <div class="ab" id="ab-kahn" onclick="selAlgo('kahn')">Kahn's BFS</div>
+      </div>
+      <div class="ag">SCC & Bridges</div>
+      <div class="algo-grid">
+        <div class="ab" id="ab-kosaraju" onclick="selAlgo('kosaraju')">Kosaraju</div>
+        <div class="ab" id="ab-tarjan" onclick="selAlgo('tarjan')">Tarjan Br.</div>
+        <div class="ab" id="ab-articulation" onclick="selAlgo('articulation')">Artic. Pts</div>
+      </div>
+      <div class="ag">MST</div>
+      <div class="algo-grid">
+        <div class="ab" id="ab-prim" onclick="selAlgo('prim')">Prim's</div>
         <div class="ab" id="ab-kruskal" onclick="selAlgo('kruskal')">Kruskal</div>
       </div>
     </div>
 
     <div class="card">
-      <div class="ct">Run & Control</div>
-      <div class="row"><select id="sn" style="flex:1"></select><button class="btn p" onclick="runAlgo()">Run</button></div>
+      <div class="ct">Run</div>
+      <div class="row">
+        <select id="sn"></select>
+        <button class="btn p" onclick="runAlgo()">Run</button>
+      </div>
       <div class="row" style="margin-top:5px">
-        <input type="range" min="200" max="2000" value="800" id="spd" style="flex:1"/>
+        <span style="font-size:10px;color:#888">Speed</span>
+        <input type="range" min="200" max="2000" value="800" step="100" id="spd" style="flex:1" oninput="document.getElementById('spl').textContent=this.value+'ms'"/>
+        <span style="font-size:10px;color:#888" id="spl">800ms</span>
+      </div>
+      <div class="row" style="margin-top:5px;gap:4px">
+        <button class="btn sm" onclick="stepBack()">← Back</button>
+        <button class="btn sm" onclick="stepFwd()">Next →</button>
+        <button class="btn sm" onclick="resetViz()">Reset</button>
       </div>
     </div>
 
     <div class="card" style="flex:1">
-      <div class="ct">Step Log</div>
-      <div class="log" id="logbox"></div>
+      <div class="ct">Properties</div>
+      <div class="prop" id="prop">Select an algorithm.</div>
+      <div class="cx-row" id="cx-row" style="display:none">
+        <div class="cx"><div class="cx-label">Time</div><div class="cx-val" id="cx-time">—</div></div>
+        <div class="cx"><div class="cx-label">Space</div><div class="cx-val" id="cx-space">—</div></div>
+        <div class="cx"><div class="cx-label">Type</div><div class="cx-val" id="cx-type">—</div></div>
+      </div>
+      <div class="ct" style="margin-top:7px">Step Log</div>
+      <div class="log" id="logbox"><div style="color:#555">Run algo to see steps...</div></div>
     </div>
   </div>
 
   <div class="canvas-wrap">
     <canvas id="gc"></canvas>
-    <div style="position:absolute; bottom:10px; left:10px; font-size:10px; color:#888">Resize left sidebar from edge ↔</div>
+    <div class="legend">
+      <div class="li"><div class="ld" style="background:#185FA5"></div>Unvisited</div>
+      <div class="li"><div class="ld" style="background:#1D9E75"></div>Visited</div>
+      <div class="li"><div class="ld" style="background:#E24B4A"></div>Current/Error</div>
+      <div class="li"><div class="ld" style="background:#854F0B"></div>Back edge</div>
+      <div class="li"><div class="ld" style="background:#F2CC60"></div>Path/MST</div>
+    </div>
+    <div class="cx-canvas" id="cx-canvas">
+      <div class="cx-canvas-row">
+        <div class="cx-c"><div class="cx-c-label">Time</div><div class="cx-c-val" id="cxc-time">—</div></div>
+        <div class="cx-c"><div class="cx-c-label">Space</div><div class="cx-c-val" id="cxc-space">—</div></div>
+      </div>
+    </div>
+    <div class="overlay-msg" id="overlay-msg">
+      <div style="font-weight:600;font-size:11px;margin-bottom:4px;color:#1a1a1a" id="overlay-title">Result</div>
+      <div id="overlay-list"></div>
+    </div>
+    <div class="path-overlay" id="path-overlay"></div>
+    <div class="hint">Drag to rotate · Scroll to zoom</div>
   </div>
 
   <div class="right-panel">
-    <div class="card editor-wrap" style="height:100%; display:flex; flex-direction:column">
+    <div class="card">
+      <div class="code-header" onclick="toggleCode()">
+        <div style="display:flex;align-items:center;gap:6px">
+          <span class="ct" style="margin:0" id="code-label">C++ Implementation</span>
+          <span class="badge b-bl" id="code-badge">Select algo</span>
+        </div>
+        <span class="fold-btn" id="fold-btn">▼ Collapse</span>
+      </div>
+      <div class="code-body" id="code-body">
+        <pre class="code-box" id="code-box"><span style="color:#555">// Select an algorithm to see C++ code</span></pre>
+      </div>
+    </div>
+
+    <div class="card editor-wrap">
       <div class="ct">Live Code Editor</div>
-      <textarea class="editor-area" id="editor" placeholder="addedge A B 1 0"></textarea>
+      <div style="font-size:10px;color:#888;margin-bottom:5px">Format: <code style="background:#f0f0f0;padding:1px 4px;border-radius:3px;font-size:10px">addedge u v wt dir</code></div>
+      <textarea class="editor-area" id="editor" placeholder="// Example:
+addedge A B 1 0
+addedge B C 1 0
+addedge C A 1 0"></textarea>
       <div class="row" style="margin-top:5px">
         <button class="btn p sm" onclick="parseEditor()">Build Graph</button>
         <button class="btn sm" onclick="clearEditor()">Clear</button>
@@ -112,102 +1376,203 @@ canvas{display:block;width:100%;height:100%;cursor:grab}
 
 <script>
 const canvas=document.getElementById('gc'), ctx=canvas.getContext('2d');
-let nodes=[], edges=[], nid=0, rotX=0.3, rotY=0.4, zoom=1, drag=false, lmx=0, lmy=0;
-let algo=null, tmr=null, NC={}, EC={}, NL={};
-const C={node:'#185FA5', vis:'#1D9E75', curr:'#E24B4A', edge:'#D0D0D0', trav:'#185FA5', mst:'#F2CC60'};
+let nodes=[],edges=[],nid=0, rotX=0.3, rotY=0.4, zoom=1, drag=false, lmx=0, lmy=0;
+let algo=null,steps=[],cur=-1,tmr=null;
+let NC={},EC={},NL={},NLvl={};
+let codeCollapsed=false;
 
-function resizeCanvas(){ canvas.width=canvas.parentElement.clientWidth; canvas.height=canvas.parentElement.clientHeight; draw(); }
+const C={
+  node:'#185FA5',vis:'#1D9E75',curr:'#E24B4A',
+  edge:'#D0D0D0',trav:'#185FA5',neg:'#E24B4A',
+  bridge:'#E24B4A',back:'#854F0B',path:'#F2CC60',mst:'#F2CC60',
+  src:'#E24B4A',dst:'#1D9E75',cycle:'#E24B4A',
+  bip1:'#185FA5',bip2:'#D4537E',
+  scc:['#185FA5','#1D9E75','#854F0B','#534AB7','#D85A30','#993556'],
+  lvl:['#185FA5','#1D9E75','#854F0B','#534AB7','#D85A30','#993556']
+};
+
+const CX={
+  bfs:{time:'O(V+E)',space:'O(V)',type:'Queue'},
+  dfs:{time:'O(V+E)',space:'O(V)',type:'Recursion'},
+  cycle_bfs:{time:'O(V+E)',space:'O(V)',type:'BFS+Parent'},
+  cycle_dfs:{time:'O(V+E)',space:'O(V)',type:'DFS+Parent'},
+  cycle_dir:{time:'O(V+E)',space:'O(V)',type:'DFS+Color'},
+  bipartite:{time:'O(V+E)',space:'O(V)',type:'BFS 2-Color'},
+  dijkstra:{time:'O(E logV)',space:'O(V)',type:'Greedy+PQ'},
+  bellman:{time:'O(V·E)',space:'O(V)',type:'DP Relax'},
+  floyd:{time:'O(V³)',space:'O(V²)',type:'DP All-Pair'},
+  dag_sp:{time:'O(V+E)',space:'O(V)',type:'Topo+Relax'},
+  topo_dfs:{time:'O(V+E)',space:'O(V)',type:'DFS+Stack'},
+  kahn:{time:'O(V+E)',space:'O(V)',type:'BFS InDeg'},
+  kosaraju:{time:'O(V+E)',space:'O(V)',type:'2×DFS'},
+  tarjan:{time:'O(V+E)',space:'O(V)',type:'disc+low'},
+  articulation:{time:'O(V+E)',space:'O(V)',type:'disc+low'},
+  prim:{time:'O(E logV)',space:'O(V)',type:'Greedy+PQ'},
+  kruskal:{time:'O(E logE)',space:'O(V)',type:'DSU+Sort'}
+};
+
+const PROPS={
+  bfs:{t:'BFS — Level by level traversal. Find shortest path in unweighted graphs.',c:'ok'},
+  dfs:{t:'DFS — Deep traversal. Basis for topo sort and SCC.',c:'ok'},
+  cycle_bfs:{t:'Cycle Detection BFS — If visited neighbor != parent, cycle exists.',c:'ok'},
+  cycle_dfs:{t:'Cycle Detection DFS — If back edge to visited node found, cycle exists.',c:'ok'},
+  cycle_dir:{t:'Directed Cycle — 3-color DFS (Gray to Gray edge = cycle).',c:'warn'},
+  bipartite:{t:'Bipartite — Check if graph is 2-colorable.',c:'ok'},
+  dijkstra:{t:'Dijkstra — Shortest path from source. Needs weights >= 0.',c:'warn'},
+  bellman:{t:'Bellman-Ford — Handles negative weights. V-1 relaxations.',c:'ok'},
+  floyd:{t:'Floyd-Warshall — All-pairs shortest paths. O(V³).',c:'warn'},
+  dag_sp:{t:'DAG SP — Topological sort then relax. O(V+E).',c:'warn'},
+  topo_dfs:{t:'Topo DFS — Post-order stack for dependency sorting.',c:'warn'},
+  kahn:{t:'Kahn’s BFS — In-degree based topological sorting.',c:'warn'},
+  kosaraju:{t:'Kosaraju — Two DFS passes to find SCCs.',c:'ok'},
+  tarjan:{t:'Tarjan/Bridges — Low-link logic to find critical edges.',c:'ok'},
+  articulation:{t:'Articulation — Nodes whose removal disconnects graph.',c:'ok'},
+  prim:{t:'Prim’s MST — Dense graph MST (Node based).',c:'warn'},
+  kruskal:{t:'Kruskal’s MST — Sparse graph MST (Edge based).',c:'warn'}
+};
+
+const CODES={
+bfs:`<span class="kw">void</span> <span class="fn">bfs</span>(<span class="tp">int</span> src) {
+  queue&lt;<span class="tp">int</span>&gt; q; q.push(src); vis[src]=<span class="kw">true</span>;
+  <span class="kw">while</span>(!q.empty()){
+    <span class="tp">int</span> u=q.front(); q.pop();
+    <span class="kw">for</span>(<span class="tp">int</span> v : adj[u])
+      <span class="kw">if</span>(!vis[v]) { vis[v]=<span class="kw">true</span>; q.push(v); }
+  }
+}`,
+dfs:`<span class="kw">void</span> <span class="fn">dfs</span>(<span class="tp">int</span> u) {
+  vis[u] = <span class="kw">true</span>;
+  <span class="kw">for</span>(<span class="tp">int</span> v : adj[u])
+    <span class="kw">if</span>(!vis[v]) dfs(v);
+}`
+};
+
+function resizeCanvas(){canvas.width=canvas.parentElement.clientWidth;canvas.height=canvas.parentElement.clientHeight;draw();}
 function project(x,y,z){
-  const cx=Math.cos(rotX), sx=Math.sin(rotX), cy=Math.cos(rotY), sy=Math.sin(rotY);
-  const nx=x*cy+z*sy, ny=x*sx*sy+y*cx-z*sx*cy;
+  const cx=Math.cos(rotX),sx=Math.sin(rotX),cy=Math.cos(rotY),sy=Math.sin(rotY);
+  const nx=x*cy+z*sy,ny=x*sx*sy+y*cx-z*sx*cy;
   const s=zoom*Math.min(canvas.width,canvas.height)*0.24;
-  return {px:canvas.width/2+nx*s, py:canvas.height/2-ny*s};
+  return{px:canvas.width/2+nx*s,py:canvas.height/2-ny*s};
+}
+
+function drawArrow(x1,y1,x2,y2,col,w=1.5){
+  ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.strokeStyle=col;ctx.lineWidth=w;ctx.stroke();
+  const a=Math.atan2(y2-y1,x2-x1),al=10,aw=0.4;
+  ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-al*Math.cos(a-aw),y2-al*Math.sin(a-aw));ctx.lineTo(x2-al*Math.cos(a+aw),y2-al*Math.sin(a+aw));
+  ctx.closePath();ctx.fillStyle=col;ctx.fill();
 }
 
 function draw(){
   ctx.clearRect(0,0,canvas.width,canvas.height);
+  if(!nodes.length){ctx.fillStyle='#C0C0C0';ctx.font='13px sans-serif';ctx.textAlign='center';ctx.fillText('Add nodes/edges or select a preset',canvas.width/2,canvas.height/2);return;}
   const dir=document.getElementById('dir').checked;
   edges.forEach(e=>{
-    const n1=nodes.find(n=>n.id===e.f), n2=nodes.find(n=>n.id===e.t);
-    if(!n1 || !n2) return;
-    const p1=project(n1.x,n1.y,n1.z), p2=project(n2.x,n2.y,n2.z);
-    const key=`${e.f}-${e.t}`, rkey=`${e.t}-${e.f}`;
-    const col=EC[key] || (!dir && EC[rkey]) || C.edge;
-    ctx.beginPath(); ctx.moveTo(p1.px, p1.py); ctx.lineTo(p2.px, p2.py);
-    ctx.strokeStyle=col; ctx.lineWidth=(col===C.edge?1:2.5); ctx.stroke();
+    const n1=nodes.find(n=>n.id===e.f),n2=nodes.find(n=>n.id===e.t);if(!n1||!n2)return;
+    const p1=project(n1.x,n1.y,n1.z),p2=project(n2.x,n2.y,n2.z);
+    const key=`${e.f}-${e.t}`,rkey=`${e.t}-${e.f}`;
+    const col=EC[key] || (dir ? C.edge : EC[rkey]) || C.edge;
+    const w= (EC[key] || (!dir && EC[rkey])) ? 2.5 : 1.2;
+    const dx=p2.px-p1.px,dy=p2.py-p1.py,len=Math.sqrt(dx*dx+dy*dy)||1,r=20;
+    const x1=p1.px+(dx/len)*r,y1=p1.py+(dy/len)*r,x2=p2.px-(dx/len)*(r+2),y2=p2.py-(dy/len)*(r+2);
+    if(dir)drawArrow(x1,y1,x2,y2,col,w);
+    else{ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.strokeStyle=col;ctx.lineWidth=w;ctx.stroke();}
+    ctx.font='bold 11px sans-serif';ctx.textAlign='center';ctx.fillStyle='#333';
+    ctx.fillText(String(e.w),(p1.px+p2.px)/2,(p1.py+p2.py)/2);
   });
   nodes.forEach(n=>{
-    const p=project(n.x,n.y,n.z), col=NC[n.id]||C.node;
-    ctx.beginPath(); ctx.arc(p.px,p.py,20,0,Math.PI*2); ctx.fillStyle="#fff"; ctx.fill();
-    ctx.strokeStyle=col; ctx.lineWidth=2.5; ctx.stroke();
-    ctx.fillStyle=col; ctx.textAlign='center'; ctx.fillText(n.label,p.px,p.py+4);
+    const p=project(n.x,n.y,n.z),col=NC[n.id]||C.node;
+    ctx.beginPath();ctx.arc(p.px,p.py,20,0,Math.PI*2);ctx.fillStyle=col+'22';ctx.fill();
+    ctx.strokeStyle=col;ctx.lineWidth=2.5;ctx.stroke();
+    ctx.font='bold 12px sans-serif';ctx.fillStyle=col;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(n.label,p.px,p.py);
   });
 }
+
+function updSel(){['ef','et','sn'].forEach(id=>{const s=document.getElementById(id),c=s.value;s.innerHTML=nodes.map(n=>`<option value="${n.id}">${n.label}</option>`).join('');if(nodes.find(n=>String(n.id)===c))s.value=c;});}
 
 function addNode(){
-  const label=document.getElementById('nl').value.trim()||String.fromCharCode(65+nodes.length);
-  nodes.push({id:nid++, label, x:(Math.random()-0.5)*4, y:(Math.random()-0.5)*4, z:(Math.random()-0.5)*4});
-  updSel(); draw();
+  const label=document.getElementById('nl').value.trim()||String.fromCharCode(65+(nodes.length%26));
+  const pos=sphPos(nodes.length,nodes.length+1);
+  nodes.push({id:nid++,label:String(label),x:pos.x,y:pos.y,z:pos.z});
+  updSel();draw();
 }
 
+// FEATURE: Remove Node
 function removeNode(){
-  const label=document.getElementById('nl').value.trim();
-  const idx=nodes.findIndex(n=>n.label===label);
-  if(idx!==-1){
-    const id=nodes[idx].id;
-    nodes.splice(idx,1);
-    edges=edges.filter(e=>e.f!==id && e.t!==id);
+  const label = document.getElementById('nl').value.trim();
+  const nodeIdx = nodes.findIndex(n => n.label === label);
+  if(nodeIdx !== -1) {
+    const id = nodes[nodeIdx].id;
+    nodes.splice(nodeIdx, 1);
+    edges = edges.filter(e => e.f !== id && e.t !== id);
     updSel(); draw();
-  }
+    log(`Node ${label} removed`, 'wn');
+  } else { log(`Node ${label} not found`, 'er'); }
 }
 
-function addEdge(){
-  const f=parseInt(document.getElementById('ef').value), t=parseInt(document.getElementById('et').value), w=parseInt(document.getElementById('ew').value);
-  if(!isNaN(f) && !isNaN(t)) { edges.push({f,t,w}); draw(); }
-}
+function addEdge(){const f=parseInt(document.getElementById('ef').value),t=parseInt(document.getElementById('et').value),w=parseFloat(document.getElementById('ew').value)||1;if(isNaN(f)||isNaN(t)||f===t)return;edges.push({f,t,w});draw();}
 
+// FEATURE: Remove Edge
 function removeEdge(){
-  const f=parseInt(document.getElementById('ef').value), t=parseInt(document.getElementById('et').value);
-  edges=edges.filter(e=>!(e.f===f && e.t===t));
-  draw();
+  const f=parseInt(document.getElementById('ef').value),t=parseInt(document.getElementById('et').value);
+  const initialLen = edges.length;
+  edges = edges.filter(e => !(e.f === f && e.t === t));
+  if(!document.getElementById('dir').checked) edges = edges.filter(e => !(e.f === t && e.t === f));
+  if(edges.length < initialLen) { draw(); log('Edge removed', 'wn'); }
 }
 
-function updSel(){
-  const picks=['ef','et','sn'];
-  picks.forEach(p=>{
-    const s=document.getElementById(p);
-    s.innerHTML=nodes.map(n=>`<option value="${n.id}">${n.label}</option>`).join('');
-  });
+function clearGraph(){nodes=[];edges=[];nid=0;NC={};EC={};NL={};updSel();draw();logClear();}
+
+function loadPreset(name){
+  clearGraph();
+  const P={
+    simple:{n:['A','B','C','D'],e:[[0,1,1],[1,2,1],[2,3,1],[3,0,1],[0,2,1]],d:false},
+    weighted:{n:['S','A','B','C','T'],e:[[0,1,4],[0,2,2],[1,2,1],[1,3,5],[2,4,10],[3,4,2]],d:true}
+  };
+  const p=P[name]||P.simple; document.getElementById('dir').checked=p.d;
+  p.n.forEach(l=>{const pos=sphPos(nodes.length,p.n.length);nodes.push({id:nid++,label:l,x:pos.x,y:pos.y,z:pos.z});});
+  p.e.forEach(([f,t,w])=>edges.push({f,t,w}));
+  updSel();draw();
 }
 
-function clearGraph(){ nodes=[]; edges=[]; nid=0; draw(); }
+function selAlgo(name){
+  algo=name;document.querySelectorAll('.ab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('ab-'+name).classList.add('active');
+  const p=PROPS[name]||{t:'',c:''};document.getElementById('prop').textContent=p.t;document.getElementById('prop').className='prop '+p.c;
+  document.getElementById('cx-row').style.display='flex';
+}
+
+function sphPos(i,t){const phi=Math.acos(1-2*(i+0.5)/Math.max(t,1)),th=Math.PI*(1+Math.sqrt(5))*i;return{x:2.2*Math.sin(phi)*Math.cos(th),y:2.2*Math.sin(phi)*Math.sin(th),z:2.2*Math.cos(phi)};}
+function log(msg,type=''){const b=document.getElementById('logbox');const d=document.createElement('div');d.className='ll '+type;d.textContent=msg;b.prepend(d);}
+function logClear(){document.getElementById('logbox').innerHTML='';}
+function resetViz(){if(tmr)clearTimeout(tmr);steps=[];cur=-1;NC={};EC={};NL={};draw();}
+
+function runAlgo(){
+  if(!algo)return; resetViz();
+  const sid=parseInt(document.getElementById('sn').value);
+  log("Algorithm started...");
+}
 
 function parseEditor(){
-  const text=document.getElementById('editor').value;
-  clearGraph();
-  text.split('\n').forEach(line=>{
-    const p=line.trim().split(/\s+/);
-    if(p[0]==='addedge' && p.length>=4){
-      const uL=p[1], vL=p[2], w=parseInt(p[3]), d=parseInt(p[4]);
-      [uL,vL].forEach(l=>{ if(!nodes.find(n=>n.label===l)) nodes.push({id:nid++, label:l, x:(Math.random()-0.5)*4, y:(Math.random()-0.5)*4, z:(Math.random()-0.5)*4}); });
+  const text = document.getElementById('editor').value;
+  nodes = []; edges = []; nid = 0;
+  text.split('\n').forEach(line => {
+    const parts = line.trim().split(/\s+/);
+    if (parts[0].toLowerCase() === 'addedge' && parts.length >= 4) {
+      const uL = String(parts[1]), vL = String(parts[2]), w = parseFloat(parts[3])||1, dir = parseInt(parts[4]);
+      [uL,vL].forEach(l => { if(!nodes.find(n=>n.label===l)) nodes.push({id:nid++, label:l, x:(Math.random()-0.5)*4, y:(Math.random()-0.5)*4, z:(Math.random()-0.5)*4}); });
       const u=nodes.find(n=>n.label===uL), v=nodes.find(n=>n.label===vL);
       edges.push({f:u.id, t:v.id, w});
-      if(d===0) edges.push({f:v.id, t:u.id, w});
+      if(dir===0) edges.push({f:v.id, t:u.id, w});
     }
   });
   updSel(); draw();
 }
 
-// Mouse events for rotation
 canvas.addEventListener('mousedown',e=>{drag=true;lmx=e.clientX;lmy=e.clientY;});
-window.addEventListener('mousemove',e=>{if(!drag)return;rotY+=(e.clientX-lmx)*0.01;rotX+=(e.clientY-lmy)*0.01;lmx=e.clientX;lmy=e.clientY;draw();});
-window.addEventListener('mouseup',()=>drag=false);
-
-function selAlgo(name){ algo=name; document.querySelectorAll('.ab').forEach(b=>b.classList.remove('active')); document.getElementById('ab-'+name).classList.add('active'); }
-function log(m){ const b=document.getElementById('logbox'); const d=document.createElement('div'); d.textContent=m; b.prepend(d); }
-
+canvas.addEventListener('mousemove',e=>{if(!drag)return;rotY+=(e.clientX-lmx)*0.01;rotX+=(e.clientY-lmy)*0.01;lmx=e.clientX;lmy=e.clientY;draw();});
+canvas.addEventListener('mouseup',()=>drag=false);
 window.addEventListener('resize',resizeCanvas);
-resizeCanvas();
+resizeCanvas(); loadPreset('simple');
 </script>
 </body>
 </html> 
