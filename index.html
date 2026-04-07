@@ -1,4 +1,4 @@
- <!-- <!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -45,1121 +45,7 @@ input:focus{border-color:#185FA5}
 .ll.hl{color:#3fb950;font-weight:500}
 .ll.er{color:#f85149;font-weight:500}
 .ll.wn{color:#e3b341}
-.canvas-wrap{background:#fff;border:1px solid #e5e5e5;border-radius:10px;overflow:hidden;position:relative}
-canvas{display:block;width:100%;height:100%;cursor:grab}
-canvas:active{cursor:grabbing}
-.hint{position:absolute;bottom:8px;right:10px;font-size:9px;color:#ccc}
-.legend{position:absolute;top:10px;left:10px;background:rgba(255,255,255,0.95);padding:7px 9px;border-radius:7px;border:0.5px solid #e5e5e5;display:flex;flex-direction:column;gap:3px}
-.li{display:flex;align-items:center;gap:5px;font-size:9px;color:#666}
-.ld{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.cx-canvas{position:absolute;top:10px;right:10px;background:rgba(26,26,46,0.92);padding:8px 12px;border-radius:8px;display:none}
-.cx-canvas.show{display:block}
-.cx-canvas-row{display:flex;gap:12px}
-.cx-c{text-align:center}
-.cx-c-label{font-size:9px;color:#8b9ec7;margin-bottom:2px}
-.cx-c-val{font-size:11px;font-weight:600;color:#79c0ff}
-.overlay-msg{position:absolute;top:50px;right:10px;background:#fff;border:1px solid #e5e5e5;border-radius:8px;padding:8px 10px;font-size:10px;max-width:190px;display:none;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
-.overlay-msg.show{display:block}
-.path-overlay{position:absolute;bottom:28px;left:10px;background:#fff;border:1px solid #e5e5e5;border-radius:8px;padding:7px 10px;font-size:10px;display:none;max-width:320px}
-.path-overlay.show{display:block}
-.right-panel{display:flex;flex-direction:column;gap:7px;overflow-y:auto}
-.code-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
-.fold-btn{font-size:10px;color:#888;padding:2px 6px;border-radius:4px;border:1px solid #e0e0e0;background:#f8f8f8}
-.code-body{overflow:hidden;max-height:2000px;transition:max-height 0.3s}
-.code-box{background:#1a1a2e;border-radius:6px;padding:10px;font-family:monospace;font-size:10px;line-height:1.7;color:#c9d1d9;overflow-x:auto;margin-top:6px}
-.code-box .kw{color:#ff7b72}
-.code-box .fn{color:#79c0ff}
-.code-box .cm{color:#8b949e}
-.code-box .str{color:#a5d6ff}
-.code-box .num{color:#f2cc60}
-.code-box .tp{color:#ffa657}
-.badge{font-size:9px;padding:2px 6px;border-radius:20px;font-weight:500}
-.b-bl{background:#e6f1fb;color:#185fa5}
-.b-gn{background:#eaf3de;color:#3b6d11}
-.b-rd{background:#fcebeb;color:#a32d2d}
-.b-am{background:#faeeda;color:#854f0b}
-.b-pu{background:#eeedfe;color:#534ab7}
-.editor-wrap{flex:1;display:flex;flex-direction:column;min-height:180px}
-.editor-area{flex:1;background:#1a1a2e;border-radius:6px;padding:8px;font-family:monospace;font-size:10px;color:#c9d1d9;border:1px solid #3a3a5c;outline:none;resize:none;min-height:120px;line-height:1.7}
-.divider{border:none;border-top:1px solid #f0f0f0;margin:5px 0}
-select{padding:4px 6px;border:1px solid #e0e0e0;border-radius:5px;font-size:11px;background:#fff;color:#1a1a1a;outline:none;flex:1}
-.preset-row{display:flex;gap:3px;flex-wrap:wrap}
-</style>
-</head>
-<body>
-<div class="topbar">
-  <div style="display:flex;align-items:center;gap:6px">
-    <span class="logo-name">3D Graph Visualizer</span>
-    <span class="logo-sub">All Graph Algorithms — C++ · OpenGL · STL</span>
-  </div>
-  <div style="display:flex;gap:5px">
-    <span class="tb-pill">17 Algorithms</span>
-    <span class="tb-pill">C++ Code</span>
-    <span class="tb-pill">Live Editor</span>
-    <a href="g_algo_refrence.html" style="text-decoration:none"><span class="tb-pill" style="cursor:pointer;color:#79c0ff;border-color:#185FA5">Reference →</span></a>
-  </div>
-</div>
-
-<div class="main">
-  <div class="sidebar">
-    <div class="card">
-      <div class="ct">Graph Builder</div>
-      <div class="sl">Add node</div>
-      <div class="row">
-        <input type="text" id="nl" placeholder="A or 1"/>
-        <button class="btn p sm" onclick="addNode()">+Node</button>
-        <button class="btn d sm" onclick="clearGraph()">Clear</button>
-      </div>
-      <div class="sl">Add edge</div>
-      <div class="row">
-        <select id="ef"></select>
-        <span style="font-size:10px;color:#888">→</span>
-        <select id="et"></select>
-      </div>
-      <div class="row">
-        <input type="number" id="ew" value="1"/>
-        <label style="font-size:10px;color:#555;display:flex;align-items:center;gap:3px"><input type="checkbox" id="dir" checked/> Dir</label>
-        <button class="btn p sm" onclick="addEdge()">+Edge</button>
-      </div>
-      <div class="divider"></div>
-      <div class="sl">Presets</div>
-      <div class="preset-row">
-        <button class="btn sm" onclick="loadPreset('simple')">Simple</button>
-        <button class="btn sm" onclick="loadPreset('weighted')">Wtd</button>
-        <button class="btn sm" onclick="loadPreset('negcycle')">NegCyc</button>
-        <button class="btn sm" onclick="loadPreset('dag')">DAG</button>
-        <button class="btn sm" onclick="loadPreset('scc')">SCC</button>
-        <button class="btn sm" onclick="loadPreset('mst')">MST</button>
-        <button class="btn sm" onclick="loadPreset('bipartite')">Bip</button>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="ct">Algorithms</div>
-      <div class="ag">Traversal</div>
-      <div class="algo-grid">
-        <div class="ab" id="ab-bfs" onclick="selAlgo('bfs')">BFS</div>
-        <div class="ab" id="ab-dfs" onclick="selAlgo('dfs')">DFS</div>
-      </div>
-      <div class="ag">Cycle Detection</div>
-      <div class="algo-grid">
-        <div class="ab" id="ab-cycle_bfs" onclick="selAlgo('cycle_bfs')">Cycle BFS</div>
-        <div class="ab" id="ab-cycle_dfs" onclick="selAlgo('cycle_dfs')">Cycle DFS</div>
-        <div class="ab" id="ab-cycle_dir" onclick="selAlgo('cycle_dir')">Cycle Dir</div>
-        <div class="ab" id="ab-bipartite" onclick="selAlgo('bipartite')">Bipartite</div>
-      </div>
-      <div class="ag">Shortest Path</div>
-      <div class="algo-grid">
-        <div class="ab" id="ab-dijkstra" onclick="selAlgo('dijkstra')">Dijkstra</div>
-        <div class="ab" id="ab-bellman" onclick="selAlgo('bellman')">Bellman-Ford</div>
-        <div class="ab" id="ab-floyd" onclick="selAlgo('floyd')">Floyd-W</div>
-        <div class="ab" id="ab-dag_sp" onclick="selAlgo('dag_sp')">DAG SP</div>
-      </div>
-      <div class="ag">Topological Sort</div>
-      <div class="algo-grid">
-        <div class="ab" id="ab-topo_dfs" onclick="selAlgo('topo_dfs')">Topo DFS</div>
-        <div class="ab" id="ab-kahn" onclick="selAlgo('kahn')">Kahn's BFS</div>
-      </div>
-      <div class="ag">SCC & Bridges</div>
-      <div class="algo-grid">
-        <div class="ab" id="ab-kosaraju" onclick="selAlgo('kosaraju')">Kosaraju</div>
-        <div class="ab" id="ab-tarjan" onclick="selAlgo('tarjan')">Tarjan Br.</div>
-        <div class="ab" id="ab-articulation" onclick="selAlgo('articulation')">Artic. Pts</div>
-      </div>
-      <div class="ag">MST</div>
-      <div class="algo-grid">
-        <div class="ab" id="ab-prim" onclick="selAlgo('prim')">Prim's</div>
-        <div class="ab" id="ab-kruskal" onclick="selAlgo('kruskal')">Kruskal</div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="ct">Run</div>
-      <div class="row">
-        <select id="sn"></select>
-        <button class="btn p" onclick="runAlgo()">Run</button>
-      </div>
-      <div class="row" style="margin-top:5px">
-        <span style="font-size:10px;color:#888">Speed</span>
-        <input type="range" min="200" max="2000" value="800" step="100" id="spd" style="flex:1" oninput="document.getElementById('spl').textContent=this.value+'ms'"/>
-        <span style="font-size:10px;color:#888" id="spl">800ms</span>
-      </div>
-      <div class="row" style="margin-top:5px;gap:4px">
-        <button class="btn sm" onclick="stepBack()">← Back</button>
-        <button class="btn sm" onclick="stepFwd()">Next →</button>
-        <button class="btn sm" onclick="resetViz()">Reset</button>
-      </div>
-    </div>
-
-    <div class="card" style="flex:1">
-      <div class="ct">Properties</div>
-      <div class="prop" id="prop">Select an algorithm.</div>
-      <div class="cx-row" id="cx-row" style="display:none">
-        <div class="cx"><div class="cx-label">Time</div><div class="cx-val" id="cx-time">—</div></div>
-        <div class="cx"><div class="cx-label">Space</div><div class="cx-val" id="cx-space">—</div></div>
-        <div class="cx"><div class="cx-label">Type</div><div class="cx-val" id="cx-type">—</div></div>
-      </div>
-      <div class="ct" style="margin-top:7px">Step Log</div>
-      <div class="log" id="logbox"><div style="color:#555">Run algo to see steps...</div></div>
-    </div>
-  </div>
-
-  <div class="canvas-wrap">
-    <canvas id="gc"></canvas>
-    <div class="legend">
-      <div class="li"><div class="ld" style="background:#185FA5"></div>Unvisited</div>
-      <div class="li"><div class="ld" style="background:#1D9E75"></div>Visited</div>
-      <div class="li"><div class="ld" style="background:#E24B4A"></div>Current/Error</div>
-      <div class="li"><div class="ld" style="background:#854F0B"></div>Back edge</div>
-      <div class="li"><div class="ld" style="background:#F2CC60"></div>Path/MST</div>
-    </div>
-    <div class="cx-canvas" id="cx-canvas">
-      <div class="cx-canvas-row">
-        <div class="cx-c"><div class="cx-c-label">Time</div><div class="cx-c-val" id="cxc-time">—</div></div>
-        <div class="cx-c"><div class="cx-c-label">Space</div><div class="cx-c-val" id="cxc-space">—</div></div>
-      </div>
-    </div>
-    <div class="overlay-msg" id="overlay-msg">
-      <div style="font-weight:600;font-size:11px;margin-bottom:4px;color:#1a1a1a" id="overlay-title">Result</div>
-      <div id="overlay-list"></div>
-    </div>
-    <div class="path-overlay" id="path-overlay"></div>
-    <div class="hint">Drag to rotate · Scroll to zoom</div>
-  </div>
-
-  <div class="right-panel">
-    <div class="card">
-      <div class="code-header" onclick="toggleCode()">
-        <div style="display:flex;align-items:center;gap:6px">
-          <span class="ct" style="margin:0" id="code-label">C++ Implementation</span>
-          <span class="badge b-bl" id="code-badge">Select algo</span>
-        </div>
-        <span class="fold-btn" id="fold-btn">▼ Collapse</span>
-      </div>
-      <div class="code-body" id="code-body">
-        <pre class="code-box" id="code-box"><span style="color:#555">// Select an algorithm to see C++ code</span></pre>
-      </div>
-    </div>
-
-    <div class="card editor-wrap">
-      <div class="ct">Live Code Editor</div>
-      <div style="font-size:10px;color:#888;margin-bottom:5px">Format: <code style="background:#f0f0f0;padding:1px 4px;border-radius:3px;font-size:10px">addedge u v wt dir</code></div>
-      <textarea class="editor-area" id="editor" placeholder="// Example:
-addedge A B 1 0
-addedge B C 1 0
-addedge C A 1 0"></textarea>
-      <div class="row" style="margin-top:5px">
-        <button class="btn p sm" onclick="parseEditor()">Build Graph</button>
-        <button class="btn sm" onclick="clearEditor()">Clear</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-const canvas=document.getElementById('gc');
-const ctx=canvas.getContext('2d');
-let nodes=[],edges=[],nid=0;
-let rotX=0.3,rotY=0.4,zoom=1;
-let drag=false,lmx=0,lmy=0;
-let algo=null,steps=[],cur=-1,tmr=null;
-let NC={},EC={},NL={},NLvl={};
-let codeCollapsed=false;
-
-const C={
-  node:'#185FA5',vis:'#1D9E75',curr:'#E24B4A',
-  edge:'#D0D0D0',trav:'#185FA5',neg:'#E24B4A',
-  bridge:'#E24B4A',back:'#854F0B',path:'#F2CC60',mst:'#F2CC60',
-  src:'#E24B4A',dst:'#1D9E75',cycle:'#E24B4A',
-  bip1:'#185FA5',bip2:'#D4537E',
-  scc:['#185FA5','#1D9E75','#854F0B','#534AB7','#D85A30','#993556'],
-  lvl:['#185FA5','#1D9E75','#854F0B','#534AB7','#D85A30','#993556']
-};
-
-const CX={
-  bfs:{time:'O(V+E)',space:'O(V)',type:'Queue'},
-  dfs:{time:'O(V+E)',space:'O(V)',type:'Recursion'},
-  cycle_bfs:{time:'O(V+E)',space:'O(V)',type:'BFS+Parent'},
-  cycle_dfs:{time:'O(V+E)',space:'O(V)',type:'DFS+Parent'},
-  cycle_dir:{time:'O(V+E)',space:'O(V)',type:'DFS+Color'},
-  bipartite:{time:'O(V+E)',space:'O(V)',type:'BFS 2-Color'},
-  dijkstra:{time:'O(E logV)',space:'O(V)',type:'Greedy+PQ'},
-  bellman:{time:'O(V·E)',space:'O(V)',type:'DP Relax'},
-  floyd:{time:'O(V³)',space:'O(V²)',type:'DP All-Pair'},
-  dag_sp:{time:'O(V+E)',space:'O(V)',type:'Topo+Relax'},
-  topo_dfs:{time:'O(V+E)',space:'O(V)',type:'DFS+Stack'},
-  kahn:{time:'O(V+E)',space:'O(V)',type:'BFS InDeg'},
-  kosaraju:{time:'O(V+E)',space:'O(V)',type:'2×DFS'},
-  tarjan:{time:'O(V+E)',space:'O(V)',type:'disc+low'},
-  articulation:{time:'O(V+E)',space:'O(V)',type:'disc+low'},
-  prim:{time:'O(E logV)',space:'O(V)',type:'Greedy+PQ'},
-  kruskal:{time:'O(E logE)',space:'O(V)',type:'DSU+Sort'}
-};
-
-const PROPS={
-  bfs:{t:'BFS — Level by level traversal. Find shortest path in unweighted graphs.',c:'ok'},
-  dfs:{t:'DFS — Deep traversal. Basis for topo sort and SCC.',c:'ok'},
-  cycle_bfs:{t:'Cycle Detection BFS — If visited neighbor != parent, cycle exists.',c:'ok'},
-  cycle_dfs:{t:'Cycle Detection DFS — If back edge to visited node found, cycle exists.',c:'ok'},
-  cycle_dir:{t:'Directed Cycle — 3-color DFS (Gray to Gray edge = cycle).',c:'warn'},
-  bipartite:{t:'Bipartite — Check if graph is 2-colorable.',c:'ok'},
-  dijkstra:{t:'Dijkstra — Shortest path from source. Needs weights >= 0.',c:'warn'},
-  bellman:{t:'Bellman-Ford — Handles negative weights. V-1 relaxations.',c:'ok'},
-  floyd:{t:'Floyd-Warshall — All-pairs shortest paths. O(V³).',c:'warn'},
-  dag_sp:{t:'DAG SP — Topological sort then relax. O(V+E).',c:'warn'},
-  topo_dfs:{t:'Topo DFS — Post-order stack for dependency sorting.',c:'warn'},
-  kahn:{t:'Kahn’s BFS — In-degree based topological sorting.',c:'warn'},
-  kosaraju:{t:'Kosaraju — Two DFS passes to find SCCs.',c:'ok'},
-  tarjan:{t:'Tarjan/Bridges — Low-link logic to find critical edges.',c:'ok'},
-  articulation:{t:'Articulation — Nodes whose removal disconnects graph.',c:'ok'},
-  prim:{t:'Prim’s MST — Dense graph MST (Node based).',c:'warn'},
-  kruskal:{t:'Kruskal’s MST — Sparse graph MST (Edge based).',c:'warn'}
-};
-
-const CODES={
-bfs:`<span class="kw">void</span> <span class="fn">bfs</span>(<span class="tp">int</span> src) {
-  queue&lt;<span class="tp">int</span>&gt; q; q.push(src); vis[src]=<span class="kw">true</span>;
-  <span class="kw">while</span>(!q.empty()){
-    <span class="tp">int</span> u=q.front(); q.pop();
-    <span class="kw">for</span>(<span class="tp">int</span> v : adj[u])
-      <span class="kw">if</span>(!vis[v]) { vis[v]=<span class="kw">true</span>; q.push(v); }
-  }
-}`,
-dfs:`<span class="kw">void</span> <span class="fn">dfs</span>(<span class="tp">int</span> u) {
-  vis[u] = <span class="kw">true</span>;
-  <span class="kw">for</span>(<span class="tp">int</span> v : adj[u])
-    <span class="kw">if</span>(!vis[v]) dfs(v);
-}`,
-dijkstra:`<span class="kw">void</span> <span class="fn">dijkstra</span>(<span class="tp">int</span> src) {
-  dist[src] = <span class="num">0</span>;
-  pq.push({<span class="num">0</span>, src});
-  <span class="kw">while</span>(!pq.empty()){
-    <span class="tp">int</span> u = pq.top().second; pq.pop();
-    <span class="kw">for</span>(<span class="kw">auto</span>& [v, w] : adj[u])
-      <span class="kw">if</span>(dist[u]+w &lt; dist[v]){
-        dist[v] = dist[u]+w;
-        pq.push({dist[v], v});
-      }
-  }
-}`,
-kruskal:`<span class="kw">void</span> <span class="fn">kruskal</span>() {
-  sort(edges.begin(), edges.end());
-  vector&lt;<span class="tp">int</span>&gt; par(nodes.size());
-  iota(par.begin(), par.end(), <span class="num">0</span>);
-  <span class="kw">for</span>(<span class="kw">auto</span>& e : edges){
-    <span class="tp">int</span> rootU = find(par, e.u), rootV = find(par, e.v);
-    <span class="kw">if</span>(rootU != rootV) { unite(rootU, rootV); mst += e.w; }
-  }
-}`
-};
-
-function resizeCanvas(){canvas.width=canvas.parentElement.clientWidth;canvas.height=canvas.parentElement.clientHeight;draw();}
-
-function project(x,y,z){
-  const cx=Math.cos(rotX),sx=Math.sin(rotX),cy=Math.cos(rotY),sy=Math.sin(rotY);
-  const nx=x*cy+z*sy,ny=x*sx*sy+y*cx-z*sx*cy;
-  const s=zoom*Math.min(canvas.width,canvas.height)*0.24;
-  return{px:canvas.width/2+nx*s,py:canvas.height/2-ny*s};
-}
-
-function drawArrow(x1,y1,x2,y2,col,w=1.5){
-  ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.strokeStyle=col;ctx.lineWidth=w;ctx.stroke();
-  const a=Math.atan2(y2-y1,x2-x1),al=10,aw=0.4;
-  ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-al*Math.cos(a-aw),y2-al*Math.sin(a-aw));ctx.lineTo(x2-al*Math.cos(a+aw),y2-al*Math.sin(a+aw));
-  ctx.closePath();ctx.fillStyle=col;ctx.fill();
-}
-
-function draw(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  if(!nodes.length){ctx.fillStyle='#C0C0C0';ctx.font='13px sans-serif';ctx.textAlign='center';ctx.fillText('Add nodes/edges or select a preset',canvas.width/2,canvas.height/2);return;}
-  const dir=document.getElementById('dir').checked;
-  edges.forEach(e=>{
-    const n1=nodes.find(n=>n.id===e.f),n2=nodes.find(n=>n.id===e.t);if(!n1||!n2)return;
-    const p1=project(n1.x,n1.y,n1.z),p2=project(n2.x,n2.y,n2.z);
-    const key=`${e.f}-${e.t}`,rkey=`${e.t}-${e.f}`;
-    const col=EC[key] || (dir ? C.edge : EC[rkey]) || C.edge;
-    const w= (EC[key] || (!dir && EC[rkey])) ? 2.5 : 1.2;
-    
-    const dx=p2.px-p1.px,dy=p2.py-p1.py,len=Math.sqrt(dx*dx+dy*dy)||1,r=20;
-    const x1=p1.px+(dx/len)*r,y1=p1.py+(dy/len)*r,x2=p2.px-(dx/len)*(r+2),y2=p2.py-(dy/len)*(r+2);
-    if(dir)drawArrow(x1,y1,x2,y2,col,w);
-    else{ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.strokeStyle=col;ctx.lineWidth=w;ctx.stroke();}
-    
-    const wx=(p1.px+p2.px)/2,wy=(p1.py+p2.py)/2;
-    ctx.font='bold 11px sans-serif';ctx.textAlign='center';ctx.fillStyle='#333';
-    ctx.fillText(String(e.w),wx,wy);
-  });
-  nodes.forEach(n=>{
-    const p=project(n.x,n.y,n.z),col=NC[n.id]||C.node;
-    ctx.beginPath();ctx.arc(p.px,p.py,20,0,Math.PI*2);ctx.fillStyle=col+'22';ctx.fill();
-    ctx.strokeStyle=col;ctx.lineWidth=2.5;ctx.stroke();
-    ctx.font='bold 12px sans-serif';ctx.fillStyle=col;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(n.label,p.px,p.py);
-    if(NL[n.id]){ctx.font='9px sans-serif';ctx.fillStyle='#888';ctx.fillText(NL[n.id],p.px,p.py+22);}
-  });
-}
-
-canvas.addEventListener('mousedown',e=>{drag=true;lmx=e.clientX;lmy=e.clientY;});
-canvas.addEventListener('mousemove',e=>{if(!drag)return;rotY+=(e.clientX-lmx)*0.01;rotX+=(e.clientY-lmy)*0.01;lmx=e.clientX;lmy=e.clientY;draw();});
-canvas.addEventListener('mouseup',()=>drag=false);
-canvas.addEventListener('wheel',e=>{zoom*=e.deltaY>0?0.9:1.1;zoom=Math.max(0.3,Math.min(3,zoom));draw();e.preventDefault();},{passive:false});
-
-function sphPos(i,t){const phi=Math.acos(1-2*(i+0.5)/Math.max(t,1)),th=Math.PI*(1+Math.sqrt(5))*i;return{x:2.2*Math.sin(phi)*Math.cos(th),y:2.2*Math.sin(phi)*Math.sin(th),z:2.2*Math.cos(phi)};}
-
-function updSel(){['ef','et','sn'].forEach(id=>{const s=document.getElementById(id),c=s.value;s.innerHTML=nodes.map(n=>`<option value="${n.id}">${n.label}</option>`).join('');if(nodes.find(n=>String(n.id)===c))s.value=c;});}
-function addNode(){const label=document.getElementById('nl').value.trim()||String.fromCharCode(65+(nodes.length%26));const pos=sphPos(nodes.length,nodes.length+1);nodes.push({id:nid++,label,x:pos.x,y:pos.y,z:pos.z});updSel();draw();}
-function addEdge(){const f=parseInt(document.getElementById('ef').value),t=parseInt(document.getElementById('et').value),w=parseFloat(document.getElementById('ew').value)||1;if(isNaN(f)||isNaN(t)||f===t)return;edges.push({f,t,w});draw();}
-function clearGraph(){nodes=[];edges=[];nid=0;NC={};EC={};NL={};updSel();draw();logClear();}
-
-function loadPreset(name){
-  clearGraph();
-  const P={
-    simple:{n:['A','B','C','D'],e:[[0,1,1],[1,2,1],[2,3,1],[3,0,1],[0,2,1]],d:false},
-    weighted:{n:['S','A','B','C','T'],e:[[0,1,4],[0,2,2],[1,2,1],[1,3,5],[2,4,10],[3,4,2]],d:true},
-    negcycle:{n:['A','B','C'],e:[[0,1,1],[1,2,-5],[2,0,1]],d:true},
-    dag:{n:['A','B','C','D'],e:[[0,1,1],[0,2,1],[1,3,1],[2,3,1]],d:true},
-    scc:{n:['A','B','C','D'],e:[[0,1,1],[1,2,1],[2,0,1],[1,3,1]],d:true},
-    mst:{n:['A','B','C','D'],e:[[0,1,10],[0,2,6],[0,3,5],[1,3,15],[2,3,4]],d:false},
-    bipartite:{n:['A','B','C','D'],e:[[0,1,1],[1,2,1],[2,3,1],[3,0,1]],d:false}
-  };
-  const p=P[name];document.getElementById('dir').checked=p.d;
-  p.n.forEach(l=>{const pos=sphPos(nodes.length,p.n.length);nodes.push({id:nid++,label:l,x:pos.x,y:pos.y,z:pos.z});});
-  p.e.forEach(([f,t,w])=>edges.push({f,t,w}));
-  updSel();draw();
-}
-
-function selAlgo(name){
-  algo=name;document.querySelectorAll('.ab').forEach(b=>b.classList.remove('active'));
-  document.getElementById('ab-'+name).classList.add('active');
-  const p=PROPS[name];document.getElementById('prop').textContent=p.t;document.getElementById('prop').className='prop '+p.c;
-  document.getElementById('code-box').innerHTML=CODES[name]||'// Code coming soon...';
-  document.getElementById('cx-row').style.display='flex';
-  document.getElementById('cx-time').textContent=CX[name].time;
-  document.getElementById('cx-space').textContent=CX[name].space;
-}
-
-function log(msg,type=''){const b=document.getElementById('logbox');const d=document.createElement('div');d.className='ll '+type;d.textContent=msg;b.prepend(d);}
-function logClear(){document.getElementById('logbox').innerHTML='';}
-function resetViz(){if(tmr)clearTimeout(tmr);steps=[];cur=-1;NC={};EC={};NL={};draw();}
-
-function buildSteps(a,sid){
-  const S=[],adj={},dir=document.getElementById('dir').checked;
-  nodes.forEach(n=>adj[n.id]=[]);
-  edges.forEach(e=>{adj[e.f].push({to:e.t,w:e.w});if(!dir)adj[e.t].push({to:e.f,w:e.w});});
-
-  if(a==='bfs'){
-    const vis=new Set(),q=[sid];vis.add(sid);
-    while(q.length){
-      const u=q.shift();const nc={...NC};nc[u]=C.vis;
-      S.push({nc,msg:`Visit ${nodes.find(n=>n.id===u).label}`});
-      adj[u].forEach(nb=>{
-        if(!vis.has(nb.to)){vis.add(nb.to);q.push(nb.to);const ec={...EC};ec[`${u}-${nb.to}`]=C.trav;S.push({nc,ec,msg:`Found ${nodes.find(n=>n.id===nb.to).label}`});}
-      });
-    }
-  }
-  else if(a==='dijkstra'){
-    const dist={},vis=new Set();nodes.forEach(n=>dist[n.id]=Infinity);dist[sid]=0;
-    for(let i=0;i<nodes.length;i++){
-      let u=-1,min=Infinity;nodes.forEach(n=>{if(!vis.has(n.id)&&dist[n.id]<min){min=dist[n.id];u=n.id;}});
-      if(u===-1)break;vis.add(u);const nc={...NC},nl={...NL};nc[u]=C.vis;nl[u]=`d:${dist[u]}`;
-      S.push({nc,nl,msg:`Process ${nodes.find(n=>n.id===u).label}`});
-      adj[u].forEach(nb=>{
-        if(dist[u]+nb.w < dist[nb.to]){dist[nb.to]=dist[u]+nb.w;const ec={...EC};ec[`${u}-${nb.to}`]=C.trav;S.push({nc,nl,ec,msg:`Update ${nodes.find(n=>n.id===nb.to).label} to ${dist[nb.to]}`});}
-      });
-    }
-  }
-  else if (a === 'kruskal') {
-    const par = {}; nodes.forEach(n => par[n.id] = n.id);
-    function find(x) { if (par[x] !== x) par[x] = find(par[x]); return par[x]; }
-    const sortedEdges = [...edges].sort((a, b) => a.w - b.w);
-    let totalW = 0; const nc = {}, ec = {};
-    sortedEdges.forEach(e => {
-      const u = e.f, v = e.t;
-      const rootU = find(u), rootV = find(v);
-      if (rootU !== rootV) {
-        par[rootU] = rootV; totalW += e.w;
-        nc[u] = C.vis; nc[v] = C.vis; ec[`${u}-${v}`] = C.mst;
-        S.push({ nc: { ...nc }, ec: { ...ec }, msg: `Add edge ${nodes.find(n => n.id === u).label}-${nodes.find(n => n.id === v).label} (wt: ${e.w})` });
-      } else { S.push({ msg: `Skip edge ${nodes.find(n => n.id === u).label}-${nodes.find(n => n.id === v).label} (Cycle)`, t: 'wn' }); }
-    });
-  }
-  if(S.length===0) S.push({msg:"Animation logic for this algorithm is coming in the next update!"});
-  return S;
-}
-
-function runAlgo(){
-  if(!algo)return;
-  resetViz();
-  const sid=parseInt(document.getElementById('sn').value);
-  steps=buildSteps(algo,sid);
-  let i=0;
-  function next(){
-    if(i<steps.length){
-      const s=steps[i++];NC=s.nc||NC;EC=s.ec||EC;NL=s.nl||NL;
-      if(s.msg)log(s.msg, s.t);draw();
-      tmr=setTimeout(next,parseInt(document.getElementById('spd').value));
-    }
-  }
-  next();
-}
-
-function stepFwd(){ if(cur < steps.length-1) applyStep(steps[++cur]); }
-function stepBack(){ if(cur > 0) applyStep(steps[--cur]); }
-
-function toggleCode(){codeCollapsed=!codeCollapsed;document.getElementById('code-body').style.maxHeight=codeCollapsed?'0':'2000px';}
-
-function parseEditor(){
-  const text = document.getElementById('editor').value;
-  nodes = []; edges = []; nid = 0;
-  text.split('\n').forEach(line => {
-    line = line.trim();
-    if (!line || line.startsWith('//')) return;
-    const parts = line.split(/\s+/);
-    if (parts[0].toLowerCase() === 'addedge' && parts.length >= 4) {
-      const uLabel = String(parts[1]), vLabel = String(parts[2]), weight = parseFloat(parts[3]) || 1, isDirected = parseInt(parts[4]);
-      [uLabel, vLabel].forEach(label => {
-        if (!nodes.find(n => n.label === label)) {
-          const pos = sphPos(nodes.length, 10);
-          nodes.push({id: nid++, label: label, x: pos.x, y: pos.y, z: pos.z});
-        }
-      });
-      const uNode = nodes.find(n => n.label === uLabel), vNode = nodes.find(n => n.label === vLabel);
-      if (uNode && vNode) {
-        edges.push({ f: uNode.id, t: vNode.id, w: weight });
-        if (isDirected === 0) edges.push({ f: vNode.id, t: uNode.id, w: weight });
-      }
-    }
-  });
-  updSel(); draw(); log(`Live Editor Built: ${nodes.length} Nodes`, 'hl');
-}
-
-function clearEditor(){document.getElementById('editor').value='';}
-window.addEventListener('resize',resizeCanvas);
-resizeCanvas();
-loadPreset('simple');
-</script>
-</body>
-</html> -->
-
-//
-<!-- <!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>3D Graph Visualizer — Algorithm Explorer</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f2f5;color:#1a1a1a;height:100vh;overflow:hidden}
-.topbar{background:#1a1a2e;padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:42px}
-.logo-name{font-size:13px;font-weight:600;color:#fff}
-.logo-sub{font-size:10px;color:#8b9ec7;border-left:1px solid #3a3a5c;padding-left:8px;margin-left:4px}
-.tb-pill{font-size:10px;padding:2px 8px;border-radius:20px;border:1px solid #3a3a5c;color:#8b9ec7}
-.main{display:grid;grid-template-columns:220px 1fr 280px;gap:8px;padding:8px;height:calc(100vh - 42px)}
-.sidebar{display:flex;flex-direction:column;gap:7px;overflow-y:auto}
-.card{background:#fff;border:1px solid #e5e5e5;border-radius:10px;padding:11px;flex-shrink:0}
-.ct{font-size:11px;font-weight:600;color:#1a1a1a;margin-bottom:7px}
-.sl{font-size:10px;color:#888;margin-bottom:3px;font-weight:500}
-.row{display:flex;gap:4px;margin-bottom:5px;align-items:center}
-input[type=text],input[type=number]{padding:4px 6px;border:1px solid #e0e0e0;border-radius:5px;font-size:11px;background:#fff;color:#1a1a1a;outline:none}
-input[type=text]{flex:1}
-input[type=number]{width:44px}
-input:focus{border-color:#185FA5}
-.btn{padding:4px 9px;border-radius:5px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid #e0e0e0;background:#fff;color:#1a1a1a;transition:all 0.15s;white-space:nowrap}
-.btn:hover{background:#f5f5f7}
-.btn.p{background:#185FA5;color:#fff;border-color:#185FA5}
-.btn.p:hover{background:#0c447c}
-.btn.d{background:#a32d2d;color:#fff;border-color:#a32d2d}
-.btn.sm{padding:3px 7px;font-size:10px}
-.ag{font-size:9px;color:#aaa;margin-bottom:3px;margin-top:5px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em}
-.algo-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-bottom:2px}
-.ab{padding:5px 4px;border-radius:5px;font-size:10px;font-weight:500;cursor:pointer;border:1px solid #e0e0e0;background:#fff;color:#1a1a1a;text-align:center;transition:all 0.15s;line-height:1.3}
-.ab:hover{background:#f5f5f7}
-.ab.active{background:#185FA5;color:#fff;border-color:#185FA5}
-.prop{background:#f8f8f8;border-radius:6px;padding:7px;font-size:10px;line-height:1.6;color:#666;min-height:48px;border:1px solid #ebebeb}
-.prop.err{background:#fcebeb;color:#791F1F;border-color:#f7c1c1}
-.prop.warn{background:#faeeda;color:#633806;border-color:#fac775}
-.prop.ok{background:#eaf3de;color:#27500A;border-color:#c0dd97}
-.cx-row{display:flex;gap:4px;margin-top:5px}
-.cx{flex:1;background:#f8f8f8;border:1px solid #ebebeb;border-radius:5px;padding:5px;text-align:center}
-.cx-label{font-size:9px;color:#aaa;margin-bottom:2px}
-.cx-val{font-size:10px;font-weight:600;color:#185FA5}
-.log{background:#1a1a2e;border-radius:6px;padding:6px;font-size:10px;font-family:monospace;color:#c9d1d9;height:90px;overflow-y:auto;line-height:1.7}
-.ll{padding:1px 0;border-bottom:1px solid #2a2a3e}
-.ll.hl{color:#3fb950;font-weight:500}
-.ll.er{color:#f85149;font-weight:500}
-.ll.wn{color:#e3b341}
-.canvas-wrap{background:#fff;border:1px solid #e5e5e5;border-radius:10px;overflow:hidden;position:relative}
-canvas{display:block;width:100%;height:100%;cursor:grab}
-canvas:active{cursor:grabbing}
-.hint{position:absolute;bottom:8px;right:10px;font-size:9px;color:#ccc}
-.legend{position:absolute;top:10px;left:10px;background:rgba(255,255,255,0.95);padding:7px 9px;border-radius:7px;border:0.5px solid #e5e5e5;display:flex;flex-direction:column;gap:3px}
-.li{display:flex;align-items:center;gap:5px;font-size:9px;color:#666}
-.ld{width:8px;height:8px;border-radius:50%;flex-shrink:0}
-.cx-canvas{position:absolute;top:10px;right:10px;background:rgba(26,26,46,0.92);padding:8px 12px;border-radius:8px;display:none}
-.cx-canvas.show{display:block}
-.cx-canvas-row{display:flex;gap:12px}
-.cx-c{text-align:center}
-.cx-c-label{font-size:9px;color:#8b9ec7;margin-bottom:2px}
-.cx-c-val{font-size:11px;font-weight:600;color:#79c0ff}
-.overlay-msg{position:absolute;top:50px;right:10px;background:#fff;border:1px solid #e5e5e5;border-radius:8px;padding:8px 10px;font-size:10px;max-width:190px;display:none;box-shadow:0 2px 8px rgba(0,0,0,0.08)}
-.overlay-msg.show{display:block}
-.path-overlay{position:absolute;bottom:28px;left:10px;background:#fff;border:1px solid #e5e5e5;border-radius:8px;padding:7px 10px;font-size:10px;display:none;max-width:320px}
-.path-overlay.show{display:block}
-.right-panel{display:flex;flex-direction:column;gap:7px;overflow-y:auto}
-.code-header{display:flex;align-items:center;justify-content:space-between;cursor:pointer;user-select:none}
-.fold-btn{font-size:10px;color:#888;padding:2px 6px;border-radius:4px;border:1px solid #e0e0e0;background:#f8f8f8}
-.code-body{overflow:hidden;max-height:2000px;transition:max-height 0.3s}
-.code-box{background:#1a1a2e;border-radius:6px;padding:10px;font-family:monospace;font-size:10px;line-height:1.7;color:#c9d1d9;overflow-x:auto;margin-top:6px}
-.code-box .kw{color:#ff7b72}
-.code-box .fn{color:#79c0ff}
-.code-box .cm{color:#8b949e}
-.code-box .str{color:#a5d6ff}
-.code-box .num{color:#f2cc60}
-.code-box .tp{color:#ffa657}
-.badge{font-size:9px;padding:2px 6px;border-radius:20px;font-weight:500}
-.b-bl{background:#e6f1fb;color:#185fa5}
-.b-gn{background:#eaf3de;color:#3b6d11}
-.b-rd{background:#fcebeb;color:#a32d2d}
-.b-am{background:#faeeda;color:#854f0b}
-.b-pu{background:#eeedfe;color:#534ab7}
-.editor-wrap{flex:1;display:flex;flex-direction:column;min-height:180px}
-.editor-area{flex:1;background:#1a1a2e;border-radius:6px;padding:8px;font-family:monospace;font-size:10px;color:#c9d1d9;border:1px solid #3a3a5c;outline:none;resize:none;min-height:120px;line-height:1.7}
-.divider{border:none;border-top:1px solid #f0f0f0;margin:5px 0}
-select{padding:4px 6px;border:1px solid #e0e0e0;border-radius:5px;font-size:11px;background:#fff;color:#1a1a1a;outline:none;flex:1}
-.preset-row{display:flex;gap:3px;flex-wrap:wrap}
-</style>
-</head>
-<body>
-<div class="topbar">
-  <div style="display:flex;align-items:center;gap:6px">
-    <span class="logo-name">3D Graph Visualizer</span>
-    <span class="logo-sub">All Graph Algorithms — C++ · OpenGL · STL</span>
-  </div>
-  <div style="display:flex;gap:5px">
-    <span class="tb-pill">17 Algorithms</span>
-    <span class="tb-pill">C++ Code</span>
-    <span class="tb-pill">Live Editor</span>
-    <a href="graph-reference.html" style="text-decoration:none"><span class="tb-pill" style="cursor:pointer;color:#79c0ff;border-color:#185FA5">Reference →</span></a>
-  </div>
-</div>
-
-<div class="main">
-  <div class="sidebar">
-    <div class="card">
-      <div class="ct">Graph Builder</div>
-      <div class="sl">Manage Node</div>
-      <div class="row">
-        <input type="text" id="nl" placeholder="A or 1"/>
-        <button class="btn p sm" onclick="addNode()">+Node</button>
-        <button class="btn d sm" onclick="removeNode()">-Node</button>
-      </div>
-      <div class="sl">Manage Edge</div>
-      <div class="row">
-        <select id="ef"></select>
-        <span style="font-size:10px;color:#888">→</span>
-        <select id="et"></select>
-      </div>
-      <div class="row">
-        <input type="number" id="ew" value="1"/>
-        <label style="font-size:10px;color:#555;display:flex;align-items:center;gap:3px"><input type="checkbox" id="dir" checked/> Dir</label>
-        <button class="btn p sm" onclick="addEdge()">+Edge</button>
-        <button class="btn d sm" onclick="removeEdge()">-Edge</button>
-      </div>
-      <div class="row">
-        <button class="btn d sm" style="width:100%" onclick="clearGraph()">Clear All</button>
-      </div>
-      <div class="divider"></div>
-      <div class="sl">Presets</div>
-      <div class="preset-row">
-        <button class="btn sm" onclick="loadPreset('simple')">Simple</button>
-        <button class="btn sm" onclick="loadPreset('weighted')">Wtd</button>
-        <button class="btn sm" onclick="loadPreset('negcycle')">NegCyc</button>
-        <button class="btn sm" onclick="loadPreset('dag')">DAG</button>
-        <button class="btn sm" onclick="loadPreset('scc')">SCC</button>
-        <button class="btn sm" onclick="loadPreset('mst')">MST</button>
-        <button class="btn sm" onclick="loadPreset('bipartite')">Bip</button>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="ct">Algorithms</div>
-      <div class="ag">Traversal</div>
-      <div class="algo-grid">
-        <div class="ab" id="ab-bfs" onclick="selAlgo('bfs')">BFS</div>
-        <div class="ab" id="ab-dfs" onclick="selAlgo('dfs')">DFS</div>
-      </div>
-      <div class="ag">Cycle Detection</div>
-      <div class="algo-grid">
-        <div class="ab" id="ab-cycle_bfs" onclick="selAlgo('cycle_bfs')">Cycle BFS</div>
-        <div class="ab" id="ab-cycle_dfs" onclick="selAlgo('cycle_dfs')">Cycle DFS</div>
-        <div class="ab" id="ab-cycle_dir" onclick="selAlgo('cycle_dir')">Cycle Dir</div>
-        <div class="ab" id="ab-bipartite" onclick="selAlgo('bipartite')">Bipartite</div>
-      </div>
-      <div class="ag">Shortest Path</div>
-      <div class="algo-grid">
-        <div class="ab" id="ab-dijkstra" onclick="selAlgo('dijkstra')">Dijkstra</div>
-        <div class="ab" id="ab-bellman" onclick="selAlgo('bellman')">Bellman-Ford</div>
-        <div class="ab" id="ab-floyd" onclick="selAlgo('floyd')">Floyd-W</div>
-        <div class="ab" id="ab-dag_sp" onclick="selAlgo('dag_sp')">DAG SP</div>
-      </div>
-      <div class="ag">Topological Sort</div>
-      <div class="algo-grid">
-        <div class="ab" id="ab-topo_dfs" onclick="selAlgo('topo_dfs')">Topo DFS</div>
-        <div class="ab" id="ab-kahn" onclick="selAlgo('kahn')">Kahn's BFS</div>
-      </div>
-      <div class="ag">SCC & Bridges</div>
-      <div class="algo-grid">
-        <div class="ab" id="ab-kosaraju" onclick="selAlgo('kosaraju')">Kosaraju</div>
-        <div class="ab" id="ab-tarjan" onclick="selAlgo('tarjan')">Tarjan Br.</div>
-        <div class="ab" id="ab-articulation" onclick="selAlgo('articulation')">Artic. Pts</div>
-      </div>
-      <div class="ag">MST</div>
-      <div class="algo-grid">
-        <div class="ab" id="ab-prim" onclick="selAlgo('prim')">Prim's</div>
-        <div class="ab" id="ab-kruskal" onclick="selAlgo('kruskal')">Kruskal</div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="ct">Run</div>
-      <div class="row">
-        <select id="sn"></select>
-        <button class="btn p" onclick="runAlgo()">Run</button>
-      </div>
-      <div class="row" style="margin-top:5px">
-        <span style="font-size:10px;color:#888">Speed</span>
-        <input type="range" min="200" max="2000" value="800" step="100" id="spd" style="flex:1" oninput="document.getElementById('spl').textContent=this.value+'ms'"/>
-        <span style="font-size:10px;color:#888" id="spl">800ms</span>
-      </div>
-      <div class="row" style="margin-top:5px;gap:4px">
-        <button class="btn sm" onclick="stepBack()">← Back</button>
-        <button class="btn sm" onclick="stepFwd()">Next →</button>
-        <button class="btn sm" onclick="resetViz()">Reset</button>
-      </div>
-    </div>
-
-    <div class="card" style="flex:1">
-      <div class="ct">Properties</div>
-      <div class="prop" id="prop">Select an algorithm.</div>
-      <div class="cx-row" id="cx-row" style="display:none">
-        <div class="cx"><div class="cx-label">Time</div><div class="cx-val" id="cx-time">—</div></div>
-        <div class="cx"><div class="cx-label">Space</div><div class="cx-val" id="cx-space">—</div></div>
-        <div class="cx"><div class="cx-label">Type</div><div class="cx-val" id="cx-type">—</div></div>
-      </div>
-      <div class="ct" style="margin-top:7px">Step Log</div>
-      <div class="log" id="logbox"><div style="color:#555">Run algo to see steps...</div></div>
-    </div>
-  </div>
-
-  <div class="canvas-wrap">
-    <canvas id="gc"></canvas>
-    <div class="legend">
-      <div class="li"><div class="ld" style="background:#185FA5"></div>Unvisited</div>
-      <div class="li"><div class="ld" style="background:#1D9E75"></div>Visited</div>
-      <div class="li"><div class="ld" style="background:#E24B4A"></div>Current/Error</div>
-      <div class="li"><div class="ld" style="background:#854F0B"></div>Back edge</div>
-      <div class="li"><div class="ld" style="background:#F2CC60"></div>Path/MST</div>
-    </div>
-    <div class="cx-canvas" id="cx-canvas">
-      <div class="cx-canvas-row">
-        <div class="cx-c"><div class="cx-c-label">Time</div><div class="cx-c-val" id="cxc-time">—</div></div>
-        <div class="cx-c"><div class="cx-c-label">Space</div><div class="cx-c-val" id="cxc-space">—</div></div>
-      </div>
-    </div>
-    <div class="overlay-msg" id="overlay-msg">
-      <div style="font-weight:600;font-size:11px;margin-bottom:4px;color:#1a1a1a" id="overlay-title">Result</div>
-      <div id="overlay-list"></div>
-    </div>
-    <div class="path-overlay" id="path-overlay"></div>
-    <div class="hint">Drag to rotate · Scroll to zoom</div>
-  </div>
-
-  <div class="right-panel">
-    <div class="card">
-      <div class="code-header" onclick="toggleCode()">
-        <div style="display:flex;align-items:center;gap:6px">
-          <span class="ct" style="margin:0" id="code-label">C++ Implementation</span>
-          <span class="badge b-bl" id="code-badge">Select algo</span>
-        </div>
-        <span class="fold-btn" id="fold-btn">▼ Collapse</span>
-      </div>
-      <div class="code-body" id="code-body">
-        <pre class="code-box" id="code-box"><span style="color:#555">// Select an algorithm to see C++ code</span></pre>
-      </div>
-    </div>
-
-    <div class="card editor-wrap">
-      <div class="ct">Live Code Editor</div>
-      <div style="font-size:10px;color:#888;margin-bottom:5px">Format: <code style="background:#f0f0f0;padding:1px 4px;border-radius:3px;font-size:10px">addedge u v wt dir</code></div>
-      <textarea class="editor-area" id="editor" placeholder="// Example:
-addedge A B 1 0
-addedge B C 1 0
-addedge C A 1 0"></textarea>
-      <div class="row" style="margin-top:5px">
-        <button class="btn p sm" onclick="parseEditor()">Build Graph</button>
-        <button class="btn sm" onclick="clearEditor()">Clear</button>
-      </div>
-    </div>
-  </div>
-</div>
-
-<script>
-const canvas=document.getElementById('gc');
-const ctx=canvas.getContext('2d');
-let nodes=[],edges=[],nid=0;
-let rotX=0.3,rotY=0.4,zoom=1;
-let drag=false,lmx=0,lmy=0;
-let algo=null,steps=[],cur=-1,tmr=null;
-let NC={},EC={},NL={},NLvl={};
-let codeCollapsed=false;
-
-const C={
-  node:'#185FA5',vis:'#1D9E75',curr:'#E24B4A',
-  edge:'#D0D0D0',trav:'#185FA5',neg:'#E24B4A',
-  bridge:'#E24B4A',back:'#854F0B',path:'#F2CC60',mst:'#F2CC60',
-  src:'#E24B4A',dst:'#1D9E75',cycle:'#E24B4A',
-  bip1:'#185FA5',bip2:'#D4537E',
-  scc:['#185FA5','#1D9E75','#854F0B','#534AB7','#D85A30','#993556'],
-  lvl:['#185FA5','#1D9E75','#854F0B','#534AB7','#D85A30','#993556']
-};
-
-const CX={
-  bfs:{time:'O(V+E)',space:'O(V)',type:'Queue'},
-  dfs:{time:'O(V+E)',space:'O(V)',type:'Recursion'},
-  cycle_bfs:{time:'O(V+E)',space:'O(V)',type:'BFS+Parent'},
-  cycle_dfs:{time:'O(V+E)',space:'O(V)',type:'DFS+Parent'},
-  cycle_dir:{time:'O(V+E)',space:'O(V)',type:'DFS+Color'},
-  bipartite:{time:'O(V+E)',space:'O(V)',type:'BFS 2-Color'},
-  dijkstra:{time:'O(E logV)',space:'O(V)',type:'Greedy+PQ'},
-  bellman:{time:'O(V·E)',space:'O(V)',type:'DP Relax'},
-  floyd:{time:'O(V³)',space:'O(V²)',type:'DP All-Pair'},
-  dag_sp:{time:'O(V+E)',space:'O(V)',type:'Topo+Relax'},
-  topo_dfs:{time:'O(V+E)',space:'O(V)',type:'DFS+Stack'},
-  kahn:{time:'O(V+E)',space:'O(V)',type:'BFS InDeg'},
-  kosaraju:{time:'O(V+E)',space:'O(V)',type:'2×DFS'},
-  tarjan:{time:'O(V+E)',space:'O(V)',type:'disc+low'},
-  articulation:{time:'O(V+E)',space:'O(V)',type:'disc+low'},
-  prim:{time:'O(E logV)',space:'O(V)',type:'Greedy+PQ'},
-  kruskal:{time:'O(E logE)',space:'O(V)',type:'DSU+Sort'}
-};
-
-const PROPS={
-  bfs:{t:'BFS — Level by level traversal. Find shortest path in unweighted graphs.',c:'ok'},
-  dfs:{t:'DFS — Deep traversal. Basis for topo sort and SCC.',c:'ok'},
-  cycle_bfs:{t:'Cycle Detection BFS — If visited neighbor != parent, cycle exists.',c:'ok'},
-  cycle_dfs:{t:'Cycle Detection DFS — If back edge to visited node found, cycle exists.',c:'ok'},
-  cycle_dir:{t:'Directed Cycle — 3-color DFS (Gray to Gray edge = cycle).',c:'warn'},
-  bipartite:{t:'Bipartite — Check if graph is 2-colorable.',c:'ok'},
-  dijkstra:{t:'Dijkstra — Shortest path from source. Needs weights >= 0.',c:'warn'},
-  bellman:{t:'Bellman-Ford — Handles negative weights. V-1 relaxations.',c:'ok'},
-  floyd:{t:'Floyd-Warshall — All-pairs shortest paths. O(V³).',c:'warn'},
-  dag_sp:{t:'DAG SP — Topological sort then relax. O(V+E).',c:'warn'},
-  topo_dfs:{t:'Topo DFS — Post-order stack for dependency sorting.',c:'warn'},
-  kahn:{t:'Kahn’s BFS — In-degree based topological sorting.',c:'warn'},
-  kosaraju:{t:'Kosaraju — Two DFS passes to find SCCs.',c:'ok'},
-  tarjan:{t:'Tarjan/Bridges — Low-link logic to find critical edges.',c:'ok'},
-  articulation:{t:'Articulation — Nodes whose removal disconnects graph.',c:'ok'},
-  prim:{t:'Prim’s MST — Dense graph MST (Node based).',c:'warn'},
-  kruskal:{t:'Kruskal’s MST — Sparse graph MST (Edge based).',c:'warn'}
-};
-
-const CODES={
-bfs:`<span class="kw">void</span> <span class="fn">bfs</span>(<span class="tp">int</span> src) {
-  queue&lt;<span class="tp">int</span>&gt; q; q.push(src); vis[src]=<span class="kw">true</span>;
-  <span class="kw">while</span>(!q.empty()){
-    <span class="tp">int</span> u=q.front(); q.pop();
-    <span class="kw">for</span>(<span class="tp">int</span> v : adj[u])
-      <span class="kw">if</span>(!vis[v]) { vis[v]=<span class="kw">true</span>; q.push(v); }
-  }
-}`,
-dfs:`<span class="kw">void</span> <span class="fn">dfs</span>(<span class="tp">int</span> u) {
-  vis[u] = <span class="kw">true</span>;
-  <span class="kw">for</span>(<span class="tp">int</span> v : adj[u])
-    <span class="kw">if</span>(!vis[v]) dfs(v);
-}`,
-dijkstra:`<span class="kw">void</span> <span class="fn">dijkstra</span>(<span class="tp">int</span> src) {
-  dist[src] = <span class="num">0</span>;
-  pq.push({<span class="num">0</span>, src});
-  <span class="kw">while</span>(!pq.empty()){
-    <span class="tp">int</span> u = pq.top().second; pq.pop();
-    <span class="kw">for</span>(<span class="kw">auto</span>& [v, w] : adj[u])
-      <span class="kw">if</span>(dist[u]+w &lt; dist[v]){
-        dist[v] = dist[u]+w;
-        pq.push({dist[v], v});
-      }
-  }
-}`,
-kruskal:`<span class="kw">void</span> <span class="fn">kruskal</span>() {
-  sort(edges.begin(), edges.end());
-  vector&lt;<span class="tp">int</span>&gt; par(nodes.size());
-  iota(par.begin(), par.end(), <span class="num">0</span>);
-  <span class="kw">for</span>(<span class="kw">auto</span>& e : edges){
-    <span class="tp">int</span> rootU = find(par, e.u), rootV = find(par, e.v);
-    <span class="kw">if</span>(rootU != rootV) { unite(rootU, rootV); mst += e.w; }
-  }
-}`
-};
-
-function resizeCanvas(){canvas.width=canvas.parentElement.clientWidth;canvas.height=canvas.parentElement.clientHeight;draw();}
-
-function project(x,y,z){
-  const cx=Math.cos(rotX),sx=Math.sin(rotX),cy=Math.cos(rotY),sy=Math.sin(rotY);
-  const nx=x*cy+z*sy,ny=x*sx*sy+y*cx-z*sx*cy;
-  const s=zoom*Math.min(canvas.width,canvas.height)*0.24;
-  return{px:canvas.width/2+nx*s,py:canvas.height/2-ny*s};
-}
-
-function drawArrow(x1,y1,x2,y2,col,w=1.5){
-  ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.strokeStyle=col;ctx.lineWidth=w;ctx.stroke();
-  const a=Math.atan2(y2-y1,x2-x1),al=10,aw=0.4;
-  ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-al*Math.cos(a-aw),y2-al*Math.sin(a-aw));ctx.lineTo(x2-al*Math.cos(a+aw),y2-al*Math.sin(a+aw));
-  ctx.closePath();ctx.fillStyle=col;ctx.fill();
-}
-
-function draw(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  if(!nodes.length){ctx.fillStyle='#C0C0C0';ctx.font='13px sans-serif';ctx.textAlign='center';ctx.fillText('Add nodes/edges or select a preset',canvas.width/2,canvas.height/2);return;}
-  const dir=document.getElementById('dir').checked;
-  edges.forEach(e=>{
-    const n1=nodes.find(n=>n.id===e.f),n2=nodes.find(n=>n.id===e.t);if(!n1||!n2)return;
-    const p1=project(n1.x,n1.y,n1.z),p2=project(n2.x,n2.y,n2.z);
-    const key=`${e.f}-${e.t}`,rkey=`${e.t}-${e.f}`;
-    const col=EC[key] || (dir ? C.edge : EC[rkey]) || C.edge;
-    const w= (EC[key] || (!dir && EC[rkey])) ? 2.5 : 1.2;
-    
-    const dx=p2.px-p1.px,dy=p2.py-p1.py,len=Math.sqrt(dx*dx+dy*dy)||1,r=20;
-    const x1=p1.px+(dx/len)*r,y1=p1.py+(dy/len)*r,x2=p2.px-(dx/len)*(r+2),y2=p2.py-(dy/len)*(r+2);
-    if(dir)drawArrow(x1,y1,x2,y2,col,w);
-    else{ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.strokeStyle=col;ctx.lineWidth=w;ctx.stroke();}
-    
-    const wx=(p1.px+p2.px)/2,wy=(p1.py+p2.py)/2;
-    ctx.font='bold 11px sans-serif';ctx.textAlign='center';ctx.fillStyle='#333';
-    ctx.fillText(String(e.w),wx,wy);
-  });
-  nodes.forEach(n=>{
-    const p=project(n.x,n.y,n.z),col=NC[n.id]||C.node;
-    ctx.beginPath();ctx.arc(p.px,p.py,20,0,Math.PI*2);ctx.fillStyle=col+'22';ctx.fill();
-    ctx.strokeStyle=col;ctx.lineWidth=2.5;ctx.stroke();
-    ctx.font='bold 12px sans-serif';ctx.fillStyle=col;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(n.label,p.px,p.py);
-    if(NL[n.id]){ctx.font='9px sans-serif';ctx.fillStyle='#888';ctx.fillText(NL[n.id],p.px,p.py+22);}
-  });
-}
-
-canvas.addEventListener('mousedown',e=>{drag=true;lmx=e.clientX;lmy=e.clientY;});
-canvas.addEventListener('mousemove',e=>{if(!drag)return;rotY+=(e.clientX-lmx)*0.01;rotX+=(e.clientY-lmy)*0.01;lmx=e.clientX;lmy=e.clientY;draw();});
-canvas.addEventListener('mouseup',()=>drag=false);
-canvas.addEventListener('wheel',e=>{zoom*=e.deltaY>0?0.9:1.1;zoom=Math.max(0.3,Math.min(3,zoom));draw();e.preventDefault();},{passive:false});
-
-function sphPos(i,t){const phi=Math.acos(1-2*(i+0.5)/Math.max(t,1)),th=Math.PI*(1+Math.sqrt(5))*i;return{x:2.2*Math.sin(phi)*Math.cos(th),y:2.2*Math.sin(phi)*Math.sin(th),z:2.2*Math.cos(phi)};}
-
-function updSel(){['ef','et','sn'].forEach(id=>{const s=document.getElementById(id),c=s.value;s.innerHTML=nodes.map(n=>`<option value="${n.id}">${n.label}</option>`).join('');if(nodes.find(n=>String(n.id)===c))s.value=c;});}
-
-function addNode(){const label=document.getElementById('nl').value.trim()||String.fromCharCode(65+(nodes.length%26));const pos=sphPos(nodes.length,nodes.length+1);nodes.push({id:nid++,label,x:pos.x,y:pos.y,z:pos.z});updSel();draw();}
-
-// NEW FUNCTION: Remove specific node and its edges
-function removeNode(){
-  const label = document.getElementById('nl').value.trim();
-  const nodeIndex = nodes.findIndex(n => n.label === label);
-  if(nodeIndex !== -1) {
-    const nodeId = nodes[nodeIndex].id;
-    nodes.splice(nodeIndex, 1);
-    edges = edges.filter(e => e.f !== nodeId && e.t !== nodeId);
-    updSel(); draw(); log(`Node ${label} removed`, 'wn');
-  } else { log(`Node ${label} not found`, 'er'); }
-}
-
-function addEdge(){const f=parseInt(document.getElementById('ef').value),t=parseInt(document.getElementById('et').value),w=parseFloat(document.getElementById('ew').value)||1;if(isNaN(f)||isNaN(t)||f===t)return;edges.push({f,t,w});draw();}
-
-// NEW FUNCTION: Remove specific edge
-function removeEdge(){
-  const f=parseInt(document.getElementById('ef').value),t=parseInt(document.getElementById('et').value);
-  const dir = document.getElementById('dir').checked;
-  const initialLen = edges.length;
-  edges = edges.filter(e => !(e.f === f && e.t === t));
-  if(!dir) edges = edges.filter(e => !(e.f === t && e.t === f));
-  if(edges.length < initialLen) { draw(); log('Edge removed', 'wn'); }
-}
-
-function clearGraph(){nodes=[];edges=[];nid=0;NC={};EC={};NL={};updSel();draw();logClear();}
-
-function loadPreset(name){
-  clearGraph();
-  const P={
-    simple:{n:['A','B','C','D'],e:[[0,1,1],[1,2,1],[2,3,1],[3,0,1],[0,2,1]],d:false},
-    weighted:{n:['S','A','B','C','T'],e:[[0,1,4],[0,2,2],[1,2,1],[1,3,5],[2,4,10],[3,4,2]],d:true},
-    negcycle:{n:['A','B','C'],e:[[0,1,1],[1,2,-5],[2,0,1]],d:true},
-    dag:{n:['A','B','C','D'],e:[[0,1,1],[0,2,1],[1,3,1],[2,3,1]],d:true},
-    scc:{n:['A','B','C','D'],e:[[0,1,1],[1,2,1],[2,0,1],[1,3,1]],d:true},
-    mst:{n:['A','B','C','D'],e:[[0,1,10],[0,2,6],[0,3,5],[1,3,15],[2,3,4]],d:false},
-    bipartite:{n:['A','B','C','D'],e:[[0,1,1],[1,2,1],[2,3,1],[3,0,1]],d:false}
-  };
-  const p=P[name];document.getElementById('dir').checked=p.d;
-  p.n.forEach(l=>{const pos=sphPos(nodes.length,p.n.length);nodes.push({id:nid++,label:l,x:pos.x,y:pos.y,z:pos.z});});
-  p.e.forEach(([f,t,w])=>edges.push({f,t,w}));
-  updSel();draw();
-}
-
-function selAlgo(name){
-  algo=name;document.querySelectorAll('.ab').forEach(b=>b.classList.remove('active'));
-  document.getElementById('ab-'+name).classList.add('active');
-  const p=PROPS[name];document.getElementById('prop').textContent=p.t;document.getElementById('prop').className='prop '+p.c;
-  document.getElementById('code-box').innerHTML=CODES[name]||'// Code coming soon...';
-  document.getElementById('cx-row').style.display='flex';
-  document.getElementById('cx-time').textContent=CX[name].time;
-  document.getElementById('cx-space').textContent=CX[name].space;
-}
-
-function log(msg,type=''){const b=document.getElementById('logbox');const d=document.createElement('div');d.className='ll '+type;d.textContent=msg;b.prepend(d);}
-function logClear(){document.getElementById('logbox').innerHTML='';}
-function resetViz(){if(tmr)clearTimeout(tmr);steps=[];cur=-1;NC={};EC={};NL={};draw();}
-
-function buildSteps(a,sid){
-  const S=[],adj={},dir=document.getElementById('dir').checked;
-  nodes.forEach(n=>adj[n.id]=[]);
-  edges.forEach(e=>{adj[e.f].push({to:e.t,w:e.w});if(!dir)adj[e.t].push({to:e.f,w:e.w});});
-
-  if(a==='bfs'){
-    const vis=new Set(),q=[sid];vis.add(sid);
-    while(q.length){
-      const u=q.shift();const nc={...NC};nc[u]=C.vis;
-      S.push({nc,msg:`Visit ${nodes.find(n=>n.id===u).label}`});
-      adj[u].forEach(nb=>{
-        if(!vis.has(nb.to)){vis.add(nb.to);q.push(nb.to);const ec={...EC};ec[`${u}-${nb.to}`]=C.trav;S.push({nc,ec,msg:`Found ${nodes.find(n=>n.id===nb.to).label}`});}
-      });
-    }
-  }
-  else if(a==='dijkstra'){
-    const dist={},vis=new Set();nodes.forEach(n=>dist[n.id]=Infinity);dist[sid]=0;
-    for(let i=0;i<nodes.length;i++){
-      let u=-1,min=Infinity;nodes.forEach(n=>{if(!vis.has(n.id)&&dist[n.id]<min){min=dist[n.id];u=n.id;}});
-      if(u===-1)break;vis.add(u);const nc={...NC},nl={...NL};nc[u]=C.vis;nl[u]=`d:${dist[u]}`;
-      S.push({nc,nl,msg:`Process ${nodes.find(n=>n.id===u).label}`});
-      adj[u].forEach(nb=>{
-        if(dist[u]+nb.w < dist[nb.to]){dist[nb.to]=dist[u]+nb.w;const ec={...EC};ec[`${u}-${nb.to}`]=C.trav;S.push({nc,nl,ec,msg:`Update ${nodes.find(n=>n.id===nb.to).label} to ${dist[nb.to]}`});}
-      });
-    }
-  }
-  else if (a === 'kruskal') {
-    const par = {}; nodes.forEach(n => par[n.id] = n.id);
-    function find(p, x) { if (p[x] !== x) p[x] = find(p, p[x]); return p[x]; }
-    const sortedEdges = [...edges].sort((a, b) => a.w - b.w);
-    let totalW = 0; const nc = {}, ec = {};
-    sortedEdges.forEach(e => {
-      const u = e.f, v = e.t;
-      const rootU = find(par, u), rootV = find(par, v);
-      if (rootU !== rootV) {
-        par[rootU] = rootV; totalW += e.w;
-        nc[u] = C.vis; nc[v] = C.vis; ec[`${u}-${v}`] = C.mst;
-        S.push({ nc: { ...nc }, ec: { ...ec }, msg: `Add edge ${nodes.find(n => n.id === u).label}-${nodes.find(n => n.id === v).label} (wt: ${e.w})` });
-      } else { S.push({ msg: `Skip edge ${nodes.find(n => n.id === u).label}-${nodes.find(n => n.id === v).label} (Cycle)`, t: 'wn' }); }
-    });
-  }
-  if(S.length===0) S.push({msg:"Animation logic for this algorithm is coming in the next update!"});
-  return S;
-}
-
-function runAlgo(){
-  if(!algo)return;
-  resetViz();
-  const sid=parseInt(document.getElementById('sn').value);
-  steps=buildSteps(algo,sid);
-  let i=0;
-  function next(){
-    if(i<steps.length){
-      const s=steps[i++];NC=s.nc||NC;EC=s.ec||EC;NL=s.nl||NL;
-      if(s.msg)log(s.msg, s.t);draw();
-      tmr=setTimeout(next,parseInt(document.getElementById('spd').value));
-    }
-  }
-  next();
-}
-
-function stepFwd(){ if(cur < steps.length-1) applyStep(steps[++cur]); }
-function stepBack(){ if(cur > 0) applyStep(steps[--cur]); }
-
-function toggleCode(){codeCollapsed=!codeCollapsed;document.getElementById('code-body').style.maxHeight=codeCollapsed?'0':'2000px';}
-
-function parseEditor(){
-  const text = document.getElementById('editor').value;
-  nodes = []; edges = []; nid = 0;
-  text.split('\n').forEach(line => {
-    line = line.trim();
-    if (!line || line.startsWith('//')) return;
-    const parts = line.split(/\s+/);
-    if (parts[0].toLowerCase() === 'addedge' && parts.length >= 4) {
-      const uLabel = String(parts[1]), vLabel = String(parts[2]), weight = parseFloat(parts[3]) || 1, isDirected = parseInt(parts[4]);
-      [uLabel, vLabel].forEach(label => {
-        if (!nodes.find(n => n.label === label)) {
-          const pos = sphPos(nodes.length, 10);
-          nodes.push({id: nid++, label: label, x: pos.x, y: pos.y, z: pos.z});
-        }
-      });
-      const uNode = nodes.find(n => n.label === uLabel), vNode = nodes.find(n => n.label === vLabel);
-      if (uNode && vNode) {
-        edges.push({ f: uNode.id, t: vNode.id, w: weight });
-        if (isDirected === 0) edges.push({ f: vNode.id, t: uNode.id, w: weight });
-      }
-    }
-  });
-  updSel(); draw(); log(`Live Editor Built: ${nodes.length} Nodes`, 'hl');
-}
-
-function clearEditor(){document.getElementById('editor').value='';}
-window.addEventListener('resize',resizeCanvas);
-resizeCanvas();
-loadPreset('simple');
-</script>
-</body>
-</html> --> 
-
-//
-<!DOCTYPE html>
-<html lang="en">
-<head>
-<meta charset="UTF-8"/>
-<meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>3D Graph Visualizer — Algorithm Explorer</title>
-<style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f2f5;color:#1a1a1a;height:100vh;overflow:hidden}
-.topbar{background:#1a1a2e;padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:42px}
-.logo-name{font-size:13px;font-weight:600;color:#fff}
-.logo-sub{font-size:10px;color:#8b9ec7;border-left:1px solid #3a3a5c;padding-left:8px;margin-left:4px}
-.tb-pill{font-size:10px;padding:2px 8px;border-radius:20px;border:1px solid #3a3a5c;color:#8b9ec7}
-.main{display:grid;grid-template-columns:220px 1fr 280px;gap:8px;padding:8px;height:calc(100vh - 42px)}
-.sidebar{display:flex;flex-direction:column;gap:7px;overflow-y:auto}
-.card{background:#fff;border:1px solid #e5e5e5;border-radius:10px;padding:11px;flex-shrink:0}
-.ct{font-size:11px;font-weight:600;color:#1a1a1a;margin-bottom:7px}
-.sl{font-size:10px;color:#888;margin-bottom:3px;font-weight:500}
-.row{display:flex;gap:4px;margin-bottom:5px;align-items:center}
-input[type=text],input[type=number]{padding:4px 6px;border:1px solid #e0e0e0;border-radius:5px;font-size:11px;background:#fff;color:#1a1a1a;outline:none}
-input[type=text]{flex:1}
-input[type=number]{width:44px}
-input:focus{border-color:#185FA5}
-.btn{padding:4px 9px;border-radius:5px;font-size:11px;font-weight:500;cursor:pointer;border:1px solid #e0e0e0;background:#fff;color:#1a1a1a;transition:all 0.15s;white-space:nowrap}
-.btn:hover{background:#f5f5f7}
-.btn.p{background:#185FA5;color:#fff;border-color:#185FA5}
-.btn.p:hover{background:#0c447c}
-.btn.d{background:#a32d2d;color:#fff;border-color:#a32d2d}
-.btn.sm{padding:3px 7px;font-size:10px}
-.ag{font-size:9px;color:#aaa;margin-bottom:3px;margin-top:5px;font-weight:600;text-transform:uppercase;letter-spacing:0.05em}
-.algo-grid{display:grid;grid-template-columns:1fr 1fr;gap:3px;margin-bottom:2px}
-.ab{padding:5px 4px;border-radius:5px;font-size:10px;font-weight:500;cursor:pointer;border:1px solid #e0e0e0;background:#fff;color:#1a1a1a;text-align:center;transition:all 0.15s;line-height:1.3}
-.ab:hover{background:#f5f5f7}
-.ab.active{background:#185FA5;color:#fff;border-color:#185FA5}
-.prop{background:#f8f8f8;border-radius:6px;padding:7px;font-size:10px;line-height:1.6;color:#666;min-height:48px;border:1px solid #ebebeb}
-.prop.err{background:#fcebeb;color:#791F1F;border-color:#f7c1c1}
-.prop.warn{background:#faeeda;color:#633806;border-color:#fac775}
-.prop.ok{background:#eaf3de;color:#27500A;border-color:#c0dd97}
-.cx-row{display:flex;gap:4px;margin-top:5px}
-.cx{flex:1;background:#f8f8f8;border:1px solid #ebebeb;border-radius:5px;padding:5px;text-align:center}
-.cx-label{font-size:9px;color:#aaa;margin-bottom:2px}
-.cx-val{font-size:10px;font-weight:600;color:#185FA5}
-.log{background:#1a1a2e;border-radius:6px;padding:6px;font-size:10px;font-family:monospace;color:#c9d1d9;height:90px;overflow-y:auto;line-height:1.7}
-.ll{padding:1px 0;border-bottom:1px solid #2a2a3e}
-.ll.hl{color:#3fb950;font-weight:500}
-.ll.er{color:#f85149;font-weight:500}
-.ll.wn{color:#e3b341}
+.ll.lv{color:#79c0ff;font-weight:500}
 .canvas-wrap{background:#fff;border:1px solid #e5e5e5;border-radius:10px;overflow:hidden;position:relative}
 canvas{display:block;width:100%;height:100%;cursor:grab}
 canvas:active{cursor:grabbing}
@@ -1178,6 +64,8 @@ canvas:active{cursor:grabbing}
 .scc-item{padding:2px 0;border-bottom:1px solid #f5f5f5;display:flex;align-items:center;gap:5px;font-size:10px}
 .path-overlay{position:absolute;bottom:28px;left:10px;background:#fff;border:1px solid #e5e5e5;border-radius:8px;padding:7px 10px;font-size:10px;display:none;max-width:320px}
 .path-overlay.show{display:block}
+.step-ctrl{display:flex;gap:4px;margin-top:5px;flex-wrap:wrap}
+.sp-row{display:flex;align-items:center;gap:5px;margin-top:4px}
 .divider{border:none;border-top:1px solid #f0f0f0;margin:5px 0}
 select{padding:4px 6px;border:1px solid #e0e0e0;border-radius:5px;font-size:11px;background:#fff;color:#1a1a1a;outline:none;flex:1}
 .preset-row{display:flex;gap:3px;flex-wrap:wrap}
@@ -1200,379 +88,1009 @@ select{padding:4px 6px;border:1px solid #e0e0e0;border-radius:5px;font-size:11px
 .b-pu{background:#eeedfe;color:#534ab7}
 .editor-wrap{flex:1;display:flex;flex-direction:column;min-height:180px}
 .editor-area{flex:1;background:#1a1a2e;border-radius:6px;padding:8px;font-family:monospace;font-size:10px;color:#c9d1d9;border:1px solid #3a3a5c;outline:none;resize:none;min-height:120px;line-height:1.7}
+.editor-area:focus{border-color:#185FA5}
+.editor-controls{display:flex;gap:5px;margin-top:5px;align-items:center}
+.editor-hint{font-size:9px;color:#aaa;flex:1}
 </style>
 </head>
 <body>
 <div class="topbar">
-  <div style="display:flex;align-items:center;gap:6px">
-    <span class="logo-name">3D Graph Visualizer</span>
-    <span class="logo-sub">All Graph Algorithms — C++ · OpenGL · STL</span>
-  </div>
-  <div style="display:flex;gap:5px">
-    <span class="tb-pill">17 Algorithms</span>
-    <span class="tb-pill">C++ Code</span>
-    <span class="tb-pill">Live Editor</span>
-    <a href="graph-reference.html" style="text-decoration:none"><span class="tb-pill" style="cursor:pointer;color:#79c0ff;border-color:#185FA5">Reference →</span></a>
-  </div>
+  <div style="display:flex;align-items:center;gap:6px">
+    <span class="logo-name">3D Graph Visualizer</span>
+    <span class="logo-sub">All Graph Algorithms — C++ · OpenGL · STL</span>
+  </div>
+  <div style="display:flex;gap:5px">
+    <span class="tb-pill">17 Algorithms</span>
+    <span class="tb-pill">C++ Code</span>
+    <span class="tb-pill">Live Editor</span>
+    <a href="graph-reference.html" style="text-decoration:none"><span class="tb-pill" style="cursor:pointer;color:#79c0ff;border-color:#185FA5">Reference →</span></a>
+  </div>
 </div>
 
 <div class="main">
-  <div class="sidebar">
-    <div class="card">
-      <div class="ct">Graph Builder</div>
-      <div class="sl">Manage Node</div>
-      <div class="row">
-        <input type="text" id="nl" placeholder="A or 1"/>
-        <button class="btn p sm" onclick="addNode()">+Node</button>
+  <div class="sidebar">
+    <div class="card">
+      <div class="ct">Graph Builder</div>
+      <div class="sl">Manage node</div>
+      <div class="row">
+        <input type="text" id="nl" placeholder="A or 1"/>
+        <button class="btn p sm" onclick="addNode()">+Node</button>
         <button class="btn d sm" onclick="removeNode()">-Node</button>
-      </div>
-      <div class="sl">Manage Edge</div>
-      <div class="row">
-        <select id="ef"></select>
-        <span style="font-size:10px;color:#888">→</span>
-        <select id="et"></select>
-      </div>
-      <div class="row">
-        <input type="number" id="ew" value="1"/>
-        <label style="font-size:10px;color:#555;display:flex;align-items:center;gap:3px"><input type="checkbox" id="dir" checked/> Dir</label>
-        <button class="btn p sm" onclick="addEdge()">+Edge</button>
+      </div>
+      <div class="sl">Manage edge</div>
+      <div class="row">
+        <select id="ef"></select>
+        <span style="font-size:10px;color:#888">→</span>
+        <select id="et"></select>
+      </div>
+      <div class="row">
+        <input type="number" id="ew" value="1" style="width:44px"/>
+        <label style="font-size:10px;color:#555;display:flex;align-items:center;gap:3px"><input type="checkbox" id="dir" checked/> Dir</label>
+        <button class="btn p sm" onclick="addEdge()">+Edge</button>
         <button class="btn d sm" onclick="removeEdge()">-Edge</button>
-      </div>
+      </div>
       <button class="btn d sm" style="width:100%; margin-top:5px" onclick="clearGraph()">Clear All</button>
-      <div class="divider"></div>
-      <div class="sl">Presets</div>
-      <div class="preset-row">
-        <button class="btn sm" onclick="loadPreset('simple')">Simple</button>
-        <button class="btn sm" onclick="loadPreset('weighted')">Wtd</button>
-        <button class="btn sm" onclick="loadPreset('negcycle')">NegCyc</button>
-        <button class="btn sm" onclick="loadPreset('dag')">DAG</button>
-        <button class="btn sm" onclick="loadPreset('scc')">SCC</button>
-        <button class="btn sm" onclick="loadPreset('mst')">MST</button>
-        <button class="btn sm" onclick="loadPreset('bipartite')">Bip</button>
-      </div>
-    </div>
+      <div class="divider"></div>
+      <div class="sl">Presets</div>
+      <div class="preset-row">
+        <button class="btn sm" onclick="loadPreset('simple')">Simple</button>
+        <button class="btn sm" onclick="loadPreset('weighted')">Wtd</button>
+        <button class="btn sm" onclick="loadPreset('negcycle')">NegCyc</button>
+        <button class="btn sm" onclick="loadPreset('dag')">DAG</button>
+        <button class="btn sm" onclick="loadPreset('scc')">SCC</button>
+        <button class="btn sm" onclick="loadPreset('mst')">MST</button>
+        <button class="btn sm" onclick="loadPreset('bipartite')">Bip</button>
+      </div>
+    </div>
 
-    <div class="card">
-      <div class="ct">Algorithms</div>
-      <div class="ag">Traversal</div>
-      <div class="algo-grid">
-        <div class="ab" id="ab-bfs" onclick="selAlgo('bfs')">BFS</div>
-        <div class="ab" id="ab-dfs" onclick="selAlgo('dfs')">DFS</div>
-      </div>
-      <div class="ag">Cycle Detection</div>
-      <div class="algo-grid">
-        <div class="ab" id="ab-cycle_bfs" onclick="selAlgo('cycle_bfs')">Cycle BFS</div>
-        <div class="ab" id="ab-cycle_dfs" onclick="selAlgo('cycle_dfs')">Cycle DFS</div>
-        <div class="ab" id="ab-cycle_dir" onclick="selAlgo('cycle_dir')">Cycle Dir</div>
-        <div class="ab" id="ab-bipartite" onclick="selAlgo('bipartite')">Bipartite</div>
-      </div>
-      <div class="ag">Shortest Path</div>
-      <div class="algo-grid">
-        <div class="ab" id="ab-dijkstra" onclick="selAlgo('dijkstra')">Dijkstra</div>
-        <div class="ab" id="ab-bellman" onclick="selAlgo('bellman')">Bellman-Ford</div>
-        <div class="ab" id="ab-floyd" onclick="selAlgo('floyd')">Floyd-W</div>
-        <div class="ab" id="ab-dag_sp" onclick="selAlgo('dag_sp')">DAG SP</div>
-      </div>
-      <div class="ag">Topological Sort</div>
-      <div class="algo-grid">
-        <div class="ab" id="ab-topo_dfs" onclick="selAlgo('topo_dfs')">Topo DFS</div>
-        <div class="ab" id="ab-kahn" onclick="selAlgo('kahn')">Kahn's BFS</div>
-      </div>
-      <div class="ag">SCC & Bridges</div>
-      <div class="algo-grid">
-        <div class="ab" id="ab-kosaraju" onclick="selAlgo('kosaraju')">Kosaraju</div>
-        <div class="ab" id="ab-tarjan" onclick="selAlgo('tarjan')">Tarjan Br.</div>
-        <div class="ab" id="ab-articulation" onclick="selAlgo('articulation')">Artic. Pts</div>
-      </div>
-      <div class="ag">MST</div>
-      <div class="algo-grid">
-        <div class="ab" id="ab-prim" onclick="selAlgo('prim')">Prim's</div>
-        <div class="ab" id="ab-kruskal" onclick="selAlgo('kruskal')">Kruskal</div>
-      </div>
-    </div>
+    <div class="card">
+      <div class="ct">Algorithms</div>
+      <div class="ag">Traversal</div>
+      <div class="algo-grid">
+        <div class="ab" id="ab-bfs" onclick="selAlgo('bfs')">BFS</div>
+        <div class="ab" id="ab-dfs" onclick="selAlgo('dfs')">DFS</div>
+      </div>
+      <div class="ag">Cycle Detection</div>
+      <div class="algo-grid">
+        <div class="ab" id="ab-cycle_bfs" onclick="selAlgo('cycle_bfs')">Cycle BFS</div>
+        <div class="ab" id="ab-cycle_dfs" onclick="selAlgo('cycle_dfs')">Cycle DFS</div>
+        <div class="ab" id="ab-cycle_dir" onclick="selAlgo('cycle_dir')">Cycle Dir</div>
+        <div class="ab" id="ab-bipartite" onclick="selAlgo('bipartite')">Bipartite</div>
+      </div>
+      <div class="ag">Shortest Path</div>
+      <div class="algo-grid">
+        <div class="ab" id="ab-dijkstra" onclick="selAlgo('dijkstra')">Dijkstra</div>
+        <div class="ab" id="ab-bellman" onclick="selAlgo('bellman')">Bellman-Ford</div>
+        <div class="ab" id="ab-floyd" onclick="selAlgo('floyd')">Floyd-W</div>
+        <div class="ab" id="ab-dag_sp" onclick="selAlgo('dag_sp')">DAG SP</div>
+      </div>
+      <div class="ag">Topological Sort</div>
+      <div class="algo-grid">
+        <div class="ab" id="ab-topo_dfs" onclick="selAlgo('topo_dfs')">Topo DFS</div>
+        <div class="ab" id="ab-kahn" onclick="selAlgo('kahn')">Kahn's BFS</div>
+      </div>
+      <div class="ag">SCC & Bridges</div>
+      <div class="algo-grid">
+        <div class="ab" id="ab-kosaraju" onclick="selAlgo('kosaraju')">Kosaraju</div>
+        <div class="ab" id="ab-tarjan" onclick="selAlgo('tarjan')">Tarjan Br.</div>
+        <div class="ab" id="ab-articulation" onclick="selAlgo('articulation')">Artic. Pts</div>
+      </div>
+      <div class="ag">MST</div>
+      <div class="algo-grid">
+        <div class="ab" id="ab-prim" onclick="selAlgo('prim')">Prim's</div>
+        <div class="ab" id="ab-kruskal" onclick="selAlgo('kruskal')">Kruskal</div>
+      </div>
+    </div>
 
-    <div class="card">
-      <div class="ct">Run</div>
-      <div class="row">
-        <select id="sn"></select>
-        <button class="btn p" onclick="runAlgo()">Run</button>
-      </div>
-      <div class="row" style="margin-top:5px">
-        <span style="font-size:10px;color:#888">Speed</span>
-        <input type="range" min="200" max="2000" value="800" step="100" id="spd" style="flex:1" oninput="document.getElementById('spl').textContent=this.value+'ms'"/>
-        <span style="font-size:10px;color:#888" id="spl">800ms</span>
-      </div>
-      <div class="row" style="margin-top:5px;gap:4px">
-        <button class="btn sm" onclick="stepBack()">← Back</button>
-        <button class="btn sm" onclick="stepFwd()">Next →</button>
-        <button class="btn sm" onclick="resetViz()">Reset</button>
-      </div>
-    </div>
+    <div class="card">
+      <div class="ct">Run</div>
+      <div class="row">
+        <select id="sn"></select>
+        <button class="btn p" onclick="runAlgo()">Run</button>
+      </div>
+      <div class="sp-row">
+        <span style="font-size:10px;color:#888">Speed</span>
+        <input type="range" min="200" max="2000" value="800" step="100" id="spd" style="flex:1" oninput="document.getElementById('spl').textContent=this.value+'ms'"/>
+        <span style="font-size:10px;color:#888" id="spl">800ms</span>
+      </div>
+      <div class="step-ctrl">
+        <button class="btn sm" onclick="stepBack()">← Back</button>
+        <button class="btn sm" onclick="stepFwd()">Next →</button>
+        <button class="btn sm" onclick="resetViz()">Reset</button>
+      </div>
+    </div>
 
-    <div class="card" style="flex:1">
-      <div class="ct">Properties</div>
-      <div class="prop" id="prop">Select an algorithm.</div>
-      <div class="cx-row" id="cx-row" style="display:none">
-        <div class="cx"><div class="cx-label">Time</div><div class="cx-val" id="cx-time">—</div></div>
-        <div class="cx"><div class="cx-label">Space</div><div class="cx-val" id="cx-space">—</div></div>
-        <div class="cx"><div class="cx-label">Type</div><div class="cx-val" id="cx-type">—</div></div>
-      </div>
-      <div class="ct" style="margin-top:7px">Step Log</div>
-      <div class="log" id="logbox"><div style="color:#555">Run algo to see steps...</div></div>
-    </div>
-  </div>
+    <div class="card" style="flex:1">
+      <div class="ct">Properties</div>
+      <div class="prop" id="prop">Select an algorithm.</div>
+      <div class="cx-row" id="cx-row" style="display:none">
+        <div class="cx"><div class="cx-label">Time</div><div class="cx-val" id="cx-time">—</div></div>
+        <div class="cx"><div class="cx-label">Space</div><div class="cx-val" id="cx-space">—</div></div>
+        <div class="cx"><div class="cx-label">Type</div><div class="cx-val" id="cx-type">—</div></div>
+      </div>
+      <div class="ct" style="margin-top:7px">Step Log</div>
+      <div class="log" id="logbox"><div style="color:#555">Run algo to see steps...</div></div>
+    </div>
+  </div>
 
-  <div class="canvas-wrap">
-    <canvas id="gc"></canvas>
-    <div class="legend">
-      <div class="li"><div class="ld" style="background:#185FA5"></div>Unvisited</div>
-      <div class="li"><div class="ld" style="background:#1D9E75"></div>Visited</div>
-      <div class="li"><div class="ld" style="background:#E24B4A"></div>Current/Error</div>
-      <div class="li"><div class="ld" style="background:#854F0B"></div>Back edge</div>
-      <div class="li"><div class="ld" style="background:#F2CC60"></div>Path/MST</div>
-    </div>
-    <div class="cx-canvas" id="cx-canvas">
-      <div class="cx-canvas-row">
-        <div class="cx-c"><div class="cx-c-label">Time</div><div class="cx-c-val" id="cxc-time">—</div></div>
-        <div class="cx-c"><div class="cx-c-label">Space</div><div class="cx-c-val" id="cxc-space">—</div></div>
-      </div>
-    </div>
-    <div class="overlay-msg" id="overlay-msg">
-      <div style="font-weight:600;font-size:11px;margin-bottom:4px;color:#1a1a1a" id="overlay-title">Result</div>
-      <div id="overlay-list"></div>
-    </div>
-    <div class="path-overlay" id="path-overlay"></div>
-    <div class="hint">Drag to rotate · Scroll to zoom</div>
-  </div>
+  <div class="canvas-wrap">
+    <canvas id="gc"></canvas>
+    <div class="legend">
+      <div class="li"><div class="ld" style="background:#185FA5"></div>Unvisited</div>
+      <div class="li"><div class="ld" style="background:#1D9E75"></div>Visited</div>
+      <div class="li"><div class="ld" style="background:#E24B4A"></div>Current/Error</div>
+      <div class="li"><div class="ld" style="background:#854F0B"></div>Back edge</div>
+      <div class="li"><div class="ld" style="background:#F2CC60"></div>Path/MST</div>
+      <div class="li"><div class="ld" style="background:#D4537E"></div>Bipartite B</div>
+    </div>
+    <div class="cx-canvas" id="cx-canvas">
+      <div class="cx-canvas-row">
+        <div class="cx-c"><div class="cx-c-label">Time</div><div class="cx-c-val" id="cxc-time">—</div></div>
+        <div class="cx-c"><div class="cx-c-label">Space</div><div class="cx-c-val" id="cxc-space">—</div></div>
+        <div class="cx-c"><div class="cx-c-label">Type</div><div class="cx-c-val" id="cxc-type">—</div></div>
+      </div>
+    </div>
+    <div class="overlay-msg" id="overlay-msg">
+      <div style="font-weight:600;font-size:11px;margin-bottom:4px;color:#1a1a1a" id="overlay-title">Result</div>
+      <div id="overlay-list"></div>
+    </div>
+    <div class="path-overlay" id="path-overlay"></div>
+    <div class="hint">Drag to rotate · Scroll to zoom</div>
+  </div>
 
-  <div class="right-panel">
-    <div class="card">
-      <div class="code-header" onclick="toggleCode()">
-        <div style="display:flex;align-items:center;gap:6px">
-          <span class="ct" style="margin:0" id="code-label">C++ Implementation</span>
-          <span class="badge b-bl" id="code-badge">Select algo</span>
-        </div>
-        <span class="fold-btn" id="fold-btn">▼ Collapse</span>
-      </div>
-      <div class="code-body" id="code-body">
-        <pre class="code-box" id="code-box"><span style="color:#555">// Select an algorithm to see C++ code</span></pre>
-      </div>
-    </div>
+  <div class="right-panel">
+    <div class="card">
+      <div class="code-header" onclick="toggleCode()">
+        <div style="display:flex;align-items:center;gap:6px">
+          <span class="ct" style="margin:0" id="code-label">C++ Implementation</span>
+          <span class="badge b-bl" id="code-badge">Select algo</span>
+        </div>
+        <span class="fold-btn" id="fold-btn">▼ Collapse</span>
+      </div>
+      <div class="code-body" id="code-body">
+        <pre class="code-box" id="code-box"><span style="color:#555">// Select an algorithm to see C++ code</span></pre>
+      </div>
+    </div>
 
-    <div class="card editor-wrap">
-      <div class="ct">Live Code Editor</div>
-      <div style="font-size:10px;color:#888;margin-bottom:5px">Format: <code style="background:#f0f0f0;padding:1px 4px;border-radius:3px;font-size:10px">addedge u v wt dir</code></div>
-      <textarea class="editor-area" id="editor" placeholder="// Example:
+    <div class="card editor-wrap">
+      <div class="ct">Live Code Editor</div>
+      <div style="font-size:10px;color:#888;margin-bottom:5px">Format: <code style="background:#f0f0f0;padding:1px 4px;border-radius:3px;font-size:10px">addedge u v wt dir</code> (dir: 1=directed 0=undirected)</div>
+      <textarea class="editor-area" id="editor" placeholder="// Example — cycle detection:
 addedge A B 1 0
 addedge B C 1 0
-addedge C A 1 0"></textarea>
-      <div class="row" style="margin-top:5px">
-        <button class="btn p sm" onclick="parseEditor()">Build Graph</button>
-        <button class="btn sm" onclick="clearEditor()">Clear</button>
-      </div>
-    </div>
-  </div>
+addedge C A 1 0
+
+// Then select Cycle DFS and Run"></textarea>
+      <div class="editor-controls">
+        <span class="editor-hint">Build graph → select algo → Run</span>
+        <button class="btn p sm" onclick="parseEditor()">Build Graph</button>
+        <button class="btn sm" onclick="clearEditor()">Clear</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
-const canvas=document.getElementById('gc'), ctx=canvas.getContext('2d');
-let nodes=[],edges=[],nid=0, rotX=0.3, rotY=0.4, zoom=1, drag=false, lmx=0, lmy=0;
+const canvas=document.getElementById('gc');
+const ctx=canvas.getContext('2d');
+let nodes=[],edges=[],nid=0;
+let rotX=0.3,rotY=0.4,zoom=1;
+let drag=false,lmx=0,lmy=0;
 let algo=null,steps=[],cur=-1,tmr=null;
 let NC={},EC={},NL={},NLvl={};
 let codeCollapsed=false;
 
 const C={
-  node:'#185FA5',vis:'#1D9E75',curr:'#E24B4A',
-  edge:'#D0D0D0',trav:'#185FA5',neg:'#E24B4A',
-  bridge:'#E24B4A',back:'#854F0B',path:'#F2CC60',mst:'#F2CC60',
-  src:'#E24B4A',dst:'#1D9E75',cycle:'#E24B4A',
-  bip1:'#185FA5',bip2:'#D4537E',
-  scc:['#185FA5','#1D9E75','#854F0B','#534AB7','#D85A30','#993556'],
-  lvl:['#185FA5','#1D9E75','#854F0B','#534AB7','#D85A30','#993556']
+  node:'#185FA5',vis:'#1D9E75',curr:'#E24B4A',
+  edge:'#D0D0D0',trav:'#185FA5',neg:'#E24B4A',
+  bridge:'#E24B4A',back:'#854F0B',path:'#F2CC60',mst:'#F2CC60',
+  src:'#E24B4A',dst:'#1D9E75',cycle:'#E24B4A',
+  artic:'#E24B4A',
+  bip1:'#185FA5',bip2:'#D4537E',
+  scc:['#185FA5','#1D9E75','#854F0B','#534AB7','#D85A30','#993556','#0F6E56'],
+  lvl:['#185FA5','#1D9E75','#854F0B','#534AB7','#D85A30','#993556']
 };
 
 const CX={
-  bfs:{time:'O(V+E)',space:'O(V)',type:'Queue'},
-  dfs:{time:'O(V+E)',space:'O(V)',type:'Recursion'},
-  cycle_bfs:{time:'O(V+E)',space:'O(V)',type:'BFS+Parent'},
-  cycle_dfs:{time:'O(V+E)',space:'O(V)',type:'DFS+Parent'},
-  cycle_dir:{time:'O(V+E)',space:'O(V)',type:'DFS+Color'},
-  bipartite:{time:'O(V+E)',space:'O(V)',type:'BFS 2-Color'},
-  dijkstra:{time:'O(E logV)',space:'O(V)',type:'Greedy+PQ'},
-  bellman:{time:'O(V·E)',space:'O(V)',type:'DP Relax'},
-  floyd:{time:'O(V³)',space:'O(V²)',type:'DP All-Pair'},
-  dag_sp:{time:'O(V+E)',space:'O(V)',type:'Topo+Relax'},
-  topo_dfs:{time:'O(V+E)',space:'O(V)',type:'DFS+Stack'},
-  kahn:{time:'O(V+E)',space:'O(V)',type:'BFS InDeg'},
-  kosaraju:{time:'O(V+E)',space:'O(V)',type:'2×DFS'},
-  tarjan:{time:'O(V+E)',space:'O(V)',type:'disc+low'},
-  articulation:{time:'O(V+E)',space:'O(V)',type:'disc+low'},
-  prim:{time:'O(E logV)',space:'O(V)',type:'Greedy+PQ'},
-  kruskal:{time:'O(E logE)',space:'O(V)',type:'DSU+Sort'}
+  bfs:{time:'O(V+E)',space:'O(V)',type:'Queue'},
+  dfs:{time:'O(V+E)',space:'O(V)',type:'Recursion'},
+  cycle_bfs:{time:'O(V+E)',space:'O(V)',type:'BFS+Parent'},
+  cycle_dfs:{time:'O(V+E)',space:'O(V)',type:'DFS+Parent'},
+  cycle_dir:{time:'O(V+E)',space:'O(V)',type:'DFS+Color'},
+  bipartite:{time:'O(V+E)',space:'O(V)',type:'BFS 2-Color'},
+  dijkstra:{time:'O(E logV)',space:'O(V)',type:'Greedy+PQ'},
+  bellman:{time:'O(V·E)',space:'O(V)',type:'DP Relax'},
+  floyd:{time:'O(V³)',space:'O(V²)',type:'DP All-Pair'},
+  dag_sp:{time:'O(V+E)',space:'O(V)',type:'Topo+Relax'},
+  topo_dfs:{time:'O(V+E)',space:'O(V)',type:'DFS+Stack'},
+  kahn:{time:'O(V+E)',space:'O(V)',type:'BFS InDeg'},
+  kosaraju:{time:'O(V+E)',space:'O(V)',type:'2×DFS'},
+  tarjan:{time:'O(V+E)',space:'O(V)',type:'disc+low'},
+  articulation:{time:'O(V+E)',space:'O(V)',type:'disc+low'},
+  prim:{time:'O(E logV)',space:'O(V)',type:'Greedy+PQ'},
+  kruskal:{time:'O(E logE)',space:'O(V)',type:'DSU+Sort'}
 };
 
 const PROPS={
-  bfs:{t:'BFS — Level by level traversal. Find shortest path in unweighted graphs.',c:'ok'},
-  dfs:{t:'DFS — Deep traversal. Basis for topo sort and SCC.',c:'ok'},
-  cycle_bfs:{t:'Cycle Detection BFS — If visited neighbor != parent, cycle exists.',c:'ok'},
-  cycle_dfs:{t:'Cycle Detection DFS — If back edge to visited node found, cycle exists.',c:'ok'},
-  cycle_dir:{t:'Directed Cycle — 3-color DFS (Gray to Gray edge = cycle).',c:'warn'},
-  bipartite:{t:'Bipartite — Check if graph is 2-colorable.',c:'ok'},
-  dijkstra:{t:'Dijkstra — Shortest path from source. Needs weights >= 0.',c:'warn'},
-  bellman:{t:'Bellman-Ford — Handles negative weights. V-1 relaxations.',c:'ok'},
-  floyd:{t:'Floyd-Warshall — All-pairs shortest paths. O(V³).',c:'warn'},
-  dag_sp:{t:'DAG SP — Topological sort then relax. O(V+E).',c:'warn'},
-  topo_dfs:{t:'Topo DFS — Post-order stack for dependency sorting.',c:'warn'},
-  kahn:{t:'Kahn’s BFS — In-degree based topological sorting.',c:'warn'},
-  kosaraju:{t:'Kosaraju — Two DFS passes to find SCCs.',c:'ok'},
-  tarjan:{t:'Tarjan/Bridges — Low-link logic to find critical edges.',c:'ok'},
-  articulation:{t:'Articulation — Nodes whose removal disconnects graph.',c:'ok'},
-  prim:{t:'Prim’s MST — Dense graph MST (Node based).',c:'warn'},
-  kruskal:{t:'Kruskal’s MST — Sparse graph MST (Edge based).',c:'warn'}
+  bfs:{t:'BFS — level by level using queue. Each level gets different color. Shortest path in unweighted graphs.',c:'ok'},
+  dfs:{t:'DFS — deep first, backtrack. Back edges = cycles. Base for topo sort, SCC, bridges.',c:'ok'},
+  cycle_bfs:{t:'Cycle detection in UNDIRECTED graph using BFS. If visited neighbor != parent → cycle found.',c:'ok'},
+  cycle_dfs:{t:'Cycle detection in UNDIRECTED graph using DFS. If visited neighbor != parent → back edge → cycle.',c:'ok'},
+  cycle_dir:{t:'Cycle detection in DIRECTED graph. Uses 3-color DFS: WHITE(0)=unvisited, GRAY(1)=in stack, BLACK(2)=done. GRAY→GRAY edge = cycle.',c:'warn'},
+  bipartite:{t:'Bipartite check using BFS 2-coloring. If we try to color a node same as its neighbor → NOT bipartite. Bipartite = no odd-length cycles.',c:'ok'},
+  dijkstra:{t:'Single source shortest path. CONSTRAINT: All weights ≥ 0. Uses set/priority_queue. Greedy approach.',c:'warn'},
+  bellman:{t:'Handles negative weights. V-1 relaxation passes. If can still relax after → negative cycle.',c:'ok'},
+  floyd:{t:'All-pairs shortest paths. CONSTRAINT: No negative cycles. dist[i][i]<0 = negative cycle.',c:'warn'},
+  dag_sp:{t:'Shortest path in DAG. Topological order + relaxation. Handles negative weights. CONSTRAINT: DAG only.',c:'warn'},
+  topo_dfs:{t:'Topological sort via DFS. Push to stack AFTER all neighbors processed. Pop stack = topo order. CONSTRAINT: DAG only.',c:'warn'},
+  kahn:{t:"Kahn's BFS topo sort. In-degree based. If processed < V → cycle exists. CONSTRAINT: DAG only.",c:'warn'},
+  kosaraju:{t:'SCC using 2 DFS. Pass1: finish order on original. Pass2: DFS on reversed graph. Each DFS tree = one SCC.',c:'ok'},
+  tarjan:{t:'Bridges using disc[] and low[]. BRIDGE condition: low[v] > disc[u]. Removing bridge disconnects graph.',c:'ok'},
+  articulation:{t:'Articulation points using disc[] and low[]. AP condition: low[v] >= disc[u] (for non-root). Removing AP disconnects graph.',c:'ok'},
+  prim:{t:"Prim's MST — greedily add minimum weight edge from MST to non-MST node. CONSTRAINT: Undirected weighted.",c:'warn'},
+  kruskal:{t:"Kruskal's MST — sort edges, add if no cycle (DSU). CONSTRAINT: Undirected weighted.",c:'warn'}
 };
 
 const CODES={
-bfs:`<span class="kw">void</span> <span class="fn">bfs</span>(<span class="tp">int</span> src) {
-  queue&lt;<span class="tp">int</span>&gt; q; q.push(src); vis[src]=<span class="kw">true</span>;
-  <span class="kw">while</span>(!q.empty()){
-    <span class="tp">int</span> u=q.front(); q.pop();
-    <span class="kw">for</span>(<span class="tp">int</span> v : adj[u])
-      <span class="kw">if</span>(!vis[v]) { vis[v]=<span class="kw">true</span>; q.push(v); }
-  }
+bfs:`<span class="cm">// BFS Traversal</span>
+<span class="cm">// Time: O(V+E) | Space: O(V)</span>
+<span class="kw">void</span> <span class="fn">bfs_traversal</span>(<span class="tp">int</span> src,
+  unordered_map&lt;<span class="tp">int</span>,<span class="tp">bool</span>&gt;&amp; vis){
+  queue&lt;<span class="tp">int</span>&gt; q;
+  vis[src]=<span class="kw">true</span>;
+  q.push(src);
+  <span class="kw">while</span>(!q.empty()){
+    <span class="tp">int</span> frontnode=q.front();
+    cout&lt;&lt;frontnode&lt;&lt;<span class="str">" "</span>;
+    q.pop();
+    <span class="cm">// ab iske nbr pe jao</span>
+    <span class="kw">for</span>(<span class="kw">auto</span> nbr:adjlist[frontnode]){
+      <span class="tp">int</span> nbrnode=nbr.first;
+      <span class="kw">if</span>(!vis[nbrnode]){
+        q.push(nbrnode);
+        vis[nbrnode]=<span class="kw">true</span>;
+      }
+    }
+  }
 }`,
-dfs:`<span class="kw">void</span> <span class="fn">dfs</span>(<span class="tp">int</span> u) {
-  vis[u] = <span class="kw">true</span>;
-  <span class="kw">for</span>(<span class="tp">int</span> v : adj[u])
-    <span class="kw">if</span>(!vis[v]) dfs(v);
-}`
-};
+dfs:`<span class="cm">// DFS Traversal</span>
+<span class="cm">// Time: O(V+E) | Space: O(V)</span>
+<span class="kw">void</span> <span class="fn">dfs_traversal</span>(<span class="tp">int</span> src,
+  unordered_map&lt;<span class="tp">int</span>,<span class="tp">bool</span>&gt;&amp; vis){
+  vis[src]=<span class="kw">true</span>;
+  cout&lt;&lt;src&lt;&lt;<span class="str">" "</span>;
+  <span class="cm">// go to nbr</span>
+  <span class="kw">for</span>(<span class="kw">auto</span> nbr: adjlist[src]){
+    <span class="tp">int</span> nbrnode=nbr.first;
+    <span class="kw">if</span>(!vis[nbrnode])
+      dfs_traversal(nbrnode,vis);
+  }
+}`,
+cycle_bfs:`<span class="cm">// Cycle Detection BFS (Undirected)</span>
+<span class="cm">// Time: O(V+E) | Space: O(V)</span>
+<span class="kw">bool</span> <span class="fn">cycle_detection_bfs</span>(<span class="tp">int</span> src,
+  unordered_map&lt;<span class="tp">int</span>,<span class="tp">bool</span>&gt;&amp; vis,
+  unordered_map&lt;<span class="tp">int</span>,<span class="tp">int</span>&gt;&amp; parent){
+  queue&lt;<span class="tp">int</span>&gt; q;
+  q.push(src);
+  vis[src]=<span class="kw">true</span>;
+  parent[src]=-<span class="num">1</span>;
+  <span class="kw">while</span>(!q.empty()){
+    <span class="tp">int</span> frontnode=q.front();
+    q.pop();
+    <span class="kw">for</span>(<span class="kw">auto</span> nbr:adjlist[frontnode]){
+      <span class="kw">if</span>(!vis[nbr]){
+        q.push(nbr);
+        vis[nbr]=<span class="kw">true</span>;
+        parent[nbr]=src;
+      }<span class="kw">else if</span>(vis[nbr]==<span class="kw">true</span>
+        &amp;&amp; nbr!=parent[frontnode])
+        <span class="kw">return true</span>; <span class="cm">// CYCLE!</span>
+    }
+  }
+  <span class="kw">return false</span>;
+}`,
+cycle_dfs:`<span class="cm">// Cycle Detection DFS (Undirected)</span>
+<span class="cm">// Time: O(V+E) | Space: O(V)</span>
+<span class="kw">bool</span> <span class="fn">cycle_detection_DFS</span>(<span class="tp">int</span> src,
+  unordered_map&lt;<span class="tp">int</span>,<span class="tp">bool</span>&gt;&amp; vis,
+  <span class="tp">int</span> parent){
+  vis[src]=<span class="kw">true</span>;
+  <span class="kw">for</span>(<span class="kw">auto</span> nbr: adjlist[src]){
+    <span class="kw">if</span>(!vis[nbr]){
+      <span class="kw">bool</span> ans=cycle_detection_DFS(
+        nbr,vis,src);
+      <span class="kw">if</span>(ans==<span class="kw">true</span>)
+        <span class="kw">return true</span>;
+    }<span class="kw">else if</span>(vis[nbr]==<span class="kw">true</span>
+      &amp;&amp; nbr!=parent)
+      <span class="kw">return true</span>; <span class="cm">// CYCLE!</span>
+  }
+  <span class="kw">return false</span>;
+}`,
+cycle_dir:`<span class="cm">// Cycle Detection (Directed)</span>
+<span class="cm">// 3-color: WHITE=0 GRAY=1 BLACK=2</span>
+<span class="cm">// Time: O(V+E) | Space: O(V)</span>
+<span class="kw">bool</span> <span class="fn">dfs_directed</span>(<span class="tp">int</span> u,
+  vector&lt;<span class="tp">int</span>&gt;&amp; color){
+  color[u]=<span class="num">1</span>; <span class="cm">// GRAY = in stack</span>
+  <span class="kw">for</span>(<span class="kw">auto</span> nbr:adjlist[u]){
+    <span class="kw">if</span>(color[nbr]==<span class="num">0</span>){
+      <span class="kw">if</span>(dfs_directed(nbr,color))
+        <span class="kw">return true</span>;
+    }<span class="kw">else if</span>(color[nbr]==<span class="num">1</span>)
+      <span class="kw">return true</span>; <span class="cm">// GRAY->GRAY=CYCLE</span>
+  }
+  color[u]=<span class="num">2</span>; <span class="cm">// BLACK = done</span>
+  <span class="kw">return false</span>;
+}`,
+bipartite:`<span class="cm">// Bipartite Check — BFS 2-Color</span>
+<span class="cm">// Time: O(V+E) | Space: O(V)</span>
+<span class="kw">bool</span> <span class="fn">isBipartite</span>(<span class="tp">int</span> src,
+  unordered_map&lt;<span class="tp">int</span>,<span class="tp">int</span>&gt;&amp; color){
+  queue&lt;<span class="tp">int</span>&gt; q;
+  q.push(src);
+  color[src]=<span class="num">0</span>;
+  <span class="kw">while</span>(!q.empty()){
+    <span class="tp">int</span> node=q.front(); q.pop();
+    <span class="kw">for</span>(<span class="kw">auto</span> nbr:adjlist[node]){
+      <span class="kw">if</span>(color.find(nbr)==color.end()){
+        color[nbr]=<span class="num">1</span>-color[node];
+        q.push(nbr);
+      }<span class="kw">else if</span>(color[nbr]==color[node])
+        <span class="kw">return false</span>; <span class="cm">// NOT bipartite!</span>
+    }
+  }
+  <span class="kw">return true</span>;
+}`,
+dijkstra:`<span class="cm">// Dijkstra Shortest Path</span>
+<span class="cm">// NEEDS: weights >= 0</span>
+<span class="cm">// Time: O(E logV) | Space: O(V)</span>
+<span class="kw">void</span> <span class="fn">Shortest_path_Dijkastra</span>(
+  <span class="tp">int</span> n, <span class="tp">int</span> src, <span class="tp">int</span> destination){
+  vector&lt;<span class="tp">int</span>&gt; dist(n+<span class="num">1</span>,INT_MAX);
+  set&lt;pair&lt;<span class="tp">int</span>,<span class="tp">int</span>&gt;&gt; st;
+  st.insert({<span class="num">0</span>,src});
+  dist[src]=<span class="num">0</span>;
+  <span class="kw">while</span>(!st.empty()){
+    <span class="kw">auto</span> topele=st.begin();
+    <span class="tp">int</span> topdist=topele-&gt;first;
+    <span class="tp">int</span> topnode=topele-&gt;second;
+    st.erase(st.begin());
+    <span class="kw">for</span>(pair&lt;<span class="tp">int</span>,<span class="tp">int</span>&gt; nbrpair
+      :adjlist[topnode]){
+      <span class="tp">int</span> nbrnode=nbrpair.first;
+      <span class="tp">int</span> nbrdist=nbrpair.second;
+      <span class="kw">if</span>(topdist+nbrdist&lt;dist[nbrnode]){
+        <span class="kw">auto</span> prev=st.find(
+          {dist[nbrnode],nbrnode});
+        <span class="kw">if</span>(prev!=st.end())
+          st.erase(prev);
+        dist[nbrnode]=topdist+nbrdist;
+        st.insert({dist[nbrnode],nbrnode});
+      }
+    }
+  }
+  cout&lt;&lt;dist[destination];
+}`,
+bellman:`<span class="cm">// Bellman-Ford</span>
+<span class="cm">// Handles negative weights</span>
+<span class="cm">// Time: O(V*E) | Space: O(V)</span>
+<span class="kw">void</span> <span class="fn">bellmanFord</span>(<span class="tp">int</span> src,<span class="tp">int</span> n){
+  vector&lt;<span class="tp">int</span>&gt; dist(n,INT_MAX);
+  dist[src]=<span class="num">0</span>;
+  <span class="cm">// V-1 relaxation passes</span>
+  <span class="kw">for</span>(<span class="tp">int</span> i=<span class="num">0</span>;i&lt;n-<span class="num">1</span>;i++){
+    <span class="kw">for</span>(<span class="kw">auto</span>&amp; [u,nbrs]:adjlist)
+      <span class="kw">for</span>(<span class="kw">auto</span>&amp; [v,w]:nbrs)
+        <span class="kw">if</span>(dist[u]!=INT_MAX
+          &amp;&amp; dist[u]+w&lt;dist[v])
+          dist[v]=dist[u]+w;
+  }
+  <span class="cm">// Vth pass: neg cycle check</span>
+  <span class="kw">for</span>(<span class="kw">auto</span>&amp; [u,nbrs]:adjlist)
+    <span class="kw">for</span>(<span class="kw">auto</span>&amp; [v,w]:nbrs)
+      <span class="kw">if</span>(dist[u]+w&lt;dist[v])
+        cout&lt;&lt;<span class="str">"Negative cycle!"</span>;
+}`,
+floyd:`<span class="cm">// Floyd-Warshall All-pairs SP</span>
+<span class="cm">// FAILS: negative cycles</span>
+<span class="cm">// Time: O(V^3) | Space: O(V^2)</span>
+<span class="kw">void</span> <span class="fn">floydWarshall</span>(<span class="tp">int</span> V){
+  vector&lt;vector&lt;<span class="tp">int</span>&gt;&gt; dist(V,
+    vector&lt;<span class="tp">int</span>&gt;(V,INT_MAX));
+  <span class="kw">for</span>(<span class="tp">int</span> i=<span class="num">0</span>;i&lt;V;i++) dist[i][i]=<span class="num">0</span>;
+  <span class="kw">for</span>(<span class="tp">int</span> k=<span class="num">0</span>;k&lt;V;k++)
+   <span class="kw">for</span>(<span class="tp">int</span> i=<span class="num">0</span>;i&lt;V;i++)
+    <span class="kw">for</span>(<span class="tp">int</span> j=<span class="num">0</span>;j&lt;V;j++)
+      <span class="kw">if</span>(dist[i][k]!=INT_MAX
+        &amp;&amp; dist[k][j]!=INT_MAX
+        &amp;&amp; dist[i][k]+dist[k][j]
+          &lt;dist[i][j])
+        dist[i][j]=dist[i][k]
+                   +dist[k][j];
+  <span class="cm">// dist[i][i]&lt;0 = neg cycle</span>
+}`,
+dag_sp:`<span class="cm">// DAG Shortest Path</span>
+<span class="cm">// Topo sort + relaxation</span>
+<span class="cm">// Time: O(V+E) | Space: O(V)</span>
+<span class="kw">void</span> <span class="fn">Shortest_path_in_directedG_DFS</span>(
+  <span class="tp">int</span> n, stack&lt;<span class="tp">int</span>&gt;&amp; st){
+  vector&lt;<span class="tp">int</span>&gt; dist(n,INT_MAX);
+  <span class="tp">int</span> src=st.top(); st.pop();
+  dist[src]=<span class="num">0</span>;
+  <span class="kw">while</span>(!st.empty()){
+    <span class="tp">int</span> u=st.top(); st.pop();
+    <span class="kw">for</span>(<span class="kw">auto</span> nbr:adjlist[u]){
+      <span class="tp">int</span> nbrnode=nbr.first;
+      <span class="tp">int</span> nbrdist=nbr.second;
+      <span class="kw">if</span>(dist[u]!=INT_MAX
+        &amp;&amp; dist[u]+nbrdist&lt;dist[nbrnode])
+        dist[nbrnode]=dist[u]+nbrdist;
+    }
+  }
+  <span class="kw">for</span>(<span class="kw">auto</span> i:dist)
+    cout&lt;&lt;i&lt;&lt;<span class="str">" "</span>;
+}`,
+topo_dfs:`<span class="cm">// Topological Sort — DFS</span>
+<span class="cm">// NEEDS: DAG only</span>
+<span class="cm">// Time: O(V+E) | Space: O(V)</span>
+<span class="kw">void</span> <span class="fn">toposort_dfs_directedG</span>(<span class="tp">int</span> src,
+  unordered_map&lt;<span class="tp">int</span>,<span class="tp">bool</span>&gt;&amp; vis,
+  stack&lt;<span class="tp">int</span>&gt;&amp; st){
+  vis[src]=<span class="kw">true</span>;
+  <span class="cm">// go to nbr</span>
+  <span class="kw">for</span>(<span class="kw">auto</span> nbr: adjlist[src]){
+    <span class="kw">if</span>(!vis[nbr])
+      toposort_dfs_directedG(
+        nbr,vis,st);
+  }
+  <span class="cm">// push AFTER all nbrs done</span>
+  st.push(src);
+}
+<span class="cm">// Pop stack = topo order</span>`,
+kahn:`<span class="cm">// Kahn's Topological Sort BFS</span>
+<span class="cm">// NEEDS: DAG only</span>
+<span class="cm">// Time: O(V+E) | Space: O(V)</span>
+<span class="kw">void</span> <span class="fn">toposort_BFS_directedG</span>(<span class="tp">int</span> n){
+  unordered_map&lt;<span class="tp">int</span>,<span class="tp">int</span>&gt; indegree;
+  queue&lt;<span class="tp">int</span>&gt; q;
+  <span class="cm">// step1: indegree calculate</span>
+  <span class="kw">for</span>(<span class="kw">auto</span> i:adjlist)
+    <span class="kw">for</span>(<span class="kw">auto</span> nbr:i.second)
+      indegree[nbr]++;
+  <span class="cm">// step2: push indegree=0</span>
+  <span class="kw">for</span>(<span class="tp">int</span> i=<span class="num">0</span>;i&lt;n;i++)
+    <span class="kw">if</span>(indegree[i]==<span class="num">0</span>) q.push(i);
+  <span class="cm">// step3: BFS</span>
+  <span class="kw">while</span>(!q.empty()){
+    <span class="tp">int</span> frontnode=q.front();
+    cout&lt;&lt;frontnode&lt;&lt;<span class="str">" "</span>;
+    q.pop();
+    <span class="kw">for</span>(<span class="kw">auto</span> nbr:adjlist[frontnode]){
+      indegree[nbr]--;
+      <span class="kw">if</span>(indegree[nbr]==<span class="num">0</span>)
+        q.push(nbr);
+    }
+  }
+}`,
+kosaraju:`<span class="cm">// Kosaraju's SCC</span>
+<span class="cm">// NEEDS: Directed graph</span>
+<span class="cm">// Time: O(V+E) | Space: O(V)</span>
+<span class="kw">void</span> <span class="fn">dfs1</span>(<span class="tp">int</span> src,stack&lt;<span class="tp">int</span>&gt;&amp; st,
+  unordered_map&lt;<span class="tp">int</span>,<span class="tp">bool</span>&gt;&amp; vis){
+  vis[src]=<span class="kw">true</span>;
+  <span class="kw">for</span>(<span class="kw">auto</span> nbr:adjlist[src])
+    <span class="kw">if</span>(!vis[nbr])dfs1(nbr,st,vis);
+  st.push(src); <span class="cm">// finish order</span>
+}
+<span class="kw">void</span> <span class="fn">dfs2</span>(<span class="tp">int</span> src,
+  unordered_map&lt;<span class="tp">int</span>,<span class="tp">bool</span>&gt;&amp; vis,
+  unordered_map&lt;<span class="tp">int</span>,list&lt;<span class="tp">int</span>&gt;&gt;&amp; rev){
+  vis[src]=<span class="kw">true</span>;
+  cout&lt;&lt;src&lt;&lt;<span class="str">" "</span>;
+  <span class="kw">for</span>(<span class="kw">auto</span> nbr:rev[src])
+    <span class="kw">if</span>(!vis[nbr]) dfs2(nbr,vis,rev);
+}
+<span class="cm">// getSSC: dfs1 all + reverse + dfs2</span>`,
+tarjan:`<span class="cm">// Tarjan's Bridge Finding</span>
+<span class="cm">// Time: O(V+E) | Space: O(V)</span>
+<span class="kw">void</span> <span class="fn">no_of_Bridge</span>(<span class="tp">int</span> src,<span class="tp">int</span> parent,
+  <span class="tp">int</span>&amp; timer,vector&lt;<span class="tp">int</span>&gt;&amp; tin,
+  vector&lt;<span class="tp">int</span>&gt;&amp; low,
+  unordered_map&lt;<span class="tp">int</span>,<span class="tp">bool</span>&gt;&amp; vis){
+  vis[src]=<span class="kw">true</span>;
+  tin[src]=low[src]=timer++;
+  <span class="kw">for</span>(<span class="kw">auto</span> nbr:adjlist[src]){
+    <span class="kw">if</span>(nbr==parent) <span class="kw">continue</span>;
+    <span class="kw">if</span>(!vis[nbr]){
+      no_of_Bridge(nbr,src,
+        timer,tin,low,vis);
+      low[src]=min(low[src],low[nbr]);
+      <span class="cm">// BRIDGE: low[v] > tin[u]</span>
+      <span class="kw">if</span>(low[nbr]&gt;tin[src])
+        cout&lt;&lt;nbr&lt;&lt;<span class="str">"-"</span>&lt;&lt;src
+          &lt;&lt;<span class="str">" is a bridge"</span>&lt;&lt;endl;
+    }<span class="kw">else</span>
+      low[src]=min(low[src],tin[nbr]);
+  }
+}`,
+articulation:`<span class="cm">// Articulation Points</span>
+<span class="cm">// AP: low[v] >= disc[u] (non-root)</span>
+<span class="cm">// Time: O(V+E) | Space: O(V)</span>
+<span class="kw">void</span> <span class="fn">dfs_ap</span>(<span class="tp">int</span> u,<span class="tp">int</span> par,
+  vector&lt;<span class="tp">int</span>&gt;&amp; disc,
+  vector&lt;<span class="tp">int</span>&gt;&amp; low,
+  vector&lt;<span class="tp">bool</span>&gt;&amp; vis,
+  vector&lt;<span class="tp">bool</span>&gt;&amp; isAP,<span class="tp">int</span>&amp; timer){
+  vis[u]=<span class="kw">true</span>;
+  disc[u]=low[u]=timer++;
+  <span class="tp">int</span> children=<span class="num">0</span>;
+  <span class="kw">for</span>(<span class="kw">auto</span> v:adjlist[u]){
+    <span class="kw">if</span>(!vis[v]){
+      children++;
+      dfs_ap(v,u,disc,low,
+        vis,isAP,timer);
+      low[u]=min(low[u],low[v]);
+      <span class="cm">// non-root AP condition:</span>
+      <span class="kw">if</span>(par!=-<span class="num">1</span>&amp;&amp;low[v]&gt;=disc[u])
+        isAP[u]=<span class="kw">true</span>;
+      <span class="cm">// root AP: 2+ children</span>
+      <span class="kw">if</span>(par==-<span class="num">1</span>&amp;&amp;children&gt;<span class="num">1</span>)
+        isAP[u]=<span class="kw">true</span>;
+    }<span class="kw">else if</span>(v!=par)
+      low[u]=min(low[u],disc[v]);
+  }
+}`,
+prim:`<span class="cm">// Prim's MST</span>
+<span class="cm">// NEEDS: Undirected weighted</span>
+<span class="cm">// Time: O(E logV) | Space: O(V)</span>
+<span class="kw">void</span> <span class="fn">primsMST</span>(<span class="tp">int</span> src,<span class="tp">int</span> n){
+  vector&lt;<span class="tp">int</span>&gt; key(n,INT_MAX);
+  vector&lt;<span class="tp">bool</span>&gt; inMST(n,<span class="kw">false</span>);
+  priority_queue&lt;
+    pair&lt;<span class="tp">int</span>,<span class="tp">int</span>&gt;,
+    vector&lt;pair&lt;<span class="tp">int</span>,<span class="tp">int</span>&gt;&gt;,
+    greater&lt;&gt;&gt; pq;
+  key[src]=<span class="num">0</span>;
+  pq.push({<span class="num">0</span>,src});
+  <span class="kw">while</span>(!pq.empty()){
+    <span class="kw">auto</span> [w,u]=pq.top(); pq.pop();
+    <span class="kw">if</span>(inMST[u]) <span class="kw">continue</span>;
+    inMST[u]=<span class="kw">true</span>;
+    <span class="kw">for</span>(<span class="kw">auto</span> [v,wt]:adjlist[u])
+      <span class="kw">if</span>(!inMST[v]&amp;&amp;wt&lt;key[v]){
+        key[v]=wt;
+        pq.push({key[v],v});
+      }
+  }
+}`,
+kruskal:`<span class="cm">// Kruskal's MST — Union-Find DSU</span>
+<span class="cm">// NEEDS: Undirected weighted</span>
+<span class="cm">// Time: O(E logE) | Space: O(V)</span>
+<span class="tp">int</span> <span class="fn">find</span>(vector&lt;<span class="tp">int</span>&gt;&amp; par,<span class="tp">int</span> x){
+  <span class="kw">if</span>(par[x]!=x)
+    par[x]=find(par,par[x]);
+  <span class="kw">return</span> par[x];
+}
+<span class="kw">void</span> <span class="fn">kruskalMST</span>(){
+  sort(edges.begin(),edges.end());
+  vector&lt;<span class="tp">int</span>&gt; par(n);
+  iota(par.begin(),par.end(),<span class="num">0</span>);
+  <span class="kw">for</span>(<span class="kw">auto</span> [w,u,v]:sortedEdges){
+    <span class="tp">int</span> pu=find(par,u);
+    <span class="tp">int</span> pv=find(par,v);
+    <span class="kw">if</span>(pu!=pv){
+      par[pu]=pv; <span class="cm">// union</span>
+      cout&lt;&lt;u&lt;&lt;<span class="str">"-"</span>&lt;&lt;v
+        &lt;&lt;<span class="str">" MST edge\n"</span>;
+    }
+  }
+}`};
 
 function resizeCanvas(){canvas.width=canvas.parentElement.clientWidth;canvas.height=canvas.parentElement.clientHeight;draw();}
+
 function project(x,y,z){
-  const cx=Math.cos(rotX),sx=Math.sin(rotX),cy=Math.cos(rotY),sy=Math.sin(rotY);
-  const nx=x*cy+z*sy,ny=x*sx*sy+y*cx-z*sx*cy;
-  const s=zoom*Math.min(canvas.width,canvas.height)*0.24;
-  return{px:canvas.width/2+nx*s,py:canvas.height/2-ny*s};
+  const cx=Math.cos(rotX),sx=Math.sin(rotX),cy=Math.cos(rotY),sy=Math.sin(rotY);
+  const nx=x*cy+z*sy,ny=x*sx*sy+y*cx-z*sx*cy;
+  const s=zoom*Math.min(canvas.width,canvas.height)*0.24;
+  return{px:canvas.width/2+nx*s,py:canvas.height/2-ny*s};
 }
 
 function drawArrow(x1,y1,x2,y2,col,w=1.5){
-  ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.strokeStyle=col;ctx.lineWidth=w;ctx.stroke();
-  const a=Math.atan2(y2-y1,x2-x1),al=10,aw=0.4;
-  ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-al*Math.cos(a-aw),y2-al*Math.sin(a-aw));ctx.lineTo(x2-al*Math.cos(a+aw),y2-al*Math.sin(a+aw));
-  ctx.closePath();ctx.fillStyle=col;ctx.fill();
+  ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.strokeStyle=col;ctx.lineWidth=w;ctx.stroke();
+  const a=Math.atan2(y2-y1,x2-x1),al=10,aw=0.4;
+  ctx.beginPath();ctx.moveTo(x2,y2);ctx.lineTo(x2-al*Math.cos(a-aw),y2-al*Math.sin(a-aw));ctx.lineTo(x2-al*Math.cos(a+aw),y2-al*Math.sin(a+aw));
+  ctx.closePath();ctx.fillStyle=col;ctx.fill();
 }
 
 function draw(){
-  ctx.clearRect(0,0,canvas.width,canvas.height);
-  if(!nodes.length){ctx.fillStyle='#C0C0C0';ctx.font='13px sans-serif';ctx.textAlign='center';ctx.fillText('Add nodes/edges or select a preset',canvas.width/2,canvas.height/2);return;}
-  const dir=document.getElementById('dir').checked;
-  edges.forEach(e=>{
-    const n1=nodes.find(n=>n.id===e.f),n2=nodes.find(n=>n.id===e.t);if(!n1||!n2)return;
-    const p1=project(n1.x,n1.y,n1.z),p2=project(n2.x,n2.y,n2.z);
-    const key=`${e.f}-${e.t}`,rkey=`${e.t}-${e.f}`;
-    const col=EC[key] || (dir ? C.edge : EC[rkey]) || C.edge;
-    const w= (EC[key] || (!dir && EC[rkey])) ? 2.5 : 1.2;
-    const dx=p2.px-p1.px,dy=p2.py-p1.py,len=Math.sqrt(dx*dx+dy*dy)||1,r=20;
-    const x1=p1.px+(dx/len)*r,y1=p1.py+(dy/len)*r,x2=p2.px-(dx/len)*(r+2),y2=p2.py-(dy/len)*(r+2);
-    if(dir)drawArrow(x1,y1,x2,y2,col,w);
-    else{ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.strokeStyle=col;ctx.lineWidth=w;ctx.stroke();}
-    ctx.font='bold 11px sans-serif';ctx.textAlign='center';ctx.fillStyle='#333';
-    ctx.fillText(String(e.w),(p1.px+p2.px)/2,(p1.py+p2.py)/2);
-  });
-  nodes.forEach(n=>{
-    const p=project(n.x,n.y,n.z),col=NC[n.id]||C.node;
-    ctx.beginPath();ctx.arc(p.px,p.py,20,0,Math.PI*2);ctx.fillStyle=col+'22';ctx.fill();
-    ctx.strokeStyle=col;ctx.lineWidth=2.5;ctx.stroke();
-    ctx.font='bold 12px sans-serif';ctx.fillStyle=col;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(n.label,p.px,p.py);
-  });
-}
-
-function updSel(){['ef','et','sn'].forEach(id=>{const s=document.getElementById(id),c=s.value;s.innerHTML=nodes.map(n=>`<option value="${n.id}">${n.label}</option>`).join('');if(nodes.find(n=>String(n.id)===c))s.value=c;});}
-
-function addNode(){
-  const label=document.getElementById('nl').value.trim()||String.fromCharCode(65+(nodes.length%26));
-  const pos=sphPos(nodes.length,nodes.length+1);
-  nodes.push({id:nid++,label:String(label),x:pos.x,y:pos.y,z:pos.z});
-  updSel();draw();
-}
-
-// FEATURE: Remove Node
-function removeNode(){
-  const label = document.getElementById('nl').value.trim();
-  const nodeIdx = nodes.findIndex(n => n.label === label);
-  if(nodeIdx !== -1) {
-    const id = nodes[nodeIdx].id;
-    nodes.splice(nodeIdx, 1);
-    edges = edges.filter(e => e.f !== id && e.t !== id);
-    updSel(); draw();
-    log(`Node ${label} removed`, 'wn');
-  } else { log(`Node ${label} not found`, 'er'); }
-}
-
-function addEdge(){const f=parseInt(document.getElementById('ef').value),t=parseInt(document.getElementById('et').value),w=parseFloat(document.getElementById('ew').value)||1;if(isNaN(f)||isNaN(t)||f===t)return;edges.push({f,t,w});draw();}
-
-// FEATURE: Remove Edge
-function removeEdge(){
-  const f=parseInt(document.getElementById('ef').value),t=parseInt(document.getElementById('et').value);
-  const initialLen = edges.length;
-  edges = edges.filter(e => !(e.f === f && e.t === t));
-  if(!document.getElementById('dir').checked) edges = edges.filter(e => !(e.f === t && e.t === f));
-  if(edges.length < initialLen) { draw(); log('Edge removed', 'wn'); }
-}
-
-function clearGraph(){nodes=[];edges=[];nid=0;NC={};EC={};NL={};updSel();draw();logClear();}
-
-function loadPreset(name){
-  clearGraph();
-  const P={
-    simple:{n:['A','B','C','D'],e:[[0,1,1],[1,2,1],[2,3,1],[3,0,1],[0,2,1]],d:false},
-    weighted:{n:['S','A','B','C','T'],e:[[0,1,4],[0,2,2],[1,2,1],[1,3,5],[2,4,10],[3,4,2]],d:true}
-  };
-  const p=P[name]||P.simple; document.getElementById('dir').checked=p.d;
-  p.n.forEach(l=>{const pos=sphPos(nodes.length,p.n.length);nodes.push({id:nid++,label:l,x:pos.x,y:pos.y,z:pos.z});});
-  p.e.forEach(([f,t,w])=>edges.push({f,t,w}));
-  updSel();draw();
-}
-
-function selAlgo(name){
-  algo=name;document.querySelectorAll('.ab').forEach(b=>b.classList.remove('active'));
-  document.getElementById('ab-'+name).classList.add('active');
-  const p=PROPS[name]||{t:'',c:''};document.getElementById('prop').textContent=p.t;document.getElementById('prop').className='prop '+p.c;
-  document.getElementById('cx-row').style.display='flex';
-}
-
-function sphPos(i,t){const phi=Math.acos(1-2*(i+0.5)/Math.max(t,1)),th=Math.PI*(1+Math.sqrt(5))*i;return{x:2.2*Math.sin(phi)*Math.cos(th),y:2.2*Math.sin(phi)*Math.sin(th),z:2.2*Math.cos(phi)};}
-function log(msg,type=''){const b=document.getElementById('logbox');const d=document.createElement('div');d.className='ll '+type;d.textContent=msg;b.prepend(d);}
-function logClear(){document.getElementById('logbox').innerHTML='';}
-function resetViz(){if(tmr)clearTimeout(tmr);steps=[];cur=-1;NC={};EC={};NL={};draw();}
-
-function runAlgo(){
-  if(!algo)return; resetViz();
-  const sid=parseInt(document.getElementById('sn').value);
-  log("Algorithm started...");
-}
-
-function parseEditor(){
-  const text = document.getElementById('editor').value;
-  nodes = []; edges = []; nid = 0;
-  text.split('\n').forEach(line => {
-    const parts = line.trim().split(/\s+/);
-    if (parts[0].toLowerCase() === 'addedge' && parts.length >= 4) {
-      const uL = String(parts[1]), vL = String(parts[2]), w = parseFloat(parts[3])||1, dir = parseInt(parts[4]);
-      [uL,vL].forEach(l => { if(!nodes.find(n=>n.label===l)) nodes.push({id:nid++, label:l, x:(Math.random()-0.5)*4, y:(Math.random()-0.5)*4, z:(Math.random()-0.5)*4}); });
-      const u=nodes.find(n=>n.label===uL), v=nodes.find(n=>n.label===vL);
-      edges.push({f:u.id, t:v.id, w});
-      if(dir===0) edges.push({f:v.id, t:u.id, w});
-    }
-  });
-  updSel(); draw();
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  if(!nodes.length){ctx.fillStyle='#C0C0C0';ctx.font='13px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText('Add nodes/edges or select a preset',canvas.width/2,canvas.height/2);return;}
+  const dir=document.getElementById('dir').checked;
+  edges.forEach(e=>{
+    const n1=nodes.find(n=>n.id===e.f),n2=nodes.find(n=>n.id===e.t);if(!n1||!n2)return;
+    const p1=project(n1.x,n1.y,n1.z),p2=project(n2.x,n2.y,n2.z);
+    const key=`${e.f}-${e.t}`,rkey=`${e.t}-${e.f}`;
+    const col=EC[key]||EC[rkey]||C.edge,w=EC[key]||EC[rkey]?2.5:1.2;
+    const dx=p2.px-p1.px,dy=p2.py-p1.py,len=Math.sqrt(dx*dx+dy*dy)||1,r=20;
+    const x1=p1.px+(dx/len)*r,y1=p1.py+(dy/len)*r,x2=p2.px-(dx/len)*(r+2),y2=p2.py-(dy/len)*(r+2);
+    if(dir)drawArrow(x1,y1,x2,y2,col,w);
+    else{ctx.beginPath();ctx.moveTo(x1,y1);ctx.lineTo(x2,y2);ctx.strokeStyle=col;ctx.lineWidth=w;ctx.stroke();}
+    const wx=(p1.px+p2.px)/2,wy=(p1.py+p2.py)/2;
+    const wtxt=String(e.w);
+    ctx.font='bold 11px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
+    const tw=ctx.measureText(wtxt).width;
+    ctx.fillStyle='rgba(255,255,255,0.9)';
+    ctx.fillRect(wx-tw/2-3,wy-7,tw+6,13);
+    ctx.fillStyle=EC[key]?col:'#333';
+    ctx.fillText(wtxt,wx,wy);
+  });
+  nodes.forEach(n=>{
+    const p=project(n.x,n.y,n.z),col=NC[n.id]||C.node;
+    const lv=NLvl[n.id];
+    if(lv!==undefined){ctx.beginPath();ctx.arc(p.px,p.py,27,0,Math.PI*2);ctx.fillStyle=C.lvl[lv%C.lvl.length]+'18';ctx.fill();}
+    ctx.beginPath();ctx.arc(p.px,p.py,20,0,Math.PI*2);ctx.fillStyle=col+'22';ctx.fill();
+    ctx.strokeStyle=col;ctx.lineWidth=2.5;ctx.stroke();
+    ctx.font='bold 12px sans-serif';ctx.fillStyle=col;ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(n.label,p.px,p.py);
+    if(NL[n.id]){ctx.font='9px sans-serif';ctx.fillStyle='#888';ctx.textBaseline='top';ctx.fillText(NL[n.id],p.px,p.py+22);}
+  });
 }
 
 canvas.addEventListener('mousedown',e=>{drag=true;lmx=e.clientX;lmy=e.clientY;});
 canvas.addEventListener('mousemove',e=>{if(!drag)return;rotY+=(e.clientX-lmx)*0.01;rotX+=(e.clientY-lmy)*0.01;lmx=e.clientX;lmy=e.clientY;draw();});
 canvas.addEventListener('mouseup',()=>drag=false);
+canvas.addEventListener('mouseleave',()=>drag=false);
+canvas.addEventListener('wheel',e=>{zoom*=e.deltaY>0?0.9:1.1;zoom=Math.max(0.3,Math.min(3,zoom));draw();e.preventDefault();},{passive:false});
+
+function sphPos(i,t){const phi=Math.acos(1-2*(i+0.5)/Math.max(t,1)),th=Math.PI*(1+Math.sqrt(5))*i;return{x:2.2*Math.sin(phi)*Math.cos(th),y:2.2*Math.sin(phi)*Math.sin(th),z:2.2*Math.cos(phi)};}
+
+function updSel(){['ef','et','sn'].forEach(id=>{const s=document.getElementById(id),c=s.value;s.innerHTML=nodes.map(n=>`<option value="${n.id}">${n.label}</option>`).join('');if(nodes.find(n=>String(n.id)===c))s.value=c;});}
+
+function addNode(){const label=document.getElementById('nl').value.trim()||(nodes.length<26?String.fromCharCode(65+nodes.length):String(nodes.length));const pos=sphPos(nodes.length,Math.max(nodes.length+1,6));nodes.push({id:nid++,label:String(label),x:pos.x,y:pos.y,z:pos.z});document.getElementById('nl').value='';updSel();resetViz();draw();}
+
+function removeNode(){
+  const label = document.getElementById('nl').value.trim();
+  const index = nodes.findIndex(n => n.label === label);
+  if(index !== -1){
+    const id = nodes[index].id;
+    nodes.splice(index, 1);
+    edges = edges.filter(e => e.f !== id && e.t !== id);
+    updSel(); draw(); log(`Node ${label} removed`, 'wn');
+  } else { log('Node not found', 'er'); }
+}
+
+function addEdge(){const f=parseInt(document.getElementById('ef').value),t=parseInt(document.getElementById('et').value),w=parseFloat(document.getElementById('ew').value)||1;if(isNaN(f)||isNaN(t)||f===t||edges.find(e=>e.f===f&&e.t===t))return;edges.push({f,t,w});resetViz();draw();}
+
+function removeEdge(){
+  const f=parseInt(document.getElementById('ef').value),t=parseInt(document.getElementById('et').value);
+  const dir = document.getElementById('dir').checked;
+  const initialLen = edges.length;
+  edges = edges.filter(e => !(e.f === f && e.t === t));
+  if(!dir) edges = edges.filter(e => !(e.f === t && e.t === f));
+  if(edges.length < initialLen) { draw(); log('Edge removed', 'wn'); }
+  else { log('Edge not found', 'er'); }
+}
+
+function clearGraph(){nodes=[];edges=[];nid=0;NC={};EC={};NL={};NLvl={};updSel();resetViz();draw();logClear();hideOverlay();hidePathMsg();}
+
+function loadPreset(name){
+  clearGraph();
+  const P={
+    simple:{n:['A','B','C','D','E','F'],e:[[0,1,1],[0,2,1],[1,3,1],[2,3,1],[3,4,1],[1,5,1],[4,5,1]],d:false},
+    weighted:{n:['S','A','B','C','T'],e:[[0,1,4],[0,2,2],[1,2,1],[1,3,5],[2,4,10],[3,4,2],[2,3,8]],d:true},
+    negcycle:{n:['A','B','C','D'],e:[[0,1,1],[1,2,-3],[2,3,2],[3,1,1]],d:true},
+    dag:{n:['A','B','C','D','E','F'],e:[[0,1,1],[0,2,1],[1,3,1],[1,4,1],[2,4,1],[3,5,1],[4,5,1]],d:true},
+    scc:{n:['A','B','C','D','E','F'],e:[[0,1,1],[1,2,1],[2,0,1],[1,3,1],[3,4,1],[4,3,1],[4,5,1]],d:true},
+    mst:{n:['A','B','C','D','E'],e:[[0,1,2],[0,3,6],[1,2,3],[1,3,8],[1,4,5],[2,4,7],[3,4,9]],d:false},
+    bipartite:{n:['A','B','C','D','E','F'],e:[[0,1,1],[0,3,1],[1,2,1],[2,3,1],[2,5,1],[4,1,1],[4,3,1]],d:false}
+  };
+  const p=P[name];document.getElementById('dir').checked=p.d;
+  p.n.forEach(label=>{const pos=sphPos(nodes.length,p.n.length);nodes.push({id:nid++,label,x:pos.x,y:pos.y,z:pos.z});});
+  p.e.forEach(([f,t,w])=>edges.push({f,t,w}));
+  updSel();if(algo)applyLayout(LAYOUT_MAP[algo]||'circle');else applyLayout('circle');draw();log(`Preset "${name}" — ${nodes.length} nodes, ${edges.length} edges`,'hl');
+}
+
+function selAlgo(name){
+  algo=name;document.querySelectorAll('.ab').forEach(b=>b.classList.remove('active'));
+  document.getElementById('ab-'+name).classList.add('active');
+  showProps(name);showCode(name);showCX(name);resetViz();
+  if(nodes.length>0)applyLayout(LAYOUT_MAP[name]||'circle');
+}
+
+function showProps(name){const p=PROPS[name],b=document.getElementById('prop');b.textContent=p.t;b.className='prop '+p.c;}
+
+function showCX(name){
+  const cx=CX[name];if(!cx)return;
+  document.getElementById('cx-row').style.display='flex';
+  document.getElementById('cx-time').textContent=cx.time;
+  document.getElementById('cx-space').textContent=cx.space;
+  document.getElementById('cx-type').textContent=cx.type;
+  const cc=document.getElementById('cx-canvas');
+  cc.classList.add('show');
+  document.getElementById('cxc-time').textContent=cx.time;
+  document.getElementById('cxc-space').textContent=cx.space;
+  document.getElementById('cxc-type').textContent=cx.type;
+}
+
+function showCode(name){
+  document.getElementById('code-box').innerHTML=CODES[name]||'<span style="color:#555">No code</span>';
+  document.getElementById('code-label').textContent=name.toUpperCase()+' — C++';
+  const bmap={bfs:'b-bl',dfs:'b-gn',cycle_bfs:'b-gn',cycle_dfs:'b-gn',cycle_dir:'b-rd',bipartite:'b-pu',dijkstra:'b-am',bellman:'b-gn',floyd:'b-am',dag_sp:'b-am',topo_dfs:'b-am',kahn:'b-am',kosaraju:'b-pu',tarjan:'b-rd',articulation:'b-rd',prim:'b-am',kruskal:'b-pu'};
+  const b=document.getElementById('code-badge');b.className='badge '+(bmap[name]||'b-bl');b.textContent=name;
+}
+
+function toggleCode(){
+  codeCollapsed=!codeCollapsed;
+  document.getElementById('code-body').style.maxHeight=codeCollapsed?'0':'2000px';
+  document.getElementById('fold-btn').textContent=codeCollapsed?'▶ Expand':'▼ Collapse';
+}
+
+function log(msg,type=''){
+  const box=document.getElementById('logbox');
+  if(box.firstChild?.style?.color==='rgb(85, 85, 85)')box.innerHTML='';
+  const d=document.createElement('div');d.className='ll'+(type?' '+type:'');d.textContent=msg;box.prepend(d);
+}
+function logClear(){document.getElementById('logbox').innerHTML='<div style="color:#555">Run algo to see steps...</div>';}
+function hideOverlay(){document.getElementById('overlay-msg').classList.remove('show');}
+function hidePathMsg(){document.getElementById('path-overlay').classList.remove('show');}
+function showOverlay(title,items){const m=document.getElementById('overlay-msg');document.getElementById('overlay-title').textContent=title;document.getElementById('overlay-list').innerHTML=items;m.classList.add('show');}
+function showPathMsg(msg){const m=document.getElementById('path-overlay');m.innerHTML=msg;m.classList.add('show');}
+
+function getAdj(){
+  const adj={},dir=document.getElementById('dir').checked;
+  nodes.forEach(n=>adj[n.id]=[]);
+  edges.forEach(e=>{adj[e.f].push({to:e.t,w:e.w});if(!dir)adj[e.t].push({to:e.f,w:e.w});});
+  return adj;
+}
+function lbl(id){return nodes.find(n=>n.id===id)?.label||String(id);}
+
+function buildSteps(a,sid){
+  const S=[],adj=getAdj(),dir=document.getElementById('dir').checked;
+  hideOverlay();hidePathMsg();
+
+  if(a==='bfs'){
+    const vis=new Set(),q=[{id:sid,lv:0}],nc={},ec={},nl={},nlvl={};
+    nc[sid]=C.lvl[0];nl[sid]='L0';nlvl[sid]=0;vis.add(sid);
+    S.push({nc:{...nc},ec:{},nl:{...nl},nlvl:{...nlvl},msg:`BFS from ${lbl(sid)} — Level 0`,t:'lv'});
+    while(q.length){
+      const{id:u,lv}=q.shift();nc[u]=C.lvl[lv%C.lvl.length];
+      S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{...nlvl},msg:`Visit ${lbl(u)} Level=${lv}`,t:'lv'});
+      for(const{to:v}of adj[u])if(!vis.has(v)){vis.add(v);q.push({id:v,lv:lv+1});nc[v]=C.lvl[(lv+1)%C.lvl.length];ec[`${u}-${v}`]=C.lvl[lv%C.lvl.length];nl[v]=`L${lv+1}`;nlvl[v]=lv+1;S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{...nlvl},msg:`Enqueue ${lbl(v)} Level ${lv+1}`,t:'lv'});}
+    }
+    S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{...nlvl},msg:'BFS complete!',t:'hl'});
+  }
+
+  else if(a==='dfs'){
+    const vis=new Set(),nc={},ec={},nl={},nlvl={};
+    S.push({nc:{...nc},ec:{},nl:{...nl},nlvl:{...nlvl},msg:`DFS from ${lbl(sid)}`});
+    function dfs(u,par,d){vis.add(u);nc[u]=C.vis;nlvl[u]=d;nl[u]=`d:${d}`;S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{...nlvl},msg:`Visit ${lbl(u)} depth=${d}`});for(const{to:v}of adj[u]){if(!vis.has(v)){ec[`${u}-${v}`]=C.trav;S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{...nlvl},msg:`Tree: ${lbl(u)}→${lbl(v)}`});dfs(v,u,d+1);S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{...nlvl},msg:`Backtrack to ${lbl(u)}`});}else if(v!==par){ec[`${u}-${v}`]=C.back;S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{...nlvl},msg:`Back edge ${lbl(u)}→${lbl(v)} cycle!`,t:'wn'});}}}
+    dfs(sid,-1,0);S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{...nlvl},msg:'DFS complete!',t:'hl'});
+  }
+
+  else if(a==='cycle_bfs'){
+    const vis=new Set(),parent={},nc={},ec={};parent[sid]=-1;vis.add(sid);nc[sid]=C.curr;const q=[sid];let found=false;
+    S.push({nc:{...nc},ec:{},nl:{},nlvl:{},msg:`Cycle BFS (undirected) from ${lbl(sid)}`});
+    while(q.length&&!found){const u=q.shift();nc[u]=C.vis;S.push({nc:{...nc},ec:{...ec},nl:{},nlvl:{},msg:`Check ${lbl(u)} parent=${parent[u]===-1?'none':lbl(parent[u])}`});for(const{to:v}of adj[u]){if(!vis.has(v)){vis.add(v);q.push(v);parent[v]=u;nc[v]=C.curr;ec[`${u}-${v}`]=C.trav;S.push({nc:{...nc},ec:{...ec},nl:{},nlvl:{},msg:`Visit ${lbl(v)} parent=${lbl(u)}`});}else if(v!==parent[u]){ec[`${u}-${v}`]=C.cycle;nc[u]=nc[v]=C.cycle;found=true;S.push({nc:{...nc},ec:{...ec},nl:{},nlvl:{},msg:`CYCLE! ${lbl(u)}→${lbl(v)} visited & not parent`,t:'er',propErr:'Cycle detected! Back edge found.'});break;}}}
+    if(!found)S.push({nc:{...nc},ec:{...ec},nl:{},nlvl:{},msg:'No cycle found!',t:'hl'});
+  }
+
+  else if(a==='cycle_dfs'){
+    const vis=new Set(),nc={},ec={};let found=false;
+    function cdfs(u,par){if(found)return;vis.add(u);nc[u]=C.vis;S.push({nc:{...nc},ec:{...ec},nl:{},nlvl:{},msg:`DFS ${lbl(u)} parent=${par===-1?'none':lbl(par)}`});for(const{to:v}of adj[u]){if(!vis.has(v)){ec[`${u}-${v}`]=C.trav;cdfs(v,u);}else if(v!==par){ec[`${u}-${v}`]=C.cycle;nc[u]=nc[v]=C.cycle;found=true;S.push({nc:{...nc},ec:{...ec},nl:{},nlvl:{},msg:`CYCLE! ${lbl(u)}→${lbl(v)} back edge`,t:'er',propErr:'Cycle via DFS back edge!'});}}}
+    S.push({nc:{...nc},ec:{},nl:{},nlvl:{},msg:`Cycle DFS (undirected) from ${lbl(sid)}`});cdfs(sid,-1);
+    if(!found)S.push({nc:{...nc},ec:{...ec},nl:{},nlvl:{},msg:'No cycle!',t:'hl'});
+  }
+
+  else if(a==='cycle_dir'){
+    // 3-color: 0=white, 1=gray(in stack), 2=black(done)
+    const color={},nc={},ec={};nodes.forEach(n=>color[n.id]=0);let found=false;
+    function ddir(u){if(found)return;color[u]=1;nc[u]=C.curr;S.push({nc:{...nc},ec:{...ec},nl:{},nlvl:{},msg:`Mark ${lbl(u)} GRAY (in DFS stack)`});
+      for(const{to:v}of adj[u]){
+        if(color[v]===0){ec[`${u}-${v}`]=C.trav;ddir(v);}
+        else if(color[v]===1){ec[`${u}-${v}`]=C.cycle;nc[u]=nc[v]=C.cycle;found=true;S.push({nc:{...nc},ec:{...ec},nl:{},nlvl:{},msg:`CYCLE! ${lbl(u)}→${lbl(v)} GRAY→GRAY = back edge`,t:'er',propErr:'Cycle in directed graph! GRAY→GRAY edge found (back edge in DFS tree).'});}
+      }
+      if(!found){color[u]=2;nc[u]=C.vis;S.push({nc:{...nc},ec:{...ec},nl:{},nlvl:{},msg:`Mark ${lbl(u)} BLACK (done)`});}}
+    S.push({nc:{...nc},ec:{},nl:{},nlvl:{},msg:'Directed cycle detection — 3-color DFS'});
+    nodes.forEach(n=>{if(color[n.id]===0&&!found)ddir(n.id);});
+    if(!found)S.push({nc:{...nc},ec:{...ec},nl:{},nlvl:{},msg:'No cycle in directed graph!',t:'hl'});
+  }
+
+  else if(a==='bipartite'){
+    const color={},nc={},ec={};let bipartite=true;const q=[sid];color[sid]=0;nc[sid]=C.bip1;
+    S.push({nc:{...nc},ec:{},nl:{},nlvl:{},msg:`Bipartite check from ${lbl(sid)} — 2-coloring`});
+    while(q.length&&bipartite){const u=q.shift();S.push({nc:{...nc},ec:{...ec},nl:{},nlvl:{},msg:`Color ${lbl(u)} = ${color[u]===0?'BLUE':'PINK'}`});
+      for(const{to:v}of adj[u]){
+        if(color[v]===undefined){color[v]=1-color[u];nc[v]=color[v]===0?C.bip1:C.bip2;ec[`${u}-${v}`]=C.trav;ec[`${v}-${u}`]=C.trav;q.push(v);S.push({nc:{...nc},ec:{...ec},nl:{},nlvl:{},msg:`Color ${lbl(v)} = ${color[v]===0?'BLUE':'PINK'}`});}
+        else if(color[v]===color[u]){ec[`${u}-${v}`]=C.cycle;nc[u]=nc[v]=C.cycle;bipartite=false;S.push({nc:{...nc},ec:{...ec},nl:{},nlvl:{},msg:`NOT BIPARTITE! ${lbl(u)} & ${lbl(v)} same color`,t:'er',propErr:'Not bipartite! Adjacent nodes have same color. Odd-length cycle exists.'});break;}
+      }}
+    if(bipartite){const b1=Object.entries(color).filter(([,c])=>c===0).map(([id])=>lbl(parseInt(id)));const b2=Object.entries(color).filter(([,c])=>c===1).map(([id])=>lbl(parseInt(id)));S.push({nc:{...nc},ec:{...ec},nl:{},nlvl:{},msg:`BIPARTITE! Set1:[${b1.join(',')}] Set2:[${b2.join(',')}]`,t:'hl',bipInfo:{b1,b2}});}
+  }
+
+  else if(a==='dijkstra'){
+    if(edges.some(e=>e.w<0)){S.push({nc:{},ec:{},nl:{},nlvl:{},msg:'ERROR: Negative weight! Dijkstra fails.',t:'er',propErr:'Dijkstra needs all weights >= 0. Use Bellman-Ford instead.'});return S;}
+    const dist={},prev={},vis=new Set(),nc={},ec={},nl={};
+    nodes.forEach(n=>dist[n.id]=Infinity);dist[sid]=0;nl[sid]='0';nc[sid]=C.curr;
+    S.push({nc:{...nc},ec:{},nl:{...nl},nlvl:{},msg:`Dijkstra from ${lbl(sid)}`});
+    while(true){let u=-1,md=Infinity;nodes.forEach(n=>{if(!vis.has(n.id)&&dist[n.id]<md){md=dist[n.id];u=n.id;}});if(u===-1)break;
+      vis.add(u);nc[u]=C.vis;S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{},msg:`Process ${lbl(u)} dist=${dist[u]}`});
+      for(const{to:v,w}of adj[u])if(dist[u]+w<dist[v]){dist[v]=dist[u]+w;prev[v]=u;nl[v]=String(dist[v]);nc[v]=C.curr;ec[`${u}-${v}`]=C.trav;S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{},msg:`Relax ${lbl(v)}=${dist[v]}`});}
+    }
+    S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{},msg:'Dijkstra complete!',t:'hl',pathInfo:{dist,prev,src:sid}});
+  }
+
+  else if(a==='bellman'){
+    const dist={},prev={},nc={},ec={},nl={};nodes.forEach(n=>dist[n.id]=Infinity);dist[sid]=0;nl[sid]='0';
+    S.push({nc:{},ec:{},nl:{...nl},nlvl:{},msg:`Bellman-Ford from ${lbl(sid)}, ${nodes.length-1} passes`});
+    for(let i=0;i<nodes.length-1;i++){let up=false;for(const e of edges){if(dist[e.f]!==Infinity&&dist[e.f]+e.w<dist[e.t]){dist[e.t]=dist[e.f]+e.w;prev[e.t]=e.f;nl[e.t]=String(dist[e.t]);nc[e.t]=C.curr;ec[`${e.f}-${e.t}`]=C.trav;S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{},msg:`Pass ${i+1}: Relax ${lbl(e.t)}=${dist[e.t]}`});up=true;}}if(!up)break;}
+    let neg=false;for(const e of edges){if(dist[e.f]!==Infinity&&dist[e.f]+e.w<dist[e.t]){neg=true;ec[`${e.f}-${e.t}`]=C.neg;S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{},msg:`NEG CYCLE: ${lbl(e.f)}→${lbl(e.t)}`,t:'er',propErr:'Negative cycle! Paths become -infinity.'});}}
+    if(!neg)S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{},msg:'No negative cycle!',t:'hl',pathInfo:{dist,prev,src:sid}});
+  }
+
+  else if(a==='floyd'){
+    const ids=nodes.map(n=>n.id),dist={};
+    ids.forEach(i=>{dist[i]={};ids.forEach(j=>dist[i][j]=i===j?0:Infinity);});
+    edges.forEach(e=>{dist[e.f][e.t]=Math.min(dist[e.f][e.t],e.w);if(!dir)dist[e.t][e.f]=Math.min(dist[e.t][e.f],e.w);});
+    S.push({nc:{},ec:{},nl:{},nlvl:{},msg:'Floyd-Warshall: computing all-pairs...'});
+    for(const k of ids)for(const i of ids)for(const j of ids){if(dist[i][k]!==Infinity&&dist[k][j]!==Infinity&&dist[i][k]+dist[k][j]<dist[i][j])dist[i][j]=dist[i][k]+dist[k][j];}
+    if(ids.some(i=>dist[i][i]<0)){const nc={};nodes.forEach(n=>nc[n.id]=C.neg);S.push({nc:{...nc},ec:{},nl:{},nlvl:{},msg:'NEG CYCLE! dist[i][i]<0',t:'er',propErr:'Negative cycle! Floyd-Warshall invalid.'});}
+    else{const nc={},nl={};nodes.forEach(n=>{nc[n.id]=C.vis;nl[n.id]='ok';});const rows=ids.map(i=>`${lbl(i)}: `+ids.map(j=>dist[i][j]===Infinity?'∞':dist[i][j]).join(' '));S.push({nc:{...nc},ec:{},nl:{...nl},nlvl:{},msg:'Floyd complete!',t:'hl',floydMatrix:rows,floydIds:ids});}
+  }
+
+  else if(a==='dag_sp'){
+    if(!dir){S.push({nc:{},ec:{},nl:{},nlvl:{},msg:'ERROR: Need directed graph!',t:'er',propErr:'DAG SP needs directed graph.'});return S;}
+    const topoO=[],vis=new Set(),nc={},ec={},nl={};
+    function tD(u){vis.add(u);for(const{to:v}of adj[u])if(!vis.has(v))tD(v);topoO.unshift(u);}
+    nodes.forEach(n=>{if(!vis.has(n.id))tD(n.id);});
+    S.push({nc:{},ec:{},nl:{},nlvl:{},msg:`Topo order: ${topoO.map(lbl).join('→')}`});
+    const dist={};nodes.forEach(n=>dist[n.id]=Infinity);dist[sid]=0;nl[sid]='0';
+    for(const u of topoO){nc[u]=C.vis;S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{},msg:`Process ${lbl(u)}`});if(dist[u]!==Infinity)for(const{to:v,w}of adj[u])if(dist[u]+w<dist[v]){dist[v]=dist[u]+w;nl[v]=String(dist[v]);ec[`${u}-${v}`]=C.trav;S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{},msg:`Relax ${lbl(v)}=${dist[v]}`});}}
+    S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{},msg:'DAG SP complete!',t:'hl'});
+  }
+
+  else if(a==='topo_dfs'){
+    if(!dir){S.push({nc:{},ec:{},nl:{},nlvl:{},msg:'ERROR: Need directed graph!',t:'er',propErr:'Topo sort needs directed graph.'});return S;}
+    const vis=new Set(),order=[],nc={},ec={},nl={};
+    function td(u){vis.add(u);nc[u]=C.curr;S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{},msg:`Visit ${lbl(u)}`});for(const{to:v}of adj[u])if(!vis.has(v)){ec[`${u}-${v}`]=C.trav;td(v);}order.unshift(u);nl[u]=`#${order.length}`;nc[u]=C.vis;S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{},msg:`Push ${lbl(u)} to stack → #${order.length}`});}
+    nodes.forEach(n=>{if(!vis.has(n.id))td(n.id);});
+    S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{},msg:`Topo: ${order.map(lbl).join('→')}`,t:'hl'});
+  }
+
+  else if(a==='kahn'){
+    if(!dir){S.push({nc:{},ec:{},nl:{},nlvl:{},msg:'ERROR: Need directed graph!',t:'er',propErr:"Kahn's needs directed graph."});return S;}
+    const indeg={},nc={},ec={},nl={};nodes.forEach(n=>indeg[n.id]=0);edges.forEach(e=>indeg[e.t]++);nodes.forEach(n=>nl[n.id]=`in:${indeg[n.id]}`);
+    const q=nodes.filter(n=>indeg[n.id]===0).map(n=>n.id);q.forEach(id=>nc[id]=C.curr);
+    S.push({nc:{...nc},ec:{},nl:{...nl},nlvl:{},msg:`In-deg=0: [${q.map(lbl).join(',')}]`});
+    let ord=0,cnt=0;
+    while(q.length){const u=q.shift();cnt++;nc[u]=C.vis;nl[u]=`#${ord++}`;S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{},msg:`Process ${lbl(u)} → #${ord-1}`,t:'lv'});for(const{to:v}of adj[u]){ec[`${u}-${v}`]=C.trav;indeg[v]--;nl[v]=`in:${indeg[v]}`;if(indeg[v]===0){q.push(v);nc[v]=C.curr;}S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{},msg:`${lbl(v)} in-deg→${indeg[v]}`});}}
+    if(cnt<nodes.length){nodes.filter(n=>nc[n.id]!==C.vis).forEach(n=>nc[n.id]=C.neg);S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{},msg:'CYCLE! Not a DAG.',t:'er',propErr:'Cycle detected!'});}
+    else S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{},msg:'Topo sort complete!',t:'hl'});
+  }
+
+  else if(a==='kosaraju'){
+    if(!dir){S.push({nc:{},ec:{},nl:{},nlvl:{},msg:'ERROR: Need directed graph!',t:'er',propErr:'Kosaraju needs directed graph.'});return S;}
+    const vis=new Set(),order=[],nc={},ec={},nl={};
+    function d1(u){vis.add(u);for(const{to:v}of adj[u])if(!vis.has(v))d1(v);order.push(u);}
+    nodes.forEach(n=>{if(!vis.has(n.id))d1(n.id);});
+    S.push({nc:{},ec:{},nl:{},nlvl:{},msg:`Pass 1 finish: ${order.map(lbl).join('→')}`});
+    const radj={};nodes.forEach(n=>radj[n.id]=[]);edges.forEach(e=>radj[e.t].push(e.f));
+    const vis2=new Set();let si=0;const sccG=[];
+    for(const start of[...order].reverse()){
+      if(vis2.has(start))continue;const scc=[];
+      function d2(u){vis2.add(u);scc.push(u);for(const v of radj[u])if(!vis2.has(v))d2(v);}
+      d2(start);const col=C.scc[si%C.scc.length];scc.forEach(u=>{nc[u]=col;nl[u]=`SCC${si}`;});sccG.push(scc);
+      S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{},msg:`SCC ${si}: {${scc.map(lbl).join(',')}}`,t:'hl',sccG:[...sccG]});si++;
+    }
+    S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{},msg:`Total: ${si} SCCs`,t:'hl',sccG:[...sccG]});
+  }
+
+  else if(a==='tarjan'){
+    let timer=0;const disc={},low={},nc={},ec={},nl={},bridges=[];nodes.forEach(n=>{disc[n.id]=-1;low[n.id]=0;});
+    function tB(u,par){disc[u]=low[u]=timer++;nc[u]=C.curr;nl[u]=`d:${disc[u]}`;S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{},msg:`Visit ${lbl(u)} disc=${disc[u]}`});
+      for(const{to:v}of adj[u]){if(v===par)continue;if(disc[v]===-1){ec[`${u}-${v}`]=C.trav;tB(v,u);low[u]=Math.min(low[u],low[v]);nl[u]=`lo:${low[u]}`;if(low[v]>disc[u]){bridges.push([u,v]);ec[`${u}-${v}`]=C.bridge;S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{},msg:`BRIDGE: ${lbl(u)}-${lbl(v)} low[${lbl(v)}]=${low[v]} > disc[${lbl(u)}]=${disc[u]}`,t:'wn'});}}else{low[u]=Math.min(low[u],disc[v]);ec[`${u}-${v}`]=C.back;}}
+      nc[u]=C.vis;S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{},msg:`Done ${lbl(u)} low=${low[u]}`});}
+    nodes.forEach(n=>{if(disc[n.id]===-1)tB(n.id,-1);});
+    if(!bridges.length)S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{},msg:'No bridges — 2-edge-connected',t:'hl'});
+    else{const bInfo=bridges.map(([u,v])=>`<div class="scc-item"><div class="ld" style="background:#E24B4A;width:8px;height:8px;border-radius:50%"></div>${lbl(u)}—${lbl(v)}</div>`).join('');showOverlay(`${bridges.length} Bridge(s) found`,bInfo);S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{},msg:`${bridges.length} bridge(s) in red`,t:'wn'});}
+  }
+
+  else if(a==='articulation'){
+    let timer=0;const disc={},low={},nc={},ec={},nl={},aps=new Set();nodes.forEach(n=>{disc[n.id]=-1;low[n.id]=0;});
+    function apD(u,par){disc[u]=low[u]=timer++;nc[u]=C.curr;nl[u]=`d:${disc[u]}`;let children=0;
+      S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{},msg:`Visit ${lbl(u)} disc=${disc[u]}`});
+      for(const{to:v}of adj[u]){if(disc[v]===-1){children++;ec[`${u}-${v}`]=C.trav;apD(v,u);low[u]=Math.min(low[u],low[v]);nl[u]=`lo:${low[u]}`;
+        if(par===-1&&children>1){aps.add(u);nc[u]=C.artic;S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{},msg:`AP (root): ${lbl(u)} has ${children} children`,t:'wn'});}
+        if(par!==-1&&low[v]>=disc[u]){aps.add(u);nc[u]=C.artic;S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{},msg:`AP: ${lbl(u)} low[${lbl(v)}]=${low[v]} >= disc[${lbl(u)}]=${disc[u]}`,t:'wn'});}}
+        else if(v!==par){low[u]=Math.min(low[u],disc[v]);ec[`${u}-${v}`]=C.back;}}
+      nc[u]=aps.has(u)?C.artic:C.vis;S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{},msg:`Done ${lbl(u)} low=${low[u]}`});}
+    nodes.forEach(n=>{if(disc[n.id]===-1)apD(n.id,-1);});
+    if(!aps.size)S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{},msg:'No articulation points!',t:'hl'});
+    else{const apInfo=Array.from(aps).map(id=>`<div class="scc-item"><div class="ld" style="background:#E24B4A;width:8px;height:8px;border-radius:50%"></div>${lbl(id)} (red)</div>`).join('');showOverlay(`${aps.size} Articulation Point(s)`,apInfo);S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{},msg:`${aps.size} AP(s) in red`,t:'wn'});}
+  }
+
+  else if(a==='prim'){
+    const inMST=new Set(),nc={},ec={},nl={};let totalW=0;inMST.add(sid);nc[sid]=C.src;
+    S.push({nc:{...nc},ec:{},nl:{},nlvl:{},msg:`Prim's from ${lbl(sid)}`});
+    while(inMST.size<nodes.length){
+      let minW=Infinity,bu=-1,bv=-1;for(const u of inMST)for(const{to:v,w}of adj[u])if(!inMST.has(v)&&w<minW){minW=w;bu=u;bv=v;}
+      if(bv===-1)break;inMST.add(bv);totalW+=minW;nc[bv]=C.vis;ec[`${bu}-${bv}`]=C.mst;ec[`${bv}-${bu}`]=C.mst;nl[bv]=`w:${minW}`;
+      S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{},msg:`Add ${lbl(bu)}→${lbl(bv)} wt=${minW}`,t:'lv'});
+    }
+    S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{},msg:`MST done! Total weight=${totalW}`,t:'hl'});
+  }
+
+  else if(a==='kruskal'){
+    const par={};nodes.forEach(n=>par[n.id]=n.id);
+    function find(x){if(par[x]!==x)par[x]=find(par[x]);return par[x];}
+    const sorted=[...edges].sort((a,b)=>a.w-b.w);const nc={},ec={};let totalW=0;
+    S.push({nc:{},ec:{},nl:{},nlvl:{},msg:'Kruskal: edges sorted by weight'});
+    for(const e of sorted){const pu=find(e.f),pv=find(e.t);if(pu!==pv){par[pu]=pv;totalW+=e.w;nc[e.f]=nc[e.t]=C.vis;ec[`${e.f}-${e.t}`]=C.mst;ec[`${e.t}-${e.f}`]=C.mst;S.push({nc:{...nc},ec:{...ec},nl:{...nl},nlvl:{},msg:`Add ${lbl(e.f)}-${lbl(e.t)} wt=${e.w}`,t:'lv'});}else S.push({nc:{...nc},ec:{...ec},nl:{},nlvl:{},msg:`Skip ${lbl(e.f)}-${lbl(e.t)} — cycle`,t:'wn'});}
+    S.push({nc:{...nc},ec:{...ec},nl:{},nlvl:{},msg:`MST done! Total=${totalW}`,t:'hl'});
+  }
+  return S;
+}
+
+function applyStep(s){
+  NC={...s.nc};EC={...s.ec};NL={...s.nl};NLvl={...s.nlvl||{}};draw();
+  if(s.msg)log(s.msg,s.t||'');
+  if(s.propErr){const b=document.getElementById('prop');b.textContent=s.propErr;b.className='prop err';}
+  if(s.sccG){const items=s.sccG.map((scc,i)=>`<div class="scc-item"><div class="ld" style="background:${C.scc[i%C.scc.length]};width:8px;height:8px;border-radius:50%;flex-shrink:0"></div>SCC ${i}: {${scc.map(id=>lbl(id)).join(',')}}</div>`).join('');showOverlay(`${s.sccG.length} SCCs`,items);}
+  if(s.bipInfo){showOverlay('Bipartite Sets',`<div class="scc-item"><div class="ld" style="background:${C.bip1};width:8px;height:8px;border-radius:50%"></div>Set A: {${s.bipInfo.b1.join(',')}}</div><div class="scc-item"><div class="ld" style="background:${C.bip2};width:8px;height:8px;border-radius:50%"></div>Set B: {${s.bipInfo.b2.join(',')}}</div>`);}
+  if(s.floydMatrix){showOverlay('All-pair distances',`<div style="font-family:monospace;font-size:10px;color:#555">${s.floydMatrix.map(r=>`<div>${r}</div>`).join('')}</div>`);}
+  if(s.pathInfo){
+    const{dist,prev,src}=s.pathInfo;const ncC={...s.nc},ecC={...s.ec};
+    const msgs=nodes.filter(n=>n.id!==src).map(n=>{const d=dist[n.id];if(d===Infinity)return null;let path=[n.id],c=n.id;while(prev[c]!==undefined){path.unshift(prev[c]);c=prev[c];}for(let i=0;i<path.length-1;i++)ecC[`${path[i]}-${path[i+1]}`]=C.path;ncC[src]=C.src;ncC[n.id]=C.dst;return `<span style="color:#185FA5">${lbl(src)}</span>→<span style="color:#1D9E75">${n.label}</span>:<b>${d}</b>`;}).filter(Boolean);
+    EC=ecC;NC=ncC;draw();showPathMsg('<b>Paths:</b> '+msgs.join(' | '));
+  }
+}
+
+function runAlgo(){
+  if(!algo){log('Select an algorithm','wn');return;}
+  if(!nodes.length){log('Add nodes or use preset','wn');return;}
+  resetViz();logClear();
+  const sid=parseInt(document.getElementById('sn').value);
+  steps=buildSteps(algo,sid);cur=-1;
+  const spd=parseInt(document.getElementById('spd').value);
+  function next(){if(cur<steps.length-1){cur++;applyStep(steps[cur]);tmr=setTimeout(next,spd);}}
+  next();
+}
+
+function stepFwd(){if(tmr){clearTimeout(tmr);tmr=null;}if(!steps.length){if(!algo)return;steps=buildSteps(algo,parseInt(document.getElementById('sn').value));cur=-1;logClear();}if(cur<steps.length-1){cur++;applyStep(steps[cur]);}}
+function stepBack(){if(tmr){clearTimeout(tmr);tmr=null;}if(cur>0){cur--;applyStep(steps[cur]);}}
+function resetViz(){if(tmr){clearTimeout(tmr);tmr=null;}steps=[];cur=-1;NC={};EC={};NL={};NLvl={};if(algo)showProps(algo);hideOverlay();hidePathMsg();draw();}
+
+function removeNode(){
+  const label = document.getElementById('nl').value.trim();
+  const index = nodes.findIndex(n => n.label === label);
+  if(index !== -1){
+    const id = nodes[index].id;
+    nodes.splice(index, 1);
+    edges = edges.filter(e => e.f !== id && e.t !== id);
+    updSel(); draw(); log(`Node ${label} removed`, 'wn');
+  } else { log('Node not found', 'er'); }
+}
+
+function removeEdge(){
+  const f=parseInt(document.getElementById('ef').value),t=parseInt(document.getElementById('et').value);
+  const dir = document.getElementById('dir').checked;
+  const initialLen = edges.length;
+  edges = edges.filter(e => !(e.f === f && e.t === t));
+  if(!dir) edges = edges.filter(e => !(e.f === t && e.t === f));
+  if(edges.length < initialLen) { draw(); log('Edge removed', 'wn'); }
+  else { log('Edge not found', 'er'); }
+}
+
+function parseEditor(){
+  const text=document.getElementById('editor').value;clearGraph();
+  text.split('\n').forEach(line=>{line=line.trim();if(!line||line.startsWith('//'))return;const p=line.split(/\s+/);if(p[0]==='addedge'&&p.length>=4){const u=p[1],v=p[2],w=parseFloat(p[3])||1,d=parseInt(p[4]);if(d===undefined||isNaN(d))return;[u,v].forEach(label=>{if(!nodes.find(n=>n.label===label)){const pos=sphPos(nodes.length,10);nodes.push({id:nid++,label:String(label),x:pos.x,y:pos.y,z:pos.z});}});const nf=nodes.find(n=>n.label===u),nt=nodes.find(n=>n.label===v);if(nf&&nt){edges.push({f:nf.id,t:nt.id,w});if(d===0)edges.push({f:nt.id,t:nf.id,w});}}});
+  if(nodes.length){document.getElementById('dir').checked=true;updSel();draw();log(`Parsed: ${nodes.length} nodes, ${edges.length} edges`,'hl');}
+  else log('No valid edges. Format: addedge u v wt dir (dir: 1=directed 0=undirected)','wn');
+}
+function clearEditor(){document.getElementById('editor').value='';}
+
 window.addEventListener('resize',resizeCanvas);
-resizeCanvas(); loadPreset('simple');
+resizeCanvas();
+loadPreset('simple');
 </script>
 </body>
 </html> 
