@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -37,7 +37,13 @@ canvas:active{cursor:grabbing}
 .right-panel{display:flex;flex-direction:column;gap:8px;overflow:hidden}
 
 /* Properties card */
-.prop-card{background:#fff;border:1px solid #e5e5e5;border-radius:10px;padding:12px}
+.prop-card{background:#fff;border:1px solid #e5e5e5;border-radius:10px;overflow:hidden;flex-shrink:0}
+.prop-card-header{display:flex;align-items:center;justify-content:space-between;padding:9px 12px;cursor:pointer;user-select:none;border-bottom:1px solid #eee}
+.prop-card-header:hover{background:#f8f9fb}
+.prop-card-body{padding:12px;display:block}
+.prop-card-body.collapsed{display:none}
+.collapse-icon{font-size:11px;color:#888;transition:transform .2s;display:inline-block}
+.collapse-icon.collapsed{transform:rotate(-90deg)}
 .algo-title{font-size:14px;font-weight:700;color:#185FA5;margin-bottom:6px}
 .algo-subtitle{font-size:11px;color:#666;margin-bottom:10px;line-height:1.5}
 .tag-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
@@ -69,10 +75,12 @@ canvas:active{cursor:grabbing}
 .code-wrap .st{color:#f1fa8c}
 
 /* Speed control */
-.speed-bar{display:flex;align-items:center;gap:8px;padding:6px 10px;background:#f8f9fb;border-top:1px solid #e5e5e5}
-.speed-bar label{font-size:10px;color:#888}
-.speed-bar input{flex:1}
-.step-controls{display:flex;gap:6px;align-items:center}
+.speed-bar{display:flex;align-items:center;gap:6px;padding:8px 10px;background:#f8f9fb;border-top:1px solid #e5e5e5;flex-shrink:0;flex-wrap:nowrap;min-height:46px}
+.speed-bar label{font-size:10px;color:#888;white-space:nowrap;flex-shrink:0}
+.speed-bar input[type=range]{width:80px;flex-shrink:0}
+.step-controls{display:flex;gap:5px;align-items:center;flex-wrap:nowrap;margin-left:4px}
+.step-controls .btn{padding:5px 9px;font-size:11px;white-space:nowrap;flex-shrink:0}
+.ctrl-sep{width:1px;height:20px;background:#ddd;flex-shrink:0}
 
 /* Alert */
 .alert-banner{background:#fff3cd;border:1px solid #ffc107;border-radius:7px;padding:6px 10px;font-size:11px;color:#856404;margin-bottom:4px;display:none}
@@ -182,12 +190,14 @@ canvas:active{cursor:grabbing}
     <canvas id="gc"></canvas>
     <div class="speed-bar">
       <label>Speed:</label>
-      <input type="range" id="speed" min="100" max="2000" value="800" style="width:90px">
+      <input type="range" id="speed" min="100" max="2000" value="800">
+      <div class="ctrl-sep"></div>
       <div class="step-controls">
-        <button class="btn sm" onclick="pauseResume()" id="pause-btn" style="display:none">⏸ Pause</button>
+        <button class="btn sm" onclick="pauseResume()" id="pause-btn" style="display:none;background:#185FA5;color:#fff;border-color:#185FA5">⏸ Pause</button>
         <button class="btn sm" onclick="stepBack()" id="back-btn" style="display:none">◀ Back</button>
         <button class="btn sm" onclick="stepForward()" id="fwd-btn" style="display:none">▶ Step</button>
-        <button class="btn d sm" onclick="stopAlgo()" id="stop-btn" style="display:none">■ Stop</button>
+        <button class="btn sm" onclick="stopAlgo()" id="stop-btn" style="display:none;background:#c42b2b;color:#fff;border-color:#c42b2b">■ Stop</button>
+        <span id="no-algo-hint" style="font-size:10px;color:#bbb">Run an algorithm first</span>
       </div>
     </div>
     <div class="hint">Drag to rotate · Scroll to zoom</div>
@@ -195,10 +205,16 @@ canvas:active{cursor:grabbing}
 
   <!-- Right Panel -->
   <div class="right-panel">
-    <!-- Properties -->
-    <div class="prop-card" id="prop-panel">
-      <div style="color:#888;font-size:12px;text-align:center;padding:20px 0">
-        ← Click any algorithm to see its properties and visualization
+    <!-- Properties (collapsible) -->
+    <div class="prop-card" id="prop-panel-wrap">
+      <div class="prop-card-header" onclick="toggleProps()">
+        <span style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.5px;color:#1a1a1a">Algorithm Properties</span>
+        <span class="collapse-icon" id="prop-collapse-icon">▼</span>
+      </div>
+      <div class="prop-card-body" id="prop-panel">
+        <div style="color:#888;font-size:11px;text-align:center;padding:14px 0">
+          ← Click any algorithm to see properties
+        </div>
       </div>
     </div>
 
@@ -1144,12 +1160,20 @@ function stopAlgo(){
   document.getElementById('step-counter').textContent='';
   document.getElementById('alert-banner').classList.remove('show');
   ['pause-btn','back-btn','fwd-btn','stop-btn'].forEach(id=>document.getElementById(id).style.display='none');
+  document.getElementById('no-algo-hint').style.display='';
   document.querySelectorAll('.ab').forEach(b=>b.classList.remove('active','running'));
 }
 
 function pauseResume(){
   animPaused=!animPaused;
-  document.getElementById('pause-btn').textContent=animPaused?'▶ Resume':'⏸ Pause';
+  const btn=document.getElementById('pause-btn');
+  if(animPaused){
+    btn.textContent='▶ Resume';
+    btn.style.background='#1D9E75'; btn.style.borderColor='#1D9E75';
+  } else {
+    btn.textContent='⏸ Pause';
+    btn.style.background='#185FA5'; btn.style.borderColor='#185FA5';
+  }
 }
 
 function stepForward(){
@@ -1196,8 +1220,16 @@ function runAlgo(name){
 
   // Show controls
   ['pause-btn','back-btn','fwd-btn','stop-btn'].forEach(id=>document.getElementById(id).style.display='');
+  document.getElementById('no-algo-hint').style.display='none';
 
   runAnimation();
+}
+
+function toggleProps(){
+  const body=document.getElementById('prop-panel');
+  const icon=document.getElementById('prop-collapse-icon');
+  const collapsed=body.classList.toggle('collapsed');
+  icon.classList.toggle('collapsed',collapsed);
 }
 
 function showProperties(name){
@@ -1207,6 +1239,9 @@ function showProperties(name){
   const tagsHTML=info.tags.map(t=>`<span class="tag ${t.c}">${t.t}</span>`).join('');
   const worksHTML=info.works.map(w=>`<div style="display:flex;gap:5px;align-items:flex-start;margin-bottom:3px"><span style="color:#1D9E75;font-size:12px">✓</span><span style="font-size:11px">${w}</span></div>`).join('');
   const failsHTML=info.fails.map(f=>`<div style="display:flex;gap:5px;align-items:flex-start;margin-bottom:3px"><span style="color:#c42b2b;font-size:12px">✗</span><span style="font-size:11px">${f}</span></div>`).join('');
+  // Auto-expand
+  document.getElementById('prop-panel').classList.remove('collapsed');
+  document.getElementById('prop-collapse-icon').classList.remove('collapsed');
   panel.innerHTML=`
     <div class="algo-title">${info.name}</div>
     <div class="algo-subtitle">${info.desc}</div>
