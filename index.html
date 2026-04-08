@@ -1,4 +1,4 @@
-<!DOCTYPE html>
+ <!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -95,7 +95,7 @@ canvas:active{cursor:grabbing}
     <span class="logo-sub">All Graph Algorithms — C++ · OpenGL · STL</span>
   </div>
   <div style="display:flex;gap:6px">
-    <span class="tb-pill">12 Algorithms</span>
+    <span class="tb-pill">14 Algorithms</span>
     <span class="tb-pill">Step-by-Step</span>
     <span class="tb-pill">C++ Code</span>
   </div>
@@ -106,39 +106,75 @@ canvas:active{cursor:grabbing}
   <div style="display:flex;flex-direction:column;gap:7px;overflow-y:auto">
     <div class="card">
       <div class="ct">Graph Builder</div>
-      <div class="sl">Add Node</div>
-      <div class="row">
-        <input type="text" id="nl" placeholder="A or 1" style="flex:1">
-        <button class="btn p sm" onclick="addNode()">+ Node</button>
-      </div>
-      <div class="sl">Add Edge</div>
-      <div class="row">
-        <select id="ef" style="flex:1"></select>
-        <span style="color:#888;font-size:12px">→</span>
-        <select id="et" style="flex:1"></select>
-      </div>
-      <div class="row">
-        <input type="number" id="ew" value="1" style="width:55px" placeholder="wt">
-        <label style="display:flex;align-items:center;gap:3px;font-size:11px"><input type="checkbox" id="dir" checked/> Dir</label>
-        <button class="btn p sm" onclick="addEdge()">+ Edge</button>
+
+      <!-- Quick start hint -->
+      <div style="background:#e6f1fb;border:1px solid #b5d4f4;border-radius:7px;padding:7px 9px;font-size:10px;color:#0c447c;margin-bottom:10px;line-height:1.6">
+        💡 <b>Quick start:</b> Load a preset below, or add nodes &amp; edges manually.<br>
+        <span style="color:#185FA5">Dir = Directed edge (one-way arrow)</span>
       </div>
 
-      <div class="remove-section">
-        <div class="sl" style="margin-top:0;color:#c42b2b;font-weight:700;font-size:11px">REMOVE</div>
-        <div class="sl">Node</div>
-        <div class="row"><select id="rn-sel" style="flex:1"></select><button class="btn d sm" onclick="removeNode()">- Node</button></div>
-        <div class="sl">Edge</div>
-        <div class="row"><select id="re-from" style="flex:1"></select><span style="color:#888">→</span><select id="re-to" style="flex:1"></select><button class="btn d sm" onclick="removeEdge()">- Edge</button></div>
+      <!-- Add Node -->
+      <div style="background:#f8f9fb;border:1px solid #e5e5e5;border-radius:8px;padding:8px;margin-bottom:8px">
+        <div style="font-size:10px;font-weight:700;color:#185FA5;margin-bottom:6px;text-transform:uppercase;letter-spacing:.4px">➕ Add Node</div>
+        <div class="row" style="margin-bottom:0">
+          <input type="text" id="nl" placeholder="Name: A, B, 1, 2…" style="flex:1">
+          <button class="btn p sm" onclick="addNode()" title="Add a new node to graph">+ Node</button>
+        </div>
       </div>
 
-      <div class="sl">Presets</div>
-      <div style="display:flex;gap:4px;flex-wrap:wrap">
-        <button class="btn sm" onclick="loadPreset('simple')">Simple</button>
-        <button class="btn sm" onclick="loadPreset('weighted')">Wtd</button>
-        <button class="btn sm" onclick="loadPreset('negcycle')">NegCyc</button>
-        <button class="btn sm" onclick="loadPreset('dag')">DAG</button>
-        <button class="btn sm" onclick="loadPreset('scc')">SCC</button>
-        <button class="btn sm" onclick="loadPreset('bipartite')">Bip</button>
+      <!-- Add Edge -->
+      <div style="background:#f8f9fb;border:1px solid #e5e5e5;border-radius:8px;padding:8px;margin-bottom:8px">
+        <div style="font-size:10px;font-weight:700;color:#185FA5;margin-bottom:6px;text-transform:uppercase;letter-spacing:.4px">🔗 Add Edge</div>
+        <div style="display:flex;align-items:center;gap:5px;margin-bottom:6px">
+          <div style="flex:1">
+            <div style="font-size:9px;color:#888;margin-bottom:2px">From</div>
+            <select id="ef" style="width:100%"></select>
+          </div>
+          <div style="font-size:14px;color:#185FA5;font-weight:700;margin-top:12px">→</div>
+          <div style="flex:1">
+            <div style="font-size:9px;color:#888;margin-bottom:2px">To</div>
+            <select id="et" style="width:100%"></select>
+          </div>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px">
+          <div>
+            <div style="font-size:9px;color:#888;margin-bottom:2px">Weight</div>
+            <input type="number" id="ew" value="1" style="width:55px">
+          </div>
+          <label style="display:flex;align-items:center;gap:4px;font-size:11px;margin-top:10px;cursor:pointer" title="Directed = one-way arrow. Undirected = both ways">
+            <input type="checkbox" id="dir" checked/>
+            <span>Directed</span>
+          </label>
+          <button class="btn p sm" onclick="addEdge()" style="margin-top:10px;flex:1">+ Edge</button>
+        </div>
+      </div>
+
+      <!-- Remove -->
+      <div style="background:#fff5f5;border:1px solid #fecaca;border-radius:8px;padding:8px;margin-bottom:8px">
+        <div style="font-size:10px;font-weight:700;color:#c42b2b;margin-bottom:6px;text-transform:uppercase;letter-spacing:.4px">🗑 Remove</div>
+        <div style="display:flex;gap:5px;align-items:center;margin-bottom:5px">
+          <select id="rn-sel" style="flex:1"></select>
+          <button class="btn d sm" onclick="removeNode()">- Node</button>
+        </div>
+        <div style="display:flex;gap:5px;align-items:center">
+          <select id="re-from" style="flex:1"></select>
+          <span style="color:#888;font-size:12px">→</span>
+          <select id="re-to" style="flex:1"></select>
+          <button class="btn d sm" onclick="removeEdge()">- Edge</button>
+        </div>
+      </div>
+
+      <!-- Presets -->
+      <div style="font-size:10px;font-weight:700;color:#444;margin-bottom:6px;text-transform:uppercase;letter-spacing:.4px">📦 Presets</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:4px">
+        <button class="btn sm" onclick="loadPreset('simple')" title="Simple undirected graph">Simple</button>
+        <button class="btn sm" onclick="loadPreset('weighted')" title="Weighted directed graph (good for Dijkstra)">Weighted</button>
+        <button class="btn sm" onclick="loadPreset('negcycle')" title="Graph with negative cycle">NegCycle</button>
+        <button class="btn sm" onclick="loadPreset('dag')" title="Directed Acyclic Graph">DAG</button>
+        <button class="btn sm" onclick="loadPreset('scc')" title="Graph with Strongly Connected Components">SCC</button>
+        <button class="btn sm" onclick="loadPreset('bipartite')" title="Bipartite graph">Bipartite</button>
+        <button class="btn sm" onclick="loadPreset('mst')" title="Undirected weighted graph for MST">MST</button>
+        <button class="btn sm" onclick="clearGraph()" style="color:#c42b2b;border-color:#fecaca">Clear All</button>
       </div>
     </div>
 
@@ -171,6 +207,11 @@ canvas:active{cursor:grabbing}
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
         <div class="ab" id="ab-kosaraju" onclick="runAlgo('kosaraju')">Kosaraju</div>
         <div class="ab" id="ab-tarjan" onclick="runAlgo('tarjan')">Tarjan Br.</div>
+      </div>
+      <div class="sl">Minimum Spanning Tree</div>
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+        <div class="ab" id="ab-prims" onclick="runAlgo('prims')">Prim's</div>
+        <div class="ab" id="ab-kruskal" onclick="runAlgo('kruskal')">Kruskal's</div>
       </div>
     </div>
 
@@ -257,7 +298,9 @@ const COLORS = {
   queued:'#854F0B', path:'#F2CC60', back:'#c42b2b',
   biA:'#534AB7', biB:'#D85A30', bridge:'#c42b2b',
   scc0:'#185FA5', scc1:'#1D9E75', scc2:'#854F0B', scc3:'#534AB7', scc4:'#D85A30',
-  edgeDef:'#ccc', edgeTrav:'#185FA5', edgeBack:'#c42b2b', edgePath:'#F2CC60', edgeBridge:'#c42b2b'
+  src:'#E24B4A', dest:'#9333ea',
+  edgeDef:'#ccc', edgeTrav:'#185FA5', edgeBack:'#c42b2b',
+  edgePath:'#f97316', edgeMST:'#1D9E75', edgeBridge:'#c42b2b'
 };
 
 // ============================================================
@@ -284,40 +327,109 @@ function draw(){
     if(!n1||!n2) return;
     const p1=project(n1.x,n1.y,n1.z), p2=project(n2.x,n2.y,n2.z);
     const col = edgeColors[ei] || COLORS.edgeDef;
+    const isPath = col===COLORS.edgePath;
+    const isMST  = col===COLORS.edgeMST;
+    const isBack = col===COLORS.edgeBack || col===COLORS.edgeBridge;
+
+    // Glow effect for path/MST edges
+    if(isPath || isMST){
+      ctx.beginPath(); ctx.moveTo(p1.px,p1.py); ctx.lineTo(p2.px,p2.py);
+      ctx.strokeStyle = isPath ? 'rgba(249,115,22,0.25)' : 'rgba(29,158,117,0.25)';
+      ctx.lineWidth=10; ctx.stroke();
+    }
+
     ctx.beginPath(); ctx.moveTo(p1.px,p1.py); ctx.lineTo(p2.px,p2.py);
-    ctx.strokeStyle=col; ctx.lineWidth= col===COLORS.edgeDef ? 2 : 3; ctx.stroke();
+    ctx.strokeStyle=col;
+    ctx.lineWidth = isPath||isMST ? 5 : isBack ? 3 : col===COLORS.edgeDef ? 1.5 : 2.5;
+    // Dashed for back edges
+    if(isBack){ ctx.setLineDash([6,3]); } else { ctx.setLineDash([]); }
+    ctx.stroke();
+    ctx.setLineDash([]);
+
     // Arrow for directed
-    if(document.getElementById('dir').checked || e.directed){
+    if(e.directed){
       const dx=p2.px-p1.px, dy=p2.py-p1.py, len=Math.sqrt(dx*dx+dy*dy);
       if(len>0){
-        const ux=dx/len, uy=dy/len, r=20;
+        const ux=dx/len, uy=dy/len, r=22;
         const ax=p2.px-ux*r, ay=p2.py-uy*r;
-        const px2=-uy*6, py2=ux*6;
-        ctx.beginPath(); ctx.moveTo(ax+px2,ay+py2); ctx.lineTo(p2.px-ux*18,p2.py-uy*18); ctx.lineTo(ax-px2,ay-py2);
+        const pw=-uy*6, ph=ux*6;
+        ctx.beginPath(); ctx.moveTo(ax+pw,ay+ph); ctx.lineTo(p2.px-ux*19,p2.py-uy*19); ctx.lineTo(ax-pw,ay-ph);
         ctx.fillStyle=col; ctx.fill();
       }
     }
-    // Weight label
-    ctx.fillStyle='#555'; ctx.font='bold 11px sans-serif'; ctx.textAlign='center';
-    ctx.fillText(e.w,(p1.px+p2.px)/2-4,(p1.py+p2.py)/2-4);
+    // Weight label — white bg for readability
+    const mx=(p1.px+p2.px)/2, my=(p1.py+p2.py)/2;
+    const wlbl=String(e.w);
+    ctx.font='bold 11px sans-serif';
+    const tw=ctx.measureText(wlbl).width;
+    ctx.fillStyle='rgba(255,255,255,0.85)';
+    ctx.fillRect(mx-tw/2-3, my-8, tw+6, 14);
+    ctx.fillStyle = isPath ? '#c2410c' : isMST ? '#0f6e56' : '#555';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(wlbl, mx, my);
   });
+
   // Draw nodes
   nodes.forEach(n=>{
     const p=project(n.x,n.y,n.z);
     const col = nodeColors[n.id] || COLORS.default;
+    const extra = nodeLabels[n.id] || '';
+    const isSrc  = extra==='SRC';
+    const isDest = extra==='DEST';
+
     // Shadow
-    ctx.beginPath(); ctx.arc(p.px+2,p.py+2,20,0,Math.PI*2);
-    ctx.fillStyle='rgba(0,0,0,0.08)'; ctx.fill();
-    // Node circle
+    ctx.beginPath(); ctx.arc(p.px+2,p.py+3,21,0,Math.PI*2);
+    ctx.fillStyle='rgba(0,0,0,0.1)'; ctx.fill();
+
+    // Outer ring for SRC/DEST
+    if(isSrc||isDest){
+      ctx.beginPath(); ctx.arc(p.px,p.py,26,0,Math.PI*2);
+      ctx.strokeStyle=isSrc?'#E24B4A':'#9333ea';
+      ctx.lineWidth=2; ctx.setLineDash([4,3]); ctx.stroke();
+      ctx.setLineDash([]);
+    }
+
+    // Node fill
     ctx.beginPath(); ctx.arc(p.px,p.py,20,0,Math.PI*2);
-    ctx.fillStyle='#fff'; ctx.strokeStyle=col; ctx.lineWidth=3; ctx.fill(); ctx.stroke();
-    // Label
-    const lbl = nodeLabels[n.id] || '';
+    ctx.fillStyle = isSrc?'#fef2f2' : isDest?'#faf5ff' : '#fff';
+    ctx.strokeStyle=col; ctx.lineWidth=3; ctx.fill(); ctx.stroke();
+
+    // Node name
     ctx.fillStyle=col; ctx.font='bold 12px sans-serif';
     ctx.textAlign='center'; ctx.textBaseline='middle';
-    ctx.fillText(n.label,p.px,p.py-(lbl?5:0));
-    if(lbl){ ctx.font='bold 9px sans-serif'; ctx.fillStyle='#333'; ctx.fillText(lbl,p.px,p.py+9); }
+    ctx.fillText(n.label, p.px, p.py-(extra&&!isSrc&&!isDest?5:0));
+
+    // Extra label (dist, stack pos, etc.) — not for SRC/DEST (shown as badge)
+    if(extra && !isSrc && !isDest){
+      ctx.font='bold 9px sans-serif'; ctx.fillStyle='#444';
+      ctx.fillText(extra, p.px, p.py+8);
+    }
+
+    // SRC / DEST badge above node
+    if(isSrc||isDest){
+      const badge=isSrc?'SRC':'DEST';
+      const bgC=isSrc?'#E24B4A':'#9333ea';
+      ctx.font='bold 9px sans-serif';
+      const bw=ctx.measureText(badge).width+10;
+      const bx=p.px-bw/2, by=p.py-38;
+      ctx.fillStyle=bgC;
+      roundRect(ctx,bx,by,bw,14,4);
+      ctx.fill();
+      ctx.fillStyle='#fff';
+      ctx.textAlign='center'; ctx.textBaseline='middle';
+      ctx.fillText(badge, p.px, by+7);
+    }
   });
+}
+
+function roundRect(ctx,x,y,w,h,r){
+  ctx.beginPath();
+  ctx.moveTo(x+r,y);
+  ctx.lineTo(x+w-r,y); ctx.arcTo(x+w,y,x+w,y+r,r);
+  ctx.lineTo(x+w,y+h-r); ctx.arcTo(x+w,y+h,x+w-r,y+h,r);
+  ctx.lineTo(x+r,y+h); ctx.arcTo(x,y+h,x,y+h-r,r);
+  ctx.lineTo(x,y+r); ctx.arcTo(x,y,x+r,y,r);
+  ctx.closePath();
 }
 
 function resizeCanvas(){
@@ -380,7 +492,8 @@ function loadPreset(name){
     negcycle:{n:['A','B','C'],e:[[0,1,1],[1,2,-3],[2,0,2]],dir:true},
     dag:{n:['A','B','C','D','E'],e:[[0,1,1],[0,2,3],[1,3,2],[2,3,1],[3,4,1],[2,4,4]],dir:true},
     scc:{n:['A','B','C','D','E'],e:[[0,1,1],[1,2,1],[2,0,1],[2,3,1],[3,4,1],[4,3,1]],dir:true},
-    bipartite:{n:['A','B','C','D','E','F'],e:[[0,3,1],[0,4,1],[1,3,1],[1,5,1],[2,4,1],[2,5,1]],dir:false}
+    bipartite:{n:['A','B','C','D','E','F'],e:[[0,3,1],[0,4,1],[1,3,1],[1,5,1],[2,4,1],[2,5,1]],dir:false},
+    mst:{n:['A','B','C','D','E'],e:[[0,1,2],[0,3,6],[1,2,3],[1,3,8],[1,4,5],[2,4,7],[3,4,9]],dir:false}
   };
   const p=P[name]||P.simple;
   p.n.forEach((l,i)=>{const pos=getPos(i);nodes.push({id:nid++,label:l,x:pos.x,y:pos.y,z:pos.z});});
@@ -518,6 +631,22 @@ const ALGO_INFO = {
     tags:[{t:'DFS based',c:'blue'},{t:'tin & low arrays',c:'amber'},{t:'Bridge detection',c:'red'},{t:'Undirected',c:'green'}],
     works:['Finding bridge edges','Critical connections in network'],
     fails:['Directed graphs (different formulation needed)']
+  },
+  prims:{
+    name:"Prim's MST Algorithm",
+    desc:"Greedy algorithm. Grows MST one edge at a time — always picks the minimum weight edge crossing the cut between MST and non-MST vertices.",
+    time:'O(E log V)',space:'O(V)',
+    tags:[{t:'Greedy',c:'blue'},{t:'Min-cut edge',c:'green'},{t:'Undirected only',c:'amber'},{t:'No negative needed',c:'green'}],
+    works:['Undirected weighted graphs','Dense graphs (better than Kruskal)','Finding MST'],
+    fails:['Directed graphs','Disconnected graphs (gives spanning forest)']
+  },
+  kruskal:{
+    name:"Kruskal's MST Algorithm",
+    desc:"Sort all edges by weight. Add edge to MST if it doesn't form a cycle (Union-Find). Greedy approach on edges.",
+    time:'O(E log E)',space:'O(V)',
+    tags:[{t:'Greedy',c:'blue'},{t:'Union-Find',c:'amber'},{t:'Sort edges first',c:'green'},{t:'Undirected',c:'amber'}],
+    works:['Undirected weighted graphs','Sparse graphs (better than Prim)','Finding MST'],
+    fails:['Directed graphs','When edges are hard to sort']
   }
 };
 
@@ -721,6 +850,55 @@ const CODES = {
         } <span class="kw">else</span>
             low[src]=min(low[src],tin[nbr]);
     }
+}`,
+  prims:`<span class="cm">// Prim's MST Algorithm</span>
+<span class="kw">void</span> <span class="fn">primsAlgo</span>(<span class="tp">int</span> n, <span class="tp">int</span> src){
+    vector&lt;<span class="tp">int</span>&gt; key(n, INT_MAX);
+    vector&lt;<span class="tp">bool</span>&gt; inMST(n, <span class="kw">false</span>);
+    vector&lt;<span class="tp">int</span>&gt; parent(n, -<span class="nu">1</span>);
+    <span class="cm">// {weight, node} min-heap</span>
+    priority_queue&lt;pair&lt;<span class="tp">int</span>,<span class="tp">int</span>&gt;,
+        vector&lt;pair&lt;<span class="tp">int</span>,<span class="tp">int</span>&gt;&gt;,
+        greater&lt;pair&lt;<span class="tp">int</span>,<span class="tp">int</span>&gt;&gt;&gt; pq;
+    key[src] = <span class="nu">0</span>;
+    pq.push({<span class="nu">0</span>, src});
+    <span class="kw">while</span>(!pq.empty()){
+        <span class="tp">int</span> u = pq.top().second; pq.pop();
+        <span class="kw">if</span>(inMST[u]) <span class="kw">continue</span>;
+        inMST[u] = <span class="kw">true</span>;
+        <span class="kw">for</span>(<span class="kw">auto</span> [v, wt] : adjlist[u]){
+            <span class="kw">if</span>(!inMST[v] &amp;&amp; wt &lt; key[v]){
+                key[v] = wt;
+                parent[v] = u;
+                pq.push({key[v], v});
+            }
+        }
+    }
+    <span class="cm">// MST edges: parent[v]→v for all v != src</span>
+}`,
+  kruskal:`<span class="cm">// Kruskal's MST — Union-Find</span>
+<span class="tp">int</span> <span class="fn">find</span>(<span class="tp">int</span> x, vector&lt;<span class="tp">int</span>&gt;&amp;parent){
+    <span class="kw">return</span> parent[x]==x ? x : parent[x]=<span class="fn">find</span>(parent[x],parent);
+}
+<span class="tp">bool</span> <span class="fn">unionSets</span>(<span class="tp">int</span> x, <span class="tp">int</span> y,
+    vector&lt;<span class="tp">int</span>&gt;&amp;parent, vector&lt;<span class="tp">int</span>&gt;&amp;rank){
+    <span class="tp">int</span> px=<span class="fn">find</span>(x,parent), py=<span class="fn">find</span>(y,parent);
+    <span class="kw">if</span>(px==py) <span class="kw">return false</span>; <span class="cm">// cycle!</span>
+    <span class="kw">if</span>(rank[px]&lt;rank[py]) swap(px,py);
+    parent[py]=px;
+    <span class="kw">if</span>(rank[px]==rank[py]) rank[px]++;
+    <span class="kw">return true</span>;
+}
+<span class="kw">void</span> <span class="fn">kruskalMST</span>(<span class="tp">int</span> n){
+    <span class="cm">// Sort edges by weight</span>
+    sort(edges.begin(), edges.end(),
+        [](<span class="kw">auto</span>&amp;a,<span class="kw">auto</span>&amp;b){<span class="kw">return</span> a.w &lt; b.w;});
+    vector&lt;<span class="tp">int</span>&gt; parent(n), rank(n,<span class="nu">0</span>);
+    iota(parent.begin(), parent.end(), <span class="nu">0</span>);
+    <span class="tp">int</span> cost=<span class="nu">0</span>;
+    <span class="kw">for</span>(<span class="kw">auto</span>&amp;[u,v,w] : edges)
+        <span class="kw">if</span>(<span class="fn">unionSets</span>(u,v,parent,rank))
+            cost += w; <span class="cm">// add to MST</span>
 }`
 };
 
@@ -798,8 +976,8 @@ function buildSteps_dijkstra(src){
   const inSet=new Set(); nodes.forEach(n=>inSet.add(n.id));
   const nc={}, ec={}, nl={};
   nodes.forEach(n=>{nc[n.id]=COLORS.default; nl[n.id]='∞';});
-  nl[src]='0';
-  steps.push({type:'start',msg:`Dijkstra from ${nodeLabel(src)}. dist[src]=0`,nc:{...nc},ec:{...ec},nl:{...nl}});
+  nl[src]='SRC'; nc[src]=COLORS.src;
+  steps.push({type:'start',msg:`Dijkstra from ${nodeLabel(src)}. dist[src]=0, SRC marked red`,nc:{...nc},ec:{...ec},nl:{...nl}});
   for(let i=0;i<nodes.length;i++){
     // pick min dist node in set
     let u=null;
@@ -1075,7 +1253,7 @@ function buildSteps_dag_sp(){
   nodes.forEach(n=>{nc[n.id]=COLORS.default;nl[n.id]='∞';});
   const src=topoOrder[0];
   const dist={};nodes.forEach(n=>dist[n.id]=Infinity);
-  dist[src]=0; nl[src]='0'; nc[src]=COLORS.current;
+  dist[src]=0; nl[src]='SRC'; nc[src]=COLORS.src;
   steps.push({type:'start',msg:`DAG SP from ${nodeLabel(src)}. Topo order: ${topoOrder.map(nodeLabel).join('→')}`,nc:{...nc},ec:{...ec},nl:{...nl}});
   for(const u of topoOrder){
     if(dist[u]===Infinity) continue;
@@ -1091,6 +1269,81 @@ function buildSteps_dag_sp(){
     nc[u]=COLORS.visited;
   }
   steps.push({type:'done',msg:'DAG SP complete!',nc:steps[steps.length-1].nc,ec:steps[steps.length-1].ec,nl:steps[steps.length-1].nl});
+  return steps;
+}
+
+// ============================================================
+// MST STEP BUILDERS
+// ============================================================
+function buildSteps_prims(){
+  const steps=[];
+  // Build undirected adj (use all edges both ways)
+  const adj={};
+  nodes.forEach(n=>adj[n.id]=[]);
+  edges.forEach((e,i)=>{
+    adj[e.f].push({id:e.t,w:e.w,ei:i});
+    if(!e.directed) adj[e.t].push({id:e.f,w:e.w,ei:i});
+  });
+  const src=nodes[0].id;
+  const inMST=new Set([src]);
+  const nc={}, ec={}, nl={};
+  nodes.forEach(n=>{nc[n.id]=COLORS.default; nl[n.id]='';});
+  nc[src]=COLORS.src; nl[src]='SRC';
+  let totalCost=0;
+  steps.push({type:'start',msg:`Prim's MST from ${nodeLabel(src)}. Start with SRC node.`,nc:{...nc},ec:{...ec},nl:{...nl}});
+  while(inMST.size<nodes.length){
+    let best=null, bestW=Infinity, bestEi=-1, bestTo=-1;
+    for(const u of inMST){
+      for(const nbr of (adj[u]||[])){
+        if(!inMST.has(nbr.id) && nbr.w<bestW){
+          best=u; bestW=nbr.w; bestEi=nbr.ei; bestTo=nbr.id;
+        }
+      }
+    }
+    if(best===null) break;
+    // Show considering
+    ec[bestEi]=COLORS.edgeTrav;
+    steps.push({type:'consider',msg:`Consider edge ${nodeLabel(best)}—${nodeLabel(bestTo)} (wt=${bestW}) — minimum cut edge`,nc:{...nc},ec:{...ec},nl:{...nl}});
+    // Add to MST
+    inMST.add(bestTo); totalCost+=bestW;
+    ec[bestEi]=COLORS.edgeMST; nc[bestTo]=COLORS.visited; nl[bestTo]=`w:${bestW}`;
+    steps.push({type:'add',msg:`Add ${nodeLabel(best)}—${nodeLabel(bestTo)} to MST (cost=${bestW}, total=${totalCost})`,nc:{...nc},ec:{...ec},nl:{...nl}});
+  }
+  steps.push({type:'done',msg:`Prim's MST complete! Total cost = ${totalCost}. Green edges form the MST.`,nc:{...nc},ec:{...ec},nl:{...nl}});
+  return steps;
+}
+
+function buildSteps_kruskal(){
+  const steps=[];
+  // Union-Find
+  const parent={}, rank={};
+  nodes.forEach(n=>{parent[n.id]=n.id; rank[n.id]=0;});
+  function find(x){ return parent[x]===x?x:parent[x]=find(parent[x]); }
+  function union(x,y){ const px=find(x),py=find(y); if(px===py)return false; if(rank[px]<rank[py])parent[px]=py; else if(rank[px]>rank[py])parent[py]=px; else{parent[py]=px;rank[px]++;} return true; }
+
+  // Sort unique edges by weight
+  const uniqueEdges=edges.filter(e=>!e.twin).map((e,i)=>({...e,origIdx:edges.indexOf(e)}));
+  uniqueEdges.sort((a,b)=>a.w-b.w);
+
+  const nc={}, ec={}, nl={};
+  nodes.forEach(n=>{nc[n.id]=COLORS.default; nl[n.id]='';});
+  let totalCost=0, mstCount=0;
+  steps.push({type:'start',msg:`Kruskal's MST. Sorted edges: ${uniqueEdges.map(e=>nodeLabel(e.f)+'—'+nodeLabel(e.t)+'('+e.w+')').join(', ')}`,nc:{...nc},ec:{...ec},nl:{...nl}});
+
+  for(const e of uniqueEdges){
+    const ei=e.origIdx;
+    ec[ei]=COLORS.edgeTrav;
+    steps.push({type:'consider',msg:`Consider edge ${nodeLabel(e.f)}—${nodeLabel(e.t)} (wt=${e.w})`,nc:{...nc},ec:{...ec},nl:{...nl}});
+    if(union(e.f,e.t)){
+      totalCost+=e.w; mstCount++;
+      ec[ei]=COLORS.edgeMST; nc[e.f]=COLORS.visited; nc[e.t]=COLORS.visited;
+      steps.push({type:'add',msg:`✓ Add to MST (no cycle). Total cost=${totalCost}`,nc:{...nc},ec:{...ec},nl:{...nl}});
+    } else {
+      ec[ei]=COLORS.edgeBack;
+      steps.push({type:'skip',msg:`✗ Skip ${nodeLabel(e.f)}—${nodeLabel(e.t)} (would create cycle!)`,nc:{...nc},ec:{...ec},nl:{...nl}});
+    }
+  }
+  steps.push({type:'done',msg:`Kruskal's MST complete! Total cost = ${totalCost}. Green = MST edges.`,nc:{...nc},ec:{...ec},nl:{...nl}});
   return steps;
 }
 
@@ -1213,6 +1466,8 @@ function runAlgo(name){
     kahn:()=>buildSteps_kahn(),
     kosaraju:()=>buildSteps_kosaraju(),
     tarjan:()=>buildSteps_tarjan(),
+    prims:()=>buildSteps_prims(),
+    kruskal:()=>buildSteps_kruskal(),
   };
   animSteps = builders[name] ? builders[name]() : [];
   if(!animSteps.length){ alert('Algorithm ke liye valid graph chahiye!'); return; }
@@ -1266,4 +1521,4 @@ loadPreset('simple');
 updSel();
 </script>
 </body>
-</html>  
+</html> 
