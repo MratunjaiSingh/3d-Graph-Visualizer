@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -906,13 +906,14 @@ const CODES = {
 // ALGORITHM STEP BUILDERS
 // ============================================================
 function buildAdj(dirOnly=false){
-  // Returns {nodeId: [{id, w, edgeIndex}]}
   const adj={};
   nodes.forEach(n=>adj[n.id]=[]);
   edges.forEach((e,i)=>{
-    if(!e.twin) adj[e.f].push({id:e.t,w:e.w,ei:i});
+    if(e.twin) return; // skip twin, handle below
+    adj[e.f].push({id:e.t, w:e.w, ei:i});
+    // For undirected edges, add reverse direction too
     if(!e.directed && !dirOnly){
-      // already have twin edge
+      adj[e.t].push({id:e.f, w:e.w, ei:i});
     }
   });
   return adj;
@@ -921,24 +922,28 @@ function buildAdj(dirOnly=false){
 function buildSteps_bfs(src){
   const adj=buildAdj(); const steps=[];
   const vis={}, parent={};
+  // Full node color state
+  const nc={}; nodes.forEach(n=>nc[n.id]=COLORS.default);
+  const ec={};
   const queue=[src]; vis[src]=true; parent[src]=-1;
-  steps.push({type:'start',node:src,msg:`BFS starts from node ${nodeLabel(src)}`,
-    nc:{[src]:COLORS.current}, ec:{}});
+  nc[src]=COLORS.current;
+  steps.push({type:'start',node:src,msg:`BFS starts from ${nodeLabel(src)}. Push to queue.`,nc:{...nc},ec:{...ec}});
   while(queue.length){
     const front=queue.shift();
-    steps.push({type:'process',node:front,msg:`Process node ${nodeLabel(front)}`,
-      nc:{...steps[steps.length-1].nc,[front]:COLORS.visited}});
+    nc[front]=COLORS.current;
+    steps.push({type:'process',node:front,msg:`Dequeue & process ${nodeLabel(front)}`,nc:{...nc},ec:{...ec}});
     for(const nbr of (adj[front]||[])){
       if(!vis[nbr.id]){
         vis[nbr.id]=true; parent[nbr.id]=front; queue.push(nbr.id);
-        const nc={...steps[steps.length-1].nc,[nbr.id]:COLORS.queued};
-        steps.push({type:'enqueue',node:nbr.id,from:front,ei:nbr.ei,
-          msg:`Enqueue ${nodeLabel(nbr.id)} (neighbor of ${nodeLabel(front)})`,
-          nc, ec:{...steps[steps.length-1].ec,[nbr.ei]:COLORS.edgeTrav}});
+        nc[nbr.id]=COLORS.queued; ec[nbr.ei]=COLORS.edgeTrav;
+        steps.push({type:'enqueue',node:nbr.id,from:front,
+          msg:`Enqueue ${nodeLabel(nbr.id)} (level-neighbor of ${nodeLabel(front)})`,
+          nc:{...nc},ec:{...ec}});
       }
     }
+    nc[front]=COLORS.visited;
   }
-  steps.push({type:'done',msg:'BFS Complete! All reachable nodes visited.',nc:steps[steps.length-1].nc,ec:steps[steps.length-1].ec});
+  steps.push({type:'done',msg:'BFS Complete! Nodes visited level by level (shortest path for unweighted).',nc:{...nc},ec:{...ec}});
   return steps;
 }
 
@@ -976,165 +981,180 @@ function buildSteps_dijkstra(src){
   const inSet=new Set(); nodes.forEach(n=>inSet.add(n.id));
   const nc={}, ec={}, nl={};
   nodes.forEach(n=>{nc[n.id]=COLORS.default; nl[n.id]='∞';});
-  nl[src]='SRC'; nc[src]=COLORS.src;
-  steps.push({type:'start',msg:`Dijkstra from ${nodeLabel(src)}. dist[src]=0, SRC marked red`,nc:{...nc},ec:{...ec},nl:{...nl}});
+  nl[src]='0'; nc[src]=COLORS.src;
+  // SRC badge shown via nodeLabels - we use a separate srcDest map
+  const srcDest={}; srcDest[src]='SRC';
+  steps.push({type:'start',msg:`Dijkstra from ${nodeLabel(src)}. dist[${nodeLabel(src)}]=0`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
   for(let i=0;i<nodes.length;i++){
-    // pick min dist node in set
     let u=null;
     for(const id of inSet) if(u===null||dist[id]<dist[u]) u=id;
     if(u===null||dist[u]===Infinity) break;
     inSet.delete(u);
     nc[u]=COLORS.current;
-    steps.push({type:'pick',node:u,msg:`Pick node ${nodeLabel(u)} (dist=${dist[u]})`,nc:{...nc},ec:{...ec},nl:{...nl}});
+    steps.push({type:'pick',node:u,msg:`Pick min-dist node ${nodeLabel(u)} (dist=${dist[u]})`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
     for(const nbr of (adj[u]||[])){
       if(inSet.has(nbr.id)){
         const newDist=dist[u]+nbr.w;
         ec[nbr.ei]=COLORS.edgeTrav;
         steps.push({type:'relax',msg:`Relax ${nodeLabel(u)}→${nodeLabel(nbr.id)}: ${dist[u]}+${nbr.w}=${newDist} vs ${dist[nbr.id]===Infinity?'∞':dist[nbr.id]}`,
-          nc:{...nc},ec:{...ec},nl:{...nl}});
+          nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
         if(newDist<dist[nbr.id]){
           dist[nbr.id]=newDist;
           nl[nbr.id]=String(newDist);
           ec[nbr.ei]=COLORS.edgePath;
-          steps.push({type:'update',node:nbr.id,msg:`Update dist[${nodeLabel(nbr.id)}] = ${newDist}`,
-            nc:{...nc},ec:{...ec},nl:{...nl}});
+          steps.push({type:'update',node:nbr.id,msg:`✓ Better path! dist[${nodeLabel(nbr.id)}] = ${newDist}`,
+            nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
         }
       }
     }
     nc[u]=COLORS.visited;
   }
-  steps.push({type:'done',msg:'Dijkstra Complete! Shortest distances found.',nc:{...nc},ec:{...ec},nl:{...nl}});
+  steps.push({type:'done',msg:`Dijkstra done! Final distances: ${nodes.map(n=>nodeLabel(n.id)+'='+( dist[n.id]===Infinity?'∞':dist[n.id])).join(', ')}`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
   return steps;
 }
 
 function buildSteps_topo_dfs(){
   const adj=buildAdj(true); const steps=[];
   const vis={}, stack=[], ec={};
+  const nc=Object.fromEntries(nodes.map(n=>[n.id,COLORS.default]));
+  steps.push({type:'start',msg:`Topo Sort (DFS): Push node to stack AFTER visiting all its neighbors (post-order). Stack gives topo order.`,nc:{...nc},ec:{...ec}});
   function dfs(u){
-    vis[u]=true;
-    const nc=Object.fromEntries(nodes.map(n=>[n.id,vis[n.id]?COLORS.visited:COLORS.default]));
-    nc[u]=COLORS.current;
-    steps.push({type:'visit',node:u,msg:`Visit ${nodeLabel(u)}`,nc:{...nc},ec:{...ec}});
+    vis[u]=true; nc[u]=COLORS.current;
+    steps.push({type:'visit',node:u,msg:`Visit ${nodeLabel(u)} → explore neighbors first`,nc:{...nc},ec:{...ec}});
     for(const nbr of (adj[u]||[])){
-      if(!vis[nbr.id]){ ec[nbr.ei]=COLORS.edgeTrav; dfs(nbr.id); }
+      if(!vis[nbr.id]){ ec[nbr.ei]=COLORS.edgeTrav; dfs(nbr.id); nc[u]=COLORS.current; }
     }
-    stack.push(u);
-    const nl={}; stack.forEach((id,i)=>nl[id]=`#${i+1}`);
-    const nc2=Object.fromEntries(nodes.map(n=>[n.id,vis[n.id]?COLORS.visited:COLORS.default]));
-    steps.push({type:'push',node:u,msg:`Push ${nodeLabel(u)} to stack (pos #${stack.length})`,
-      nc:{...nc2},ec:{...ec},nl:{...nl}});
+    stack.push(u); nc[u]=COLORS.visited;
+    const nl={}; stack.forEach((id,i)=>nl[id]=`#${stack.length-i}`);
+    steps.push({type:'push',node:u,msg:`Push ${nodeLabel(u)} to stack (stack: [${stack.map(nodeLabel).join(',')}])`,nc:{...nc},ec:{...ec},nl:{...nl}});
   }
   nodes.forEach(n=>{ if(!vis[n.id]) dfs(n.id); });
   const order=stack.slice().reverse().map(id=>nodeLabel(id)).join(' → ');
-  steps.push({type:'done',msg:`Topo order: ${order}`,nc:steps[steps.length-1].nc,ec:steps[steps.length-1].ec});
+  const nl={}; stack.forEach((id,i)=>nl[id]=`#${stack.length-i}`);
+  steps.push({type:'done',msg:`✓ Topo order (stack top→bottom): ${order}`,nc:{...nc},ec:{...ec},nl:{...nl}});
   return steps;
 }
 
 function buildSteps_kahn(){
   const adj=buildAdj(true); const steps=[];
+  // Count in-degree from directed edges only (no twins)
   const indeg={}; nodes.forEach(n=>indeg[n.id]=0);
-  edges.forEach(e=>{ if(!e.twin) indeg[e.t]=(indeg[e.t]||0)+1; });
+  edges.forEach(e=>{ if(!e.twin && e.directed) indeg[e.t]=(indeg[e.t]||0)+1; });
+  // Also count undirected treated as directed (no twin)
+  edges.forEach(e=>{ if(!e.twin && !e.directed) indeg[e.t]=(indeg[e.t]||0)+1; });
   const queue=[]; nodes.forEach(n=>{ if(indeg[n.id]===0) queue.push(n.id); });
   const nl={}, ec={};
   nodes.forEach(n=>nl[n.id]=`in:${indeg[n.id]}`);
   const nc=Object.fromEntries(nodes.map(n=>[n.id,indeg[n.id]===0?COLORS.queued:COLORS.default]));
-  steps.push({type:'start',msg:`Kahn's: Start with 0 in-degree nodes: ${queue.map(nodeLabel).join(',')}`,
-    nc:{...nc},ec:{...ec},nl:{...nl}});
+  steps.push({type:'start',msg:`Kahn's BFS Topo Sort. In-degrees: ${nodes.map(n=>nodeLabel(n.id)+':'+indeg[n.id]).join(', ')}. Zero-indegree start: {${queue.map(nodeLabel).join(',')}}`,nc:{...nc},ec:{...ec},nl:{...nl}});
   const order=[];
   while(queue.length){
     const u=queue.shift(); order.push(u);
     nc[u]=COLORS.current;
-    steps.push({type:'process',node:u,msg:`Process ${nodeLabel(u)} (in-degree=0)`,nc:{...nc},ec:{...ec},nl:{...nl}});
+    steps.push({type:'process',node:u,msg:`Process ${nodeLabel(u)} (in-degree=0) → add to topo order`,nc:{...nc},ec:{...ec},nl:{...nl}});
     for(const nbr of (adj[u]||[])){
       indeg[nbr.id]--; nl[nbr.id]=`in:${indeg[nbr.id]}`; ec[nbr.ei]=COLORS.edgeTrav;
-      if(indeg[nbr.id]===0){ queue.push(nbr.id); nc[nbr.id]=COLORS.queued; }
-      steps.push({type:'reduce',node:nbr.id,msg:`Reduce in-degree of ${nodeLabel(nbr.id)} → ${indeg[nbr.id]}`,
-        nc:{...nc},ec:{...ec},nl:{...nl}});
+      steps.push({type:'reduce',node:nbr.id,msg:`Reduce in-degree of ${nodeLabel(nbr.id)}: ${indeg[nbr.id]+1}→${indeg[nbr.id]}`,nc:{...nc},ec:{...ec},nl:{...nl}});
+      if(indeg[nbr.id]===0){ queue.push(nbr.id); nc[nbr.id]=COLORS.queued;
+        steps.push({type:'enqueue',node:nbr.id,msg:`${nodeLabel(nbr.id)} in-degree=0 → enqueue`,nc:{...nc},ec:{...ec},nl:{...nl}}); }
     }
     nc[u]=COLORS.visited;
   }
   const orderStr=order.map(nodeLabel).join(' → ');
-  steps.push({type:'done',msg:`Kahn's Complete! Topo order: ${orderStr}`,nc:{...nc},ec:{...ec},nl:{...nl}});
+  if(order.length<nodes.length){
+    steps.push({type:'cycle',msg:`⚠ Only ${order.length}/${nodes.length} nodes processed → CYCLE EXISTS! No valid topo order. Order so far: ${orderStr}`,nc:{...nc},ec:{...ec},nl:{...nl}});
+  } else {
+    steps.push({type:'done',msg:`✓ Kahn's done! Topo order: ${orderStr}`,nc:{...nc},ec:{...ec},nl:{...nl}});
+  }
   return steps;
 }
 
 function buildSteps_bipartite(){
   const adj=buildAdj(); const steps=[];
   const color={}; const nc={}, ec={};
-  nodes.forEach(n=>{nc[n.id]=COLORS.default;color[n.id]=-1;});
-  const src=nodes[0].id;
-  color[src]=0; nc[src]=COLORS.biA;
-  const queue=[src]; let isBip=true;
-  steps.push({type:'start',msg:`Bipartite check from ${nodeLabel(src)}. Color it SET-A (purple)`,nc:{...nc},ec:{...ec}});
-  while(queue.length&&isBip){
-    const u=queue.shift();
-    for(const nbr of (adj[u]||[])){
-      if(color[nbr.id]===-1){
-        color[nbr.id]=1-color[u];
-        nc[nbr.id]=color[nbr.id]===0?COLORS.biA:COLORS.biB;
-        ec[nbr.ei]=COLORS.edgeTrav; queue.push(nbr.id);
-        steps.push({type:'color',node:nbr.id,msg:`Color ${nodeLabel(nbr.id)} → ${color[nbr.id]===0?'SET-A':'SET-B'}`,
-          nc:{...nc},ec:{...ec}});
-      } else if(color[nbr.id]===color[u]){
-        isBip=false; ec[nbr.ei]=COLORS.edgeBack;
-        steps.push({type:'fail',msg:`CONFLICT! ${nodeLabel(u)} and ${nodeLabel(nbr.id)} same color → NOT bipartite!`,
-          nc:{...nc},ec:{...ec}});
-        break;
+  nodes.forEach(n=>{nc[n.id]=COLORS.default; color[n.id]=-1;});
+  let isBip=true;
+  steps.push({type:'start',msg:`Bipartite check: try to 2-color graph so no two adjacent nodes share a color.`,nc:{...nc},ec:{...ec}});
+  for(const startNode of nodes){
+    if(color[startNode.id]!==-1) continue;
+    const queue=[startNode.id];
+    color[startNode.id]=0; nc[startNode.id]=COLORS.biA;
+    steps.push({type:'color',node:startNode.id,msg:`Color ${nodeLabel(startNode.id)} → SET-A (purple, color=0)`,nc:{...nc},ec:{...ec}});
+    while(queue.length && isBip){
+      const u=queue.shift();
+      for(const nbr of (adj[u]||[])){
+        if(color[nbr.id]===-1){
+          color[nbr.id]=1-color[u];
+          nc[nbr.id]=color[nbr.id]===0?COLORS.biA:COLORS.biB;
+          ec[nbr.ei]=COLORS.edgeTrav; queue.push(nbr.id);
+          steps.push({type:'color',node:nbr.id,msg:`Color ${nodeLabel(nbr.id)} → ${color[nbr.id]===0?'SET-A (purple)':'SET-B (orange)'}`,nc:{...nc},ec:{...ec}});
+        } else if(color[nbr.id]===color[u]){
+          isBip=false; ec[nbr.ei]=COLORS.edgeBack;
+          steps.push({type:'fail',msg:`✗ CONFLICT! ${nodeLabel(u)} & ${nodeLabel(nbr.id)} both ${color[u]===0?'SET-A':'SET-B'} → NOT bipartite!`,nc:{...nc},ec:{...ec}});
+          break;
+        }
       }
     }
+    if(!isBip) break;
   }
-  if(isBip) steps.push({type:'done',msg:'Graph IS Bipartite! Two sets correctly colored.',nc:{...nc},ec:{...ec}});
+  if(isBip) steps.push({type:'done',msg:'✓ Graph IS Bipartite! Purple = SET-A, Orange = SET-B. No adjacent nodes share a color.',nc:{...nc},ec:{...ec}});
   return steps;
 }
 
 function buildSteps_cycle_bfs(){
   const adj=buildAdj(); const steps=[];
-  const vis={}, parent={}; const ec={};
-  const src=nodes[0].id;
-  const queue=[src]; vis[src]=true; parent[src]=-1;
+  const vis={}, par={}; const ec={};
   const nc=Object.fromEntries(nodes.map(n=>[n.id,COLORS.default]));
-  nc[src]=COLORS.current;
-  steps.push({type:'start',msg:`Cycle detection BFS from ${nodeLabel(src)}`,nc:{...nc},ec:{...ec}});
   let cycleFound=false;
-  while(queue.length&&!cycleFound){
-    const front=queue.shift();
-    nc[front]=COLORS.current;
-    steps.push({type:'process',node:front,msg:`Process ${nodeLabel(front)}`,nc:{...nc},ec:{...ec}});
-    for(const nbr of (adj[front]||[])){
-      if(!vis[nbr.id]){
-        vis[nbr.id]=true; parent[nbr.id]=front; queue.push(nbr.id);
-        nc[nbr.id]=COLORS.queued; ec[nbr.ei]=COLORS.edgeTrav;
-        steps.push({type:'enqueue',msg:`Enqueue ${nodeLabel(nbr.id)}, parent=${nodeLabel(front)}`,nc:{...nc},ec:{...ec}});
-      } else if(nbr.id!==parent[front]){
-        ec[nbr.ei]=COLORS.edgeBack; cycleFound=true;
-        steps.push({type:'cycle',msg:`CYCLE FOUND! ${nodeLabel(front)}→${nodeLabel(nbr.id)} is back edge!`,nc:{...nc},ec:{...ec}});
-        break;
+  steps.push({type:'start',msg:`Cycle Detection (BFS, Undirected): If visited neighbor is NOT parent → cycle exists.`,nc:{...nc},ec:{...ec}});
+  for(const startNode of nodes){
+    if(vis[startNode.id]||cycleFound) continue;
+    const queue=[startNode.id]; vis[startNode.id]=true; par[startNode.id]=-1;
+    nc[startNode.id]=COLORS.current;
+    while(queue.length && !cycleFound){
+      const front=queue.shift();
+      nc[front]=COLORS.current;
+      steps.push({type:'process',node:front,msg:`Process ${nodeLabel(front)}, parent=${par[front]===-1?'none':nodeLabel(par[front])}`,nc:{...nc},ec:{...ec}});
+      for(const nbr of (adj[front]||[])){
+        if(!vis[nbr.id]){
+          vis[nbr.id]=true; par[nbr.id]=front; queue.push(nbr.id);
+          nc[nbr.id]=COLORS.queued; ec[nbr.ei]=COLORS.edgeTrav;
+          steps.push({type:'enqueue',msg:`Enqueue ${nodeLabel(nbr.id)} (parent=${nodeLabel(front)})`,nc:{...nc},ec:{...ec}});
+        } else if(nbr.id!==par[front]){
+          ec[nbr.ei]=COLORS.edgeBack; cycleFound=true;
+          steps.push({type:'cycle',msg:`⚠ CYCLE FOUND! ${nodeLabel(front)}→${nodeLabel(nbr.id)} is visited & not parent!`,nc:{...nc},ec:{...ec}});
+          break;
+        }
       }
+      if(!cycleFound) nc[front]=COLORS.visited;
     }
-    if(!cycleFound) nc[front]=COLORS.visited;
   }
-  if(!cycleFound) steps.push({type:'done',msg:'No cycle found in graph.',nc:steps[steps.length-1].nc,ec:steps[steps.length-1].ec});
+  if(!cycleFound) steps.push({type:'done',msg:'✓ No cycle found. Graph is acyclic.',nc:steps[steps.length-1].nc,ec:steps[steps.length-1].ec});
   return steps;
 }
 
 function buildSteps_cycle_dfs(){
   const adj=buildAdj(); const steps=[];
   const vis={}; const ec={};
+  const nc=Object.fromEntries(nodes.map(n=>[n.id,COLORS.default]));
   let cycleFound=false;
+  steps.push({type:'start',msg:`Cycle Detection (DFS, Undirected): If visited neighbor is NOT parent → back edge → cycle.`,nc:{...nc},ec:{...ec}});
   function dfs(u,par){
     if(cycleFound) return;
-    vis[u]=true;
-    const nc=Object.fromEntries(nodes.map(n=>[n.id,vis[n.id]?COLORS.visited:COLORS.default]));
-    nc[u]=COLORS.current;
+    vis[u]=true; nc[u]=COLORS.current;
     steps.push({type:'visit',node:u,msg:`DFS visit ${nodeLabel(u)}, parent=${par===-1?'none':nodeLabel(par)}`,nc:{...nc},ec:{...ec}});
     for(const nbr of (adj[u]||[])){
       if(!vis[nbr.id]){ ec[nbr.ei]=COLORS.edgeTrav; dfs(nbr.id,u); }
-      else if(nbr.id!==par){ ec[nbr.ei]=COLORS.edgeBack; cycleFound=true;
-        steps.push({type:'cycle',msg:`CYCLE! Back edge ${nodeLabel(u)}→${nodeLabel(nbr.id)}`,nc:{...nc},ec:{...ec}}); return; }
+      else if(nbr.id!==par){
+        ec[nbr.ei]=COLORS.edgeBack; cycleFound=true;
+        steps.push({type:'cycle',msg:`⚠ CYCLE! Back edge ${nodeLabel(u)}→${nodeLabel(nbr.id)} (visited & not parent)`,nc:{...nc},ec:{...ec}});
+        return;
+      }
     }
+    if(!cycleFound){ nc[u]=COLORS.visited; }
   }
   nodes.forEach(n=>{ if(!vis[n.id]&&!cycleFound) dfs(n.id,-1); });
-  if(!cycleFound) steps.push({type:'done',msg:'No cycle found.',nc:steps[steps.length-1].nc,ec:steps[steps.length-1].ec});
+  if(!cycleFound) steps.push({type:'done',msg:'✓ No cycle found in graph.',nc:{...nc},ec:{...ec}});
   return steps;
 }
 
@@ -1243,32 +1263,34 @@ function buildSteps_tarjan(){
 }
 
 function buildSteps_dag_sp(){
-  // Topo sort then relax
   const adj=buildAdj(true); const steps=[];
   const vis={}, stack=[]; const ec={};
   function dfs(u){ vis[u]=true; for(const nbr of (adj[u]||[])){ if(!vis[nbr.id]) dfs(nbr.id); } stack.push(u); }
   nodes.forEach(n=>{ if(!vis[n.id]) dfs(n.id); });
   const topoOrder=[...stack].reverse();
   const nc={}, nl={};
-  nodes.forEach(n=>{nc[n.id]=COLORS.default;nl[n.id]='∞';});
+  nodes.forEach(n=>{nc[n.id]=COLORS.default; nl[n.id]='∞';});
   const src=topoOrder[0];
   const dist={};nodes.forEach(n=>dist[n.id]=Infinity);
-  dist[src]=0; nl[src]='SRC'; nc[src]=COLORS.src;
-  steps.push({type:'start',msg:`DAG SP from ${nodeLabel(src)}. Topo order: ${topoOrder.map(nodeLabel).join('→')}`,nc:{...nc},ec:{...ec},nl:{...nl}});
+  dist[src]=0; nl[src]='0'; nc[src]=COLORS.src;
+  const srcDest={[src]:'SRC'};
+  steps.push({type:'start',msg:`DAG SP from ${nodeLabel(src)}. Topo order: ${topoOrder.map(nodeLabel).join(' → ')}`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
   for(const u of topoOrder){
     if(dist[u]===Infinity) continue;
     nc[u]=COLORS.current;
-    steps.push({type:'process',node:u,msg:`Process ${nodeLabel(u)} (dist=${dist[u]})`,nc:{...nc},ec:{...ec},nl:{...nl}});
+    steps.push({type:'process',node:u,msg:`Process ${nodeLabel(u)} (dist=${dist[u]})`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
     for(const nbr of (adj[u]||[])){
       const newDist=dist[u]+nbr.w; ec[nbr.ei]=COLORS.edgeTrav;
+      steps.push({type:'relax_check',msg:`Check ${nodeLabel(u)}→${nodeLabel(nbr.id)}: ${dist[u]}+${nbr.w}=${newDist} vs ${dist[nbr.id]===Infinity?'∞':dist[nbr.id]}`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
       if(newDist<dist[nbr.id]){
         dist[nbr.id]=newDist; nl[nbr.id]=String(newDist); ec[nbr.ei]=COLORS.edgePath;
-        steps.push({type:'relax',node:nbr.id,msg:`Update dist[${nodeLabel(nbr.id)}]=${newDist}`,nc:{...nc},ec:{...ec},nl:{...nl}});
+        steps.push({type:'relax',node:nbr.id,msg:`✓ Update dist[${nodeLabel(nbr.id)}] = ${newDist}`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
       }
     }
     nc[u]=COLORS.visited;
   }
-  steps.push({type:'done',msg:'DAG SP complete!',nc:steps[steps.length-1].nc,ec:steps[steps.length-1].ec,nl:steps[steps.length-1].nl});
+  const finalDists=nodes.map(n=>nodeLabel(n.id)+'='+(dist[n.id]===Infinity?'∞':dist[n.id])).join(', ');
+  steps.push({type:'done',msg:`DAG SP done! Distances: ${finalDists}`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
   return steps;
 }
 
@@ -1277,20 +1299,22 @@ function buildSteps_dag_sp(){
 // ============================================================
 function buildSteps_prims(){
   const steps=[];
-  // Build undirected adj (use all edges both ways)
+  // Build proper undirected adj from unique edges only
   const adj={};
   nodes.forEach(n=>adj[n.id]=[]);
   edges.forEach((e,i)=>{
-    adj[e.f].push({id:e.t,w:e.w,ei:i});
-    if(!e.directed) adj[e.t].push({id:e.f,w:e.w,ei:i});
+    if(e.twin) return;
+    adj[e.f].push({id:e.t, w:e.w, ei:i});
+    adj[e.t].push({id:e.f, w:e.w, ei:i}); // always bidirectional for MST
   });
   const src=nodes[0].id;
   const inMST=new Set([src]);
   const nc={}, ec={}, nl={};
   nodes.forEach(n=>{nc[n.id]=COLORS.default; nl[n.id]='';});
-  nc[src]=COLORS.src; nl[src]='SRC';
+  nc[src]=COLORS.src; nl[src]='0';
+  const srcDest={[src]:'SRC'};
   let totalCost=0;
-  steps.push({type:'start',msg:`Prim's MST from ${nodeLabel(src)}. Start with SRC node.`,nc:{...nc},ec:{...ec},nl:{...nl}});
+  steps.push({type:'start',msg:`Prim's MST from ${nodeLabel(src)}. Grow MST by min-weight cut edge each time.`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
   while(inMST.size<nodes.length){
     let best=null, bestW=Infinity, bestEi=-1, bestTo=-1;
     for(const u of inMST){
@@ -1301,49 +1325,53 @@ function buildSteps_prims(){
       }
     }
     if(best===null) break;
-    // Show considering
     ec[bestEi]=COLORS.edgeTrav;
-    steps.push({type:'consider',msg:`Consider edge ${nodeLabel(best)}—${nodeLabel(bestTo)} (wt=${bestW}) — minimum cut edge`,nc:{...nc},ec:{...ec},nl:{...nl}});
-    // Add to MST
+    steps.push({type:'consider',msg:`Min cut edge: ${nodeLabel(best)}—${nodeLabel(bestTo)} (wt=${bestW})`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
     inMST.add(bestTo); totalCost+=bestW;
-    ec[bestEi]=COLORS.edgeMST; nc[bestTo]=COLORS.visited; nl[bestTo]=`w:${bestW}`;
-    steps.push({type:'add',msg:`Add ${nodeLabel(best)}—${nodeLabel(bestTo)} to MST (cost=${bestW}, total=${totalCost})`,nc:{...nc},ec:{...ec},nl:{...nl}});
+    ec[bestEi]=COLORS.edgeMST; nc[bestTo]=COLORS.visited; nl[bestTo]=`${bestW}`;
+    steps.push({type:'add',msg:`✓ Add to MST: ${nodeLabel(best)}—${nodeLabel(bestTo)} (cost=${bestW}, total=${totalCost})`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
   }
-  steps.push({type:'done',msg:`Prim's MST complete! Total cost = ${totalCost}. Green edges form the MST.`,nc:{...nc},ec:{...ec},nl:{...nl}});
+  steps.push({type:'done',msg:`Prim's done! MST total cost = ${totalCost}. Green edges = MST.`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
   return steps;
 }
 
 function buildSteps_kruskal(){
   const steps=[];
-  // Union-Find
-  const parent={}, rank={};
-  nodes.forEach(n=>{parent[n.id]=n.id; rank[n.id]=0;});
+  const parent={}, rnk={};
+  nodes.forEach(n=>{parent[n.id]=n.id; rnk[n.id]=0;});
   function find(x){ return parent[x]===x?x:parent[x]=find(parent[x]); }
-  function union(x,y){ const px=find(x),py=find(y); if(px===py)return false; if(rank[px]<rank[py])parent[px]=py; else if(rank[px]>rank[py])parent[py]=px; else{parent[py]=px;rank[px]++;} return true; }
-
-  // Sort unique edges by weight
-  const uniqueEdges=edges.filter(e=>!e.twin).map((e,i)=>({...e,origIdx:edges.indexOf(e)}));
+  function union(x,y){
+    const px=find(x), py=find(y);
+    if(px===py) return false;
+    if(rnk[px]<rnk[py]) parent[px]=py;
+    else if(rnk[px]>rnk[py]) parent[py]=px;
+    else { parent[py]=px; rnk[px]++; }
+    return true;
+  }
+  // Collect unique edges with their real index
+  const uniqueEdges=[];
+  edges.forEach((e,i)=>{ if(!e.twin) uniqueEdges.push({f:e.f,t:e.t,w:e.w,ei:i}); });
   uniqueEdges.sort((a,b)=>a.w-b.w);
 
   const nc={}, ec={}, nl={};
   nodes.forEach(n=>{nc[n.id]=COLORS.default; nl[n.id]='';});
-  let totalCost=0, mstCount=0;
-  steps.push({type:'start',msg:`Kruskal's MST. Sorted edges: ${uniqueEdges.map(e=>nodeLabel(e.f)+'—'+nodeLabel(e.t)+'('+e.w+')').join(', ')}`,nc:{...nc},ec:{...ec},nl:{...nl}});
+  let totalCost=0;
+  steps.push({type:'start',msg:`Kruskal's: Sort all edges by weight → ${uniqueEdges.map(e=>nodeLabel(e.f)+'—'+nodeLabel(e.t)+'('+e.w+')').join(', ')}`,nc:{...nc},ec:{...ec},nl:{...nl}});
 
   for(const e of uniqueEdges){
-    const ei=e.origIdx;
-    ec[ei]=COLORS.edgeTrav;
-    steps.push({type:'consider',msg:`Consider edge ${nodeLabel(e.f)}—${nodeLabel(e.t)} (wt=${e.w})`,nc:{...nc},ec:{...ec},nl:{...nl}});
-    if(union(e.f,e.t)){
-      totalCost+=e.w; mstCount++;
-      ec[ei]=COLORS.edgeMST; nc[e.f]=COLORS.visited; nc[e.t]=COLORS.visited;
-      steps.push({type:'add',msg:`✓ Add to MST (no cycle). Total cost=${totalCost}`,nc:{...nc},ec:{...ec},nl:{...nl}});
+    // highlight candidate
+    ec[e.ei]=COLORS.edgeTrav;
+    steps.push({type:'consider',msg:`Consider ${nodeLabel(e.f)}—${nodeLabel(e.t)} (wt=${e.w}). Creates cycle? ${find(e.f)===find(e.t)?'YES':'NO'}`,nc:{...nc},ec:{...ec},nl:{...nl}});
+    if(union(e.f, e.t)){
+      totalCost+=e.w;
+      ec[e.ei]=COLORS.edgeMST; nc[e.f]=COLORS.visited; nc[e.t]=COLORS.visited;
+      steps.push({type:'add',msg:`✓ Add to MST (no cycle). Total cost = ${totalCost}`,nc:{...nc},ec:{...ec},nl:{...nl}});
     } else {
-      ec[ei]=COLORS.edgeBack;
-      steps.push({type:'skip',msg:`✗ Skip ${nodeLabel(e.f)}—${nodeLabel(e.t)} (would create cycle!)`,nc:{...nc},ec:{...ec},nl:{...nl}});
+      ec[e.ei]=COLORS.edgeBack;
+      steps.push({type:'skip',msg:`✗ Skip — ${nodeLabel(e.f)} & ${nodeLabel(e.t)} already connected (cycle!)`,nc:{...nc},ec:{...ec},nl:{...nl}});
     }
   }
-  steps.push({type:'done',msg:`Kruskal's MST complete! Total cost = ${totalCost}. Green = MST edges.`,nc:{...nc},ec:{...ec},nl:{...nl}});
+  steps.push({type:'done',msg:`Kruskal's done! MST total cost = ${totalCost}. Green = MST edges, Red = rejected.`,nc:{...nc},ec:{...ec},nl:{...nl}});
   return steps;
 }
 
@@ -1356,7 +1384,10 @@ function applyStep(step){
   if(!step) return;
   nodeColors = {...step.nc}||{};
   edgeColors = {...step.ec}||{};
-  nodeLabels = step.nl?{...step.nl}:{};
+  const nl = step.nl ? {...step.nl} : {};
+  // SRC/DEST badges override regular labels
+  if(step.sd) Object.entries(step.sd).forEach(([id,badge])=>{ nl[id]=badge; });
+  nodeLabels = nl;
   draw();
   // Update step log
   updateStepLog(step);
@@ -1521,4 +1552,4 @@ loadPreset('simple');
 updSel();
 </script>
 </body>
-</html> 
+</html>  
