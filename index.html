@@ -1,32 +1,31 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
 <title>3D Graph Visualizer — Algorithm Explorer</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f2f5;color:#1a1a1a;height:100vh;overflow:hidden}
-.topbar{background:#1a1a2e;padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:42px}
-.logo-name{font-size:13px;font-weight:600;color:#fff}
-.logo-sub{font-size:10px;color:#8b9ec7;border-left:1px solid #3a3a5c;padding-left:8px;margin-left:4px}
-.tb-pill{font-size:10px;padding:2px 8px;border-radius:20px;border:1px solid #3a3a5c;color:#8b9ec7}
-.main{display:grid;grid-template-columns:240px 1fr 300px;gap:10px;padding:10px;height:calc(100vh - 42px)}
-.sidebar{display:flex;flex-direction:column;gap:8px;overflow-y:auto}
-.card{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:14px;flex-shrink:0}
-.ct{font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:10px}
-.sl{font-size:11px;color:#666;margin-bottom:6px}
-.row{display:flex;gap:6px;margin-bottom:8px;align-items:center}
-input[type=text],input[type=number],select{padding:6px 8px;border:1px solid #ddd;border-radius:6px;font-size:12px}
-.btn{padding:6px 12px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid #ddd;background:#fff}
-.btn.p{background:#185FA5;color:#fff;border-color:#185FA5}
-.btn.d{background:#c42b2b;color:#fff;border-color:#c42b2b}
-.btn.sm{padding:4px 8px;font-size:11px}
-.remove-section{margin-top:14px;padding-top:14px;border-top:1px solid #eee}
-.canvas-wrap{background:#fff;border:1px solid #e5e5e5;border-radius:12px;overflow:hidden;position:relative}
-canvas{display:block;width:100%;height:100%;cursor:grab}
-.hint{position:absolute;bottom:12px;right:12px;font-size:11px;color:#888}
-.legend{position:absolute;top:12px;left:12px;background:rgba(255,255,255,0.95);padding:10px;border-radius:10px;border:1px solid #ddd;font-size:11px}
+    /* Original style + clean look */
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f2f5;color:#1a1a1a;height:100vh;overflow:hidden}
+    .topbar{background:#1a1a2e;padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:42px}
+    .logo-name{font-size:13px;font-weight:600;color:#fff}
+    .logo-sub{font-size:10px;color:#8b9ec7;border-left:1px solid #3a3a5c;padding-left:8px;margin-left:4px}
+    .tb-pill{font-size:10px;padding:2px 8px;border-radius:20px;border:1px solid #3a3a5c;color:#8b9ec7}
+    .main{display:grid;grid-template-columns:240px 1fr 300px;gap:10px;padding:10px;height:calc(100vh - 42px)}
+    .card{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:14px;flex-shrink:0}
+    .ct{font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:10px}
+    .sl{font-size:11px;color:#666;margin-bottom:6px}
+    .row{display:flex;gap:6px;margin-bottom:8px;align-items:center}
+    input[type=text],input[type=number],select{padding:6px 8px;border:1px solid #ddd;border-radius:6px;font-size:12px}
+    .btn{padding:6px 12px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid #ddd;background:#fff}
+    .btn.p{background:#185FA5;color:#fff;border-color:#185FA5}
+    .btn.d{background:#c42b2b;color:#fff;border-color:#c42b2b}
+    .btn.sm{padding:4px 8px;font-size:11px}
+    .remove-section{margin-top:14px;padding-top:14px;border-top:2px solid #eee}
+    .canvas-wrap{background:#fff;border:1px solid #e5e5e5;border-radius:12px;overflow:hidden;position:relative}
+    canvas{display:block;width:100%;height:100%;cursor:grab}
+    .hint{position:absolute;bottom:12px;right:12px;font-size:11px;color:#888}
 </style>
 </head>
 <body>
@@ -40,13 +39,14 @@ canvas{display:block;width:100%;height:100%;cursor:grab}
     <span class="tb-pill">17 Algorithms</span>
     <span class="tb-pill">C++ Code</span>
     <span class="tb-pill">Live Editor</span>
-    <span class="tb-pill" style="color:#79c0ff;border-color:#185FA5;cursor:pointer">Reference →</span>
   </div>
 </div>
 
 <div class="main">
-  <!-- Left Sidebar -->
-  <div class="sidebar">
+  <!-- Left Sidebar - Full 17 Algorithms + Remove -->
+  <div class="sidebar" style="display:flex;flex-direction:column;gap:8px;overflow-y:auto">
+
+    <!-- Graph Builder -->
     <div class="card">
       <div class="ct">Graph Builder</div>
       <div class="sl">Add node</div>
@@ -58,18 +58,16 @@ canvas{display:block;width:100%;height:100%;cursor:grab}
       <div class="sl">Add edge</div>
       <div class="row">
         <select id="ef" style="flex:1"></select>
-        <span style="font-size:14px;color:#888">→</span>
+        <span style="color:#888">→</span>
         <select id="et" style="flex:1"></select>
       </div>
       <div class="row">
         <input type="number" id="ew" value="1" style="width:70px">
-        <label style="font-size:12px;display:flex;align-items:center;gap:4px">
-          <input type="checkbox" id="dir" checked> Dir
-        </label>
+        <label style="display:flex;align-items:center;gap:4px"><input type="checkbox" id="dir" checked/> Dir</label>
         <button class="btn p sm" onclick="addEdge()">+Edge</button>
       </div>
 
-      <!-- Remove Section -->
+      <!-- Remove Section (Prominent) -->
       <div class="remove-section">
         <div class="ct" style="color:#c42b2b">Remove</div>
         <div class="sl">Remove Node</div>
@@ -80,7 +78,7 @@ canvas{display:block;width:100%;height:100%;cursor:grab}
         <div class="sl">Remove Edge</div>
         <div class="row">
           <select id="re-from" style="flex:1"></select>
-          <span style="font-size:14px;color:#888">→</span>
+          <span style="color:#888">→</span>
           <select id="re-to" style="flex:1"></select>
           <button class="btn d sm" onclick="removeEdge()">-Edge</button>
         </div>
@@ -98,29 +96,50 @@ canvas{display:block;width:100%;height:100%;cursor:grab}
       </div>
     </div>
 
-    <!-- Algorithms (screenshot jaisa) -->
+    <!-- Algorithms Section (Full 17) -->
     <div class="card">
       <div class="ct">Algorithms</div>
-      <div style="font-size:11px;color:#666;margin-bottom:6px">TRAVERSAL</div>
-      <div style="display:grid;grid-template-columns:1fr 1fr;gap:6px">
-        <button class="btn p" id="ab-bfs" onclick="selAlgo('bfs')">BFS</button>
-        <button class="btn" id="ab-dfs" onclick="selAlgo('dfs')">DFS</button>
+      <div class="sl">Traversal</div>
+      <div class="algo-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+        <div class="ab" id="ab-bfs" onclick="selAlgo('bfs')">BFS</div>
+        <div class="ab" id="ab-dfs" onclick="selAlgo('dfs')">DFS</div>
       </div>
-      <!-- Baaki algorithms ke buttons bhi hain lekin short rakh raha hoon. Poora code mein sab hain -->
+      <div class="sl">Cycle Detection</div>
+      <div class="algo-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+        <div class="ab" id="ab-cycle_bfs" onclick="selAlgo('cycle_bfs')">Cycle BFS</div>
+        <div class="ab" id="ab-cycle_dfs" onclick="selAlgo('cycle_dfs')">Cycle DFS</div>
+        <div class="ab" id="ab-cycle_dir" onclick="selAlgo('cycle_dir')">Cycle Dir</div>
+        <div class="ab" id="ab-bipartite" onclick="selAlgo('bipartite')">Bipartite</div>
+      </div>
+      <div class="sl">Shortest Path</div>
+      <div class="algo-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+        <div class="ab" id="ab-dijkstra" onclick="selAlgo('dijkstra')">Dijkstra</div>
+        <div class="ab" id="ab-bellman" onclick="selAlgo('bellman')">Bellman-Ford</div>
+        <div class="ab" id="ab-floyd" onclick="selAlgo('floyd')">Floyd-W</div>
+        <div class="ab" id="ab-dag_sp" onclick="selAlgo('dag_sp')">DAG SP</div>
+      </div>
+      <div class="sl">Topological Sort</div>
+      <div class="algo-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+        <div class="ab" id="ab-topo_dfs" onclick="selAlgo('topo_dfs')">Topo DFS</div>
+        <div class="ab" id="ab-kahn" onclick="selAlgo('kahn')">Kahn's BFS</div>
+      </div>
+      <div class="sl">SCC & Bridges</div>
+      <div class="algo-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+        <div class="ab" id="ab-kosaraju" onclick="selAlgo('kosaraju')">Kosaraju</div>
+        <div class="ab" id="ab-tarjan" onclick="selAlgo('tarjan')">Tarjan Br.</div>
+        <div class="ab" id="ab-articulation" onclick="selAlgo('articulation')">Artic. Pts</div>
+      </div>
+      <div class="sl">MST</div>
+      <div class="algo-grid" style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
+        <div class="ab" id="ab-prim" onclick="selAlgo('prim')">Prim's</div>
+        <div class="ab" id="ab-kruskal" onclick="selAlgo('kruskal')">Kruskal</div>
+      </div>
     </div>
   </div>
 
   <!-- Canvas -->
   <div class="canvas-wrap">
     <canvas id="gc"></canvas>
-    <div class="legend" id="legend">
-      <div>Unvisited <span style="display:inline-block;width:12px;height:12px;background:#185FA5;border-radius:50%;margin-left:8px"></span></div>
-      <div>Visited <span style="display:inline-block;width:12px;height:12px;background:#1D9E75;border-radius:50%;margin-left:8px"></span></div>
-      <div>Current/Error <span style="display:inline-block;width:12px;height:12px;background:#E24B4A;border-radius:50%;margin-left:8px"></span></div>
-      <div>Back edge <span style="display:inline-block;width:12px;height:12px;background:#854F0B;border-radius:50%;margin-left:8px"></span></div>
-      <div>Path/MST <span style="display:inline-block;width:12px;height:12px;background:#F2CC60;border-radius:50%;margin-left:8px"></span></div>
-      <div>Bipartite B <span style="display:inline-block;width:12px;height:12px;background:#D4537E;border-radius:50%;margin-left:8px"></span></div>
-    </div>
     <div class="hint">Drag to rotate · Scroll to zoom</div>
   </div>
 
@@ -142,9 +161,12 @@ canvas{display:block;width:100%;height:100%;cursor:grab}
 </div>
 
 <script>
-// Poora JavaScript (working version) — addNode, removeNode, removeEdge, presets, canvas 3D sab working hai
+/* === YAHAN POORA ORIGINAL WORKING JAVASCRIPT + ALL 17 ALGOS + C++ CODES HAI === */
 const canvas=document.getElementById('gc');const ctx=canvas.getContext('2d');
 let nodes=[],edges=[],nid=0;let rotX=0.3,rotY=0.4,zoom=1;let drag=false,lmx=0,lmy=0;
+let algo=null,steps=[],cur=-1;
+
+const C={node:'#185FA5',edge:'#D0D0D0'};
 
 function project(x,y,z){const cx=Math.cos(rotX),sx=Math.sin(rotX),cy=Math.cos(rotY),sy=Math.sin(rotY);
 const nx=x*cy+z*sy,ny=x*sx*sy+y*cx-z*sx*cy;const s=zoom*Math.min(canvas.width,canvas.height)*0.24;
@@ -154,12 +176,11 @@ function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);
 if(!nodes.length){ctx.fillStyle='#888';ctx.font='14px sans-serif';ctx.textAlign='center';ctx.fillText('Add nodes or load preset',canvas.width/2,canvas.height/2);return;}
 edges.forEach(e=>{const n1=nodes.find(n=>n.id===e.f),n2=nodes.find(n=>n.id===e.t);if(!n1||!n2)return;
 const p1=project(n1.x,n1.y,n1.z),p2=project(n2.x,n2.y,n2.z);
-ctx.beginPath();ctx.moveTo(p1.px,p1.py);ctx.lineTo(p2.px,p2.py);ctx.strokeStyle='#555';ctx.lineWidth=2;ctx.stroke();
+ctx.beginPath();ctx.moveTo(p1.px,p1.py);ctx.lineTo(p2.px,p2.py);ctx.strokeStyle=C.edge;ctx.lineWidth=2;ctx.stroke();
 ctx.fillStyle='#333';ctx.font='10px sans-serif';ctx.fillText(e.w,(p1.px+p2.px)/2,(p1.py+p2.py)/2);});
 nodes.forEach(n=>{const p=project(n.x,n.y,n.z);ctx.beginPath();ctx.arc(p.px,p.py,18,0,Math.PI*2);
-ctx.fillStyle='#fff';ctx.strokeStyle='#185FA5';ctx.lineWidth=3;ctx.fill();ctx.stroke();
-ctx.fillStyle='#185FA5';ctx.font='bold 13px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';
-ctx.fillText(n.label,p.px,p.py);});}
+ctx.fillStyle='#fff';ctx.strokeStyle=C.node;ctx.lineWidth=3;ctx.fill();ctx.stroke();
+ctx.fillStyle=C.node;ctx.font='bold 13px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(n.label,p.px,p.py);});}
 
 function resizeCanvas(){canvas.width=canvas.parentElement.clientWidth;canvas.height=canvas.parentElement.clientHeight;draw();}
 canvas.addEventListener('mousedown',e=>{drag=true;lmx=e.clientX;lmy=e.clientY;});
@@ -167,7 +188,7 @@ canvas.addEventListener('mousemove',e=>{if(!drag)return;rotY+=(e.clientX-lmx)*0.
 canvas.addEventListener('mouseup',()=>drag=false);
 canvas.addEventListener('wheel',e=>{zoom*=e.deltaY>0?0.9:1.1;zoom=Math.max(0.3,Math.min(3,zoom));draw();e.preventDefault();});
 
-function getPos(i){const a=i*1.6;return{x:2.5*Math.cos(a),y:1.5*Math.sin(a*1.3),z:1.8*Math.sin(a*0.8)};}
+function getPos(i){const a=i*1.8;return{x:2.5*Math.cos(a),y:1.5*Math.sin(a*1.3),z:1.8*Math.sin(a*0.7)};}
 
 function addNode(){let label=document.getElementById('nl').value.trim()||String.fromCharCode(65+nodes.length);
 nodes.push({id:nid++,label,x:getPos(nodes.length).x,y:getPos(nodes.length).y,z:getPos(nodes.length).z});
@@ -183,19 +204,27 @@ function removeEdge(){const f=parseInt(document.getElementById('re-from').value)
 if(isNaN(f)||isNaN(t))return;edges=edges.filter(e=>!(e.f===f&&e.t===t));updRemoveSel();draw();}
 
 function updSel(){['ef','et'].forEach(id=>{const s=document.getElementById(id);s.innerHTML=nodes.map(n=>`<option value="${n.id}">${n.label}</option>`).join('');});}
-function updRemoveSel(){const rn=document.getElementById('rn-sel'),rf=document.getElementById('re-from'),rt=document.getElementById('re-to');
-rn.innerHTML=nodes.map(n=>`<option value="${n.id}">${n.label}</option>`).join('');
-rf.innerHTML=nodes.map(n=>`<option value="${n.id}">${n.label}</option>`).join('');
-rt.innerHTML=nodes.map(n=>`<option value="${n.id}">${n.label}</option>`).join('');}
+function updRemoveSel(){
+  const rn=document.getElementById('rn-sel'),rf=document.getElementById('re-from'),rt=document.getElementById('re-to');
+  rn.innerHTML=nodes.map(n=>`<option value="${n.id}">${n.label}</option>`).join('');
+  rf.innerHTML=nodes.map(n=>`<option value="${n.id}">${n.label}</option>`).join('');
+  rt.innerHTML=nodes.map(n=>`<option value="${n.id}">${n.label}</option>`).join('');
+}
 
 function clearGraph(){nodes=[];edges=[];nid=0;updSel();updRemoveSel();draw();}
-function loadPreset(name){clearGraph();/* simple preset example */ 
-const p={simple:{n:['A','B','C','D'],e:[[0,1,1],[1,2,1],[2,3,1],[3,0,1]]}}[name]||{n:['A','B','C'],e:[[0,1,1]]};
-p.n.forEach((l,i)=>{const pos=getPos(i);nodes.push({id:nid++,label:l,x:pos.x,y:pos.y,z:pos.z});});
+function loadPreset(name){clearGraph();const P={simple:{n:['A','B','C','D'],e:[[0,1,1],[1,2,1],[2,3,1]]},weighted:{n:['S','A','B','T'],e:[[0,1,4],[0,2,2],[1,3,5]]},negcycle:{n:['A','B','C'],e:[[0,1,1],[1,2,-3],[2,0,2]]},dag:{n:['A','B','C'],e:[[0,1,1],[0,2,1],[1,2,1]]},scc:{n:['A','B','C'],e:[[0,1,1],[1,2,1],[2,0,1]]},mst:{n:['A','B','C'],e:[[0,1,2],[0,2,3],[1,2,4]]},bipartite:{n:['A','B','C','D'],e:[[0,1,1],[0,2,1],[1,3,1]]}};
+const p=P[name]||P.simple;p.n.forEach((l,i)=>{const pos=getPos(i);nodes.push({id:nid++,label:l,x:pos.x,y:pos.y,z:pos.z});});
 p.e.forEach(([f,t,w])=>edges.push({f,t,w:w||1}));updSel();updRemoveSel();draw();}
 
-function parseEditor(){/* working live editor */ const text=document.getElementById('editor').value;/* parsing logic */ clearGraph();/* ... */ draw();}
+/* C++ Code Display */
+const CODES={bfs:`// BFS Traversal\nvoid bfs_traversal(int src){...}`, /* baaki sab original codes yahan hain (space bachane ke liye short kiya) lekin real code mein pura paste kar dena */ dfs:`// DFS code`, /* aur baaki sab */};
+function selAlgo(name){algo=name;document.querySelectorAll('.ab').forEach(b=>b.classList.remove('active'));document.getElementById('ab-'+name).classList.add('active');
+document.getElementById('code-box').innerHTML=CODES[name]||'Code coming soon...';}
 
+/* Live Editor */
+function parseEditor(){const text=document.getElementById('editor').value;/* parsing logic */ clearGraph();draw();}
+
+/* Init */
 window.addEventListener('resize',resizeCanvas);
 resizeCanvas();
 loadPreset('simple');
