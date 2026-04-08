@@ -11,22 +11,72 @@ body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;backgrou
 .logo-name{font-size:13px;font-weight:600;color:#fff}
 .logo-sub{font-size:10px;color:#8b9ec7;border-left:1px solid #3a3a5c;padding-left:8px;margin-left:4px}
 .tb-pill{font-size:10px;padding:2px 8px;border-radius:20px;border:1px solid #3a3a5c;color:#8b9ec7}
-.main{display:grid;grid-template-columns:240px 1fr 300px;gap:10px;padding:10px;height:calc(100vh - 42px)}
-.card{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:14px;flex-shrink:0}
-.ct{font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:10px}
-.sl{font-size:11px;color:#666;margin-bottom:6px}
-.row{display:flex;gap:6px;margin-bottom:8px;align-items:center}
-input[type=text],input[type=number],select{padding:6px 8px;border:1px solid #ddd;border-radius:6px;font-size:12px}
-.btn{padding:6px 12px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid #ddd;background:#fff}
+.main{display:grid;grid-template-columns:220px 1fr 320px;gap:8px;padding:8px;height:calc(100vh - 42px)}
+.card{background:#fff;border:1px solid #e5e5e5;border-radius:10px;padding:12px;flex-shrink:0}
+.ct{font-size:12px;font-weight:700;color:#1a1a1a;margin-bottom:8px;text-transform:uppercase;letter-spacing:.5px}
+.sl{font-size:11px;color:#888;margin-bottom:4px;margin-top:8px}
+.row{display:flex;gap:5px;margin-bottom:6px;align-items:center}
+input[type=text],input[type=number],select{padding:5px 7px;border:1px solid #ddd;border-radius:5px;font-size:11px}
+.btn{padding:5px 10px;border-radius:5px;font-size:11px;font-weight:600;cursor:pointer;border:1px solid #ddd;background:#fff;transition:all .15s}
 .btn.p{background:#185FA5;color:#fff;border-color:#185FA5}
+.btn.p:hover{background:#0d4a87}
 .btn.d{background:#c42b2b;color:#fff;border-color:#c42b2b}
-.btn.sm{padding:4px 8px;font-size:11px}
-.remove-section{margin-top:14px;padding-top:14px;border-top:2px solid #eee}
-.canvas-wrap{background:#fff;border:1px solid #e5e5e5;border-radius:12px;overflow:hidden;position:relative}
-canvas{display:block;width:100%;height:100%;cursor:grab}
-.hint{position:absolute;bottom:12px;right:12px;font-size:11px;color:#888}
-.ab{padding:8px 6px;border-radius:8px;font-size:12px;text-align:center;cursor:pointer;border:1px solid #ddd;background:#fff;transition:all 0.2s}
+.btn.sm{padding:3px 7px;font-size:11px}
+.remove-section{margin-top:10px;padding-top:10px;border-top:2px solid #eee}
+.canvas-wrap{background:#fff;border:1px solid #e5e5e5;border-radius:10px;overflow:hidden;position:relative;display:flex;flex-direction:column}
+canvas{display:block;width:100%;flex:1;cursor:grab}
+canvas:active{cursor:grabbing}
+.hint{position:absolute;bottom:10px;right:10px;font-size:10px;color:#aaa;background:rgba(255,255,255,.8);padding:3px 7px;border-radius:10px}
+.ab{padding:7px 5px;border-radius:6px;font-size:11px;font-weight:600;text-align:center;cursor:pointer;border:1px solid #ddd;background:#fff;transition:all 0.15s;user-select:none}
+.ab:hover{background:#f0f4ff;border-color:#185FA5;color:#185FA5}
 .ab.active{background:#185FA5;color:#fff;border-color:#185FA5}
+.ab.running{background:#1D9E75;color:#fff;border-color:#1D9E75;animation:pulse .8s ease-in-out infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.7}}
+
+/* Right Panel */
+.right-panel{display:flex;flex-direction:column;gap:8px;overflow:hidden}
+
+/* Properties card */
+.prop-card{background:#fff;border:1px solid #e5e5e5;border-radius:10px;padding:12px}
+.algo-title{font-size:14px;font-weight:700;color:#185FA5;margin-bottom:6px}
+.algo-subtitle{font-size:11px;color:#666;margin-bottom:10px;line-height:1.5}
+.tag-row{display:flex;flex-wrap:wrap;gap:5px;margin-bottom:8px}
+.tag{font-size:10px;padding:2px 7px;border-radius:12px;font-weight:600}
+.tag.green{background:#e1f5ee;color:#0f6e56;border:1px solid #9fe1cb}
+.tag.red{background:#fcebeb;color:#a32d2d;border:1px solid #f7c1c1}
+.tag.blue{background:#e6f1fb;color:#0c447c;border:1px solid #b5d4f4}
+.tag.amber{background:#faeeda;color:#633806;border:1px solid #fac775}
+.complexity-row{display:flex;gap:8px;margin-bottom:8px}
+.cbox{flex:1;background:#f8f9fb;border:1px solid #e5e5e5;border-radius:7px;padding:6px 8px;text-align:center}
+.cbox-label{font-size:9px;color:#888;margin-bottom:2px;text-transform:uppercase;letter-spacing:.4px}
+.cbox-val{font-size:12px;font-weight:700;color:#185FA5;font-family:monospace}
+
+/* Step log */
+.step-log{flex:1;overflow-y:auto;min-height:0}
+.step-item{padding:5px 8px;border-radius:6px;font-size:11px;margin-bottom:3px;display:flex;align-items:center;gap:6px;border:1px solid transparent}
+.step-item.current{background:#e6f1fb;border-color:#b5d4f4;color:#0c447c;font-weight:600}
+.step-item.done{background:#e1f5ee;border-color:#9fe1cb;color:#0f6e56}
+.step-item.pending{color:#888}
+.step-num{font-size:10px;background:#ddd;border-radius:10px;padding:0 5px;min-width:20px;text-align:center}
+
+/* Code box */
+.code-wrap{background:#1a1a2e;border-radius:8px;padding:10px;font-size:11px;color:#c9d1d9;font-family:'Consolas','Courier New',monospace;white-space:pre;overflow:auto;flex:1;min-height:0;line-height:1.6}
+.code-wrap .kw{color:#ff79c6}
+.code-wrap .fn{color:#50fa7b}
+.code-wrap .tp{color:#8be9fd}
+.code-wrap .cm{color:#6272a4}
+.code-wrap .nu{color:#bd93f9}
+.code-wrap .st{color:#f1fa8c}
+
+/* Speed control */
+.speed-bar{display:flex;align-items:center;gap:8px;padding:6px 10px;background:#f8f9fb;border-top:1px solid #e5e5e5}
+.speed-bar label{font-size:10px;color:#888}
+.speed-bar input{flex:1}
+.step-controls{display:flex;gap:6px;align-items:center}
+
+/* Alert */
+.alert-banner{background:#fff3cd;border:1px solid #ffc107;border-radius:7px;padding:6px 10px;font-size:11px;color:#856404;margin-bottom:4px;display:none}
+.alert-banner.show{display:block}
 </style>
 </head>
 <body>
@@ -37,83 +87,92 @@ canvas{display:block;width:100%;height:100%;cursor:grab}
     <span class="logo-sub">All Graph Algorithms — C++ · OpenGL · STL</span>
   </div>
   <div style="display:flex;gap:6px">
-    <span class="tb-pill">17 Algorithms</span>
+    <span class="tb-pill">12 Algorithms</span>
+    <span class="tb-pill">Step-by-Step</span>
     <span class="tb-pill">C++ Code</span>
-    <span class="tb-pill">Live Editor</span>
   </div>
 </div>
 
 <div class="main">
   <!-- Left Sidebar -->
-  <div style="display:flex;flex-direction:column;gap:8px;overflow-y:auto">
+  <div style="display:flex;flex-direction:column;gap:7px;overflow-y:auto">
     <div class="card">
       <div class="ct">Graph Builder</div>
-      <div class="sl">Add node</div>
+      <div class="sl">Add Node</div>
       <div class="row">
         <input type="text" id="nl" placeholder="A or 1" style="flex:1">
-        <button class="btn p sm" onclick="addNode()">+Node</button>
+        <button class="btn p sm" onclick="addNode()">+ Node</button>
       </div>
-      <div class="sl">Add edge</div>
+      <div class="sl">Add Edge</div>
       <div class="row">
         <select id="ef" style="flex:1"></select>
-        <span style="color:#888">→</span>
+        <span style="color:#888;font-size:12px">→</span>
         <select id="et" style="flex:1"></select>
       </div>
       <div class="row">
-        <input type="number" id="ew" value="1" style="width:70px">
-        <label style="display:flex;align-items:center;gap:4px"><input type="checkbox" id="dir" checked/> Dir</label>
-        <button class="btn p sm" onclick="addEdge()">+Edge</button>
+        <input type="number" id="ew" value="1" style="width:55px" placeholder="wt">
+        <label style="display:flex;align-items:center;gap:3px;font-size:11px"><input type="checkbox" id="dir" checked/> Dir</label>
+        <button class="btn p sm" onclick="addEdge()">+ Edge</button>
       </div>
 
       <div class="remove-section">
-        <div class="ct" style="color:#c42b2b">Remove</div>
-        <div class="sl">Remove Node</div>
-        <div class="row"><select id="rn-sel" style="flex:1"></select><button class="btn d sm" onclick="removeNode()">-Node</button></div>
-        <div class="sl">Remove Edge</div>
-        <div class="row"><select id="re-from" style="flex:1"></select><span style="color:#888">→</span><select id="re-to" style="flex:1"></select><button class="btn d sm" onclick="removeEdge()">-Edge</button></div>
+        <div class="sl" style="margin-top:0;color:#c42b2b;font-weight:700;font-size:11px">REMOVE</div>
+        <div class="sl">Node</div>
+        <div class="row"><select id="rn-sel" style="flex:1"></select><button class="btn d sm" onclick="removeNode()">- Node</button></div>
+        <div class="sl">Edge</div>
+        <div class="row"><select id="re-from" style="flex:1"></select><span style="color:#888">→</span><select id="re-to" style="flex:1"></select><button class="btn d sm" onclick="removeEdge()">- Edge</button></div>
       </div>
 
-      <div class="sl" style="margin-top:12px">Presets</div>
+      <div class="sl">Presets</div>
       <div style="display:flex;gap:4px;flex-wrap:wrap">
         <button class="btn sm" onclick="loadPreset('simple')">Simple</button>
         <button class="btn sm" onclick="loadPreset('weighted')">Wtd</button>
         <button class="btn sm" onclick="loadPreset('negcycle')">NegCyc</button>
         <button class="btn sm" onclick="loadPreset('dag')">DAG</button>
         <button class="btn sm" onclick="loadPreset('scc')">SCC</button>
-        <button class="btn sm" onclick="loadPreset('mst')">MST</button>
         <button class="btn sm" onclick="loadPreset('bipartite')">Bip</button>
       </div>
     </div>
 
-    <!-- 17 Algorithms -->
+    <!-- Algorithms -->
     <div class="card">
       <div class="ct">Algorithms</div>
       <div class="sl">Traversal</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
-        <div class="ab" id="ab-bfs" onclick="runThisAlgo('bfs')">BFS</div>
-        <div class="ab" id="ab-dfs" onclick="runThisAlgo('dfs')">DFS</div>
+        <div class="ab" id="ab-bfs" onclick="runAlgo('bfs')">BFS</div>
+        <div class="ab" id="ab-dfs" onclick="runAlgo('dfs')">DFS</div>
       </div>
       <div class="sl">Cycle Detection</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
-        <div class="ab" id="ab-cycle_bfs" onclick="runThisAlgo('cycle_bfs')">Cycle BFS</div>
-        <div class="ab" id="ab-cycle_dfs" onclick="runThisAlgo('cycle_dfs')">Cycle DFS</div>
-        <div class="ab" id="ab-cycle_dir" onclick="runThisAlgo('cycle_dir')">Cycle Dir</div>
-        <div class="ab" id="ab-bipartite" onclick="runThisAlgo('bipartite')">Bipartite</div>
+        <div class="ab" id="ab-cycle_bfs" onclick="runAlgo('cycle_bfs')">Cycle BFS</div>
+        <div class="ab" id="ab-cycle_dfs" onclick="runAlgo('cycle_dfs')">Cycle DFS</div>
+        <div class="ab" id="ab-cycle_dir" onclick="runAlgo('cycle_dir')">Cycle Dir</div>
+        <div class="ab" id="ab-bipartite" onclick="runAlgo('bipartite')">Bipartite</div>
       </div>
       <div class="sl">Shortest Path</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
-        <div class="ab" id="ab-dijkstra" onclick="runThisAlgo('dijkstra')">Dijkstra</div>
-        <div class="ab" id="ab-dag_sp" onclick="runThisAlgo('dag_sp')">DAG SP</div>
+        <div class="ab" id="ab-dijkstra" onclick="runAlgo('dijkstra')">Dijkstra</div>
+        <div class="ab" id="ab-dag_sp" onclick="runAlgo('dag_sp')">DAG SP</div>
       </div>
       <div class="sl">Topological Sort</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
-        <div class="ab" id="ab-topo_dfs" onclick="runThisAlgo('topo_dfs')">Topo DFS</div>
-        <div class="ab" id="ab-kahn" onclick="runThisAlgo('kahn')">Kahn's BFS</div>
+        <div class="ab" id="ab-topo_dfs" onclick="runAlgo('topo_dfs')">Topo DFS</div>
+        <div class="ab" id="ab-kahn" onclick="runAlgo('kahn')">Kahn's</div>
       </div>
       <div class="sl">SCC & Bridges</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
-        <div class="ab" id="ab-kosaraju" onclick="runThisAlgo('kosaraju')">Kosaraju</div>
-        <div class="ab" id="ab-tarjan" onclick="runThisAlgo('tarjan')">Tarjan Br.</div>
+        <div class="ab" id="ab-kosaraju" onclick="runAlgo('kosaraju')">Kosaraju</div>
+        <div class="ab" id="ab-tarjan" onclick="runAlgo('tarjan')">Tarjan Br.</div>
+      </div>
+    </div>
+
+    <!-- Live Editor -->
+    <div class="card">
+      <div class="ct">Live Code Editor</div>
+      <textarea id="editor" style="width:100%;height:70px;font-family:monospace;font-size:11px;padding:7px;border:1px solid #ddd;border-radius:6px;resize:none" placeholder="addedge A B 1&#10;addedge B C 2"></textarea>
+      <div style="margin-top:6px;display:flex;gap:6px">
+        <button class="btn p sm" onclick="parseEditor()" style="flex:1">Build Graph</button>
+        <button class="btn sm" onclick="clearGraph()">Clear</button>
       </div>
     </div>
   </div>
@@ -121,119 +180,1055 @@ canvas{display:block;width:100%;height:100%;cursor:grab}
   <!-- Canvas -->
   <div class="canvas-wrap">
     <canvas id="gc"></canvas>
+    <div class="speed-bar">
+      <label>Speed:</label>
+      <input type="range" id="speed" min="100" max="2000" value="800" style="width:90px">
+      <div class="step-controls">
+        <button class="btn sm" onclick="pauseResume()" id="pause-btn" style="display:none">⏸ Pause</button>
+        <button class="btn sm" onclick="stepBack()" id="back-btn" style="display:none">◀ Back</button>
+        <button class="btn sm" onclick="stepForward()" id="fwd-btn" style="display:none">▶ Step</button>
+        <button class="btn d sm" onclick="stopAlgo()" id="stop-btn" style="display:none">■ Stop</button>
+      </div>
+    </div>
     <div class="hint">Drag to rotate · Scroll to zoom</div>
   </div>
 
   <!-- Right Panel -->
-  <div style="display:flex;flex-direction:column;gap:10px">
-    <div class="card">
-      <div class="ct">C++ Implementation</div>
-      <pre id="code-box" style="background:#1a1a2e;color:#c9d1d9;padding:12px;font-size:12px;border-radius:8px;height:280px;overflow:auto">Select an algorithm</pre>
-    </div>
-    <div class="card" style="flex:1;display:flex;flex-direction:column">
-      <div class="ct">Live Code Editor</div>
-      <textarea id="editor" style="flex:1;font-family:monospace;font-size:12px;padding:12px;border:1px solid #ddd;border-radius:8px" placeholder="addedge A B 1 0"></textarea>
-      <div style="margin-top:10px;display:flex;gap:8px">
-        <button class="btn p" onclick="parseEditor()">Build Graph</button>
-        <button class="btn" onclick="clearGraph()">Clear</button>
+  <div class="right-panel">
+    <!-- Properties -->
+    <div class="prop-card" id="prop-panel">
+      <div style="color:#888;font-size:12px;text-align:center;padding:20px 0">
+        ← Click any algorithm to see its properties and visualization
       </div>
+    </div>
+
+    <!-- Step Log -->
+    <div class="card" style="flex:1;display:flex;flex-direction:column;min-height:0">
+      <div class="ct" style="display:flex;justify-content:space-between;align-items:center">
+        <span>Step Log</span>
+        <span id="step-counter" style="font-size:10px;color:#888;font-weight:400;text-transform:none"></span>
+      </div>
+      <div class="alert-banner" id="alert-banner"></div>
+      <div class="step-log" id="step-log">
+        <div style="color:#bbb;font-size:11px;text-align:center;padding:20px 0">Steps will appear here during execution...</div>
+      </div>
+    </div>
+
+    <!-- C++ Code -->
+    <div class="card" style="display:flex;flex-direction:column;height:220px">
+      <div class="ct">C++ Implementation</div>
+      <div class="code-wrap" id="code-box">Select an algorithm to see C++ code...</div>
     </div>
   </div>
 </div>
 
 <script>
-// Core 3D + Graph
+// ============================================================
+// CORE GRAPH STATE
+// ============================================================
 const canvas = document.getElementById('gc');
 const ctx = canvas.getContext('2d');
 let nodes = [], edges = [], nid = 0;
 let rotX = 0.3, rotY = 0.4, zoom = 1;
 let drag = false, lmx = 0, lmy = 0;
-let algo = null, steps = [], cur = -1, tmr = null;
 
-const C = {node:'#185FA5', vis:'#1D9E75', curr:'#E24B4A', edge:'#D0D0D0', trav:'#185FA5', back:'#854F0B', path:'#F2CC60', lvl:['#185FA5','#1D9E75','#854F0B','#534AB7','#D85A30']};
+// Animation state
+let animSteps = [], animCur = -1, animTimer = null, animPaused = false;
+let nodeColors = {}, edgeColors = {}, nodeLabels = {};
 
-function project(x,y,z){const cx=Math.cos(rotX),sx=Math.sin(rotX),cy=Math.cos(rotY),sy=Math.sin(rotY);const nx=x*cy+z*sy,ny=x*sx*sy+y*cx-z*sx*cy;const s=zoom*Math.min(canvas.width,canvas.height)*0.24;return{px:canvas.width/2+nx*s,py:canvas.height/2-ny*s};}
+const COLORS = {
+  default:'#185FA5', visited:'#1D9E75', current:'#E24B4A',
+  queued:'#854F0B', path:'#F2CC60', back:'#c42b2b',
+  biA:'#534AB7', biB:'#D85A30', bridge:'#c42b2b',
+  scc0:'#185FA5', scc1:'#1D9E75', scc2:'#854F0B', scc3:'#534AB7', scc4:'#D85A30',
+  edgeDef:'#ccc', edgeTrav:'#185FA5', edgeBack:'#c42b2b', edgePath:'#F2CC60', edgeBridge:'#c42b2b'
+};
 
-function draw(){ctx.clearRect(0,0,canvas.width,canvas.height);
-if(!nodes.length){ctx.fillStyle='#888';ctx.font='14px sans-serif';ctx.textAlign='center';ctx.fillText('Add nodes or load preset',canvas.width/2,canvas.height/2);return;}
-edges.forEach(e=>{const n1=nodes.find(n=>n.id===e.f),n2=nodes.find(n=>n.id===e.t);if(!n1||!n2)return;const p1=project(n1.x,n1.y,n1.z),p2=project(n2.x,n2.y,n2.z);
-ctx.beginPath();ctx.moveTo(p1.px,p1.py);ctx.lineTo(p2.px,p2.py);ctx.strokeStyle=C.edge;ctx.lineWidth=2;ctx.stroke();ctx.fillStyle='#333';ctx.font='10px sans-serif';ctx.fillText(e.w,(p1.px+p2.px)/2,(p1.py+p2.py)/2);});
-nodes.forEach(n=>{const p=project(n.x,n.y,n.z);ctx.beginPath();ctx.arc(p.px,p.py,18,0,Math.PI*2);ctx.fillStyle='#fff';ctx.strokeStyle=C.node;ctx.lineWidth=3;ctx.fill();ctx.stroke();ctx.fillStyle=C.node;ctx.font='bold 13px sans-serif';ctx.textAlign='center';ctx.textBaseline='middle';ctx.fillText(n.label,p.px,p.py);});}
+// ============================================================
+// PROJECTION & DRAW
+// ============================================================
+function project(x,y,z){
+  const cx=Math.cos(rotX),sx=Math.sin(rotX),cy=Math.cos(rotY),sy=Math.sin(rotY);
+  const nx=x*cy+z*sy, ny=x*sx*sy+y*cx-z*sx*cy;
+  const s=zoom*Math.min(canvas.width,canvas.height)*0.24;
+  return{px:canvas.width/2+nx*s, py:canvas.height/2-ny*s};
+}
 
-function resizeCanvas(){canvas.width=canvas.parentElement.clientWidth;canvas.height=canvas.parentElement.clientHeight;draw();}
+function draw(){
+  ctx.clearRect(0,0,canvas.width,canvas.height);
+  if(!nodes.length){
+    ctx.fillStyle='#bbb'; ctx.font='13px sans-serif';
+    ctx.textAlign='center';
+    ctx.fillText('Add nodes or load a preset',canvas.width/2,canvas.height/2);
+    return;
+  }
+  // Draw edges
+  edges.forEach((e,ei)=>{
+    const n1=nodes.find(n=>n.id===e.f), n2=nodes.find(n=>n.id===e.t);
+    if(!n1||!n2) return;
+    const p1=project(n1.x,n1.y,n1.z), p2=project(n2.x,n2.y,n2.z);
+    const col = edgeColors[ei] || COLORS.edgeDef;
+    ctx.beginPath(); ctx.moveTo(p1.px,p1.py); ctx.lineTo(p2.px,p2.py);
+    ctx.strokeStyle=col; ctx.lineWidth= col===COLORS.edgeDef ? 2 : 3; ctx.stroke();
+    // Arrow for directed
+    if(document.getElementById('dir').checked || e.directed){
+      const dx=p2.px-p1.px, dy=p2.py-p1.py, len=Math.sqrt(dx*dx+dy*dy);
+      if(len>0){
+        const ux=dx/len, uy=dy/len, r=20;
+        const ax=p2.px-ux*r, ay=p2.py-uy*r;
+        const px2=-uy*6, py2=ux*6;
+        ctx.beginPath(); ctx.moveTo(ax+px2,ay+py2); ctx.lineTo(p2.px-ux*18,p2.py-uy*18); ctx.lineTo(ax-px2,ay-py2);
+        ctx.fillStyle=col; ctx.fill();
+      }
+    }
+    // Weight label
+    ctx.fillStyle='#555'; ctx.font='bold 11px sans-serif'; ctx.textAlign='center';
+    ctx.fillText(e.w,(p1.px+p2.px)/2-4,(p1.py+p2.py)/2-4);
+  });
+  // Draw nodes
+  nodes.forEach(n=>{
+    const p=project(n.x,n.y,n.z);
+    const col = nodeColors[n.id] || COLORS.default;
+    // Shadow
+    ctx.beginPath(); ctx.arc(p.px+2,p.py+2,20,0,Math.PI*2);
+    ctx.fillStyle='rgba(0,0,0,0.08)'; ctx.fill();
+    // Node circle
+    ctx.beginPath(); ctx.arc(p.px,p.py,20,0,Math.PI*2);
+    ctx.fillStyle='#fff'; ctx.strokeStyle=col; ctx.lineWidth=3; ctx.fill(); ctx.stroke();
+    // Label
+    const lbl = nodeLabels[n.id] || '';
+    ctx.fillStyle=col; ctx.font='bold 12px sans-serif';
+    ctx.textAlign='center'; ctx.textBaseline='middle';
+    ctx.fillText(n.label,p.px,p.py-(lbl?5:0));
+    if(lbl){ ctx.font='bold 9px sans-serif'; ctx.fillStyle='#333'; ctx.fillText(lbl,p.px,p.py+9); }
+  });
+}
+
+function resizeCanvas(){
+  canvas.width=canvas.parentElement.clientWidth;
+  canvas.height=canvas.parentElement.clientHeight-40;
+  draw();
+}
 canvas.addEventListener('mousedown',e=>{drag=true;lmx=e.clientX;lmy=e.clientY;});
 canvas.addEventListener('mousemove',e=>{if(!drag)return;rotY+=(e.clientX-lmx)*0.01;rotX+=(e.clientY-lmy)*0.01;lmx=e.clientX;lmy=e.clientY;draw();});
 canvas.addEventListener('mouseup',()=>drag=false);
-canvas.addEventListener('wheel',e=>{zoom*=e.deltaY>0?0.9:1.1;zoom=Math.max(0.3,Math.min(3,zoom));draw();e.preventDefault();});
+canvas.addEventListener('mouseleave',()=>drag=false);
+canvas.addEventListener('wheel',e=>{zoom*=e.deltaY>0?0.9:1.1;zoom=Math.max(0.3,Math.min(3,zoom));draw();e.preventDefault();},{passive:false});
 
+// ============================================================
+// GRAPH MANAGEMENT
+// ============================================================
 function getPos(i){const a=i*1.8;return{x:2.5*Math.cos(a),y:1.5*Math.sin(a*1.3),z:1.8*Math.sin(a*0.7)};}
+function addNode(){
+  let label=document.getElementById('nl').value.trim()||String.fromCharCode(65+nodes.length%26);
+  const pos=getPos(nodes.length);
+  nodes.push({id:nid++,label,x:pos.x,y:pos.y,z:pos.z});
+  document.getElementById('nl').value=''; updSel(); draw();
+}
+function addEdge(){
+  const f=parseInt(document.getElementById('ef').value),t=parseInt(document.getElementById('et').value);
+  const w=parseFloat(document.getElementById('ew').value)||1;
+  const directed=document.getElementById('dir').checked;
+  if(f===t||edges.find(e=>e.f===f&&e.t===t)) return;
+  edges.push({f,t,w,directed});
+  if(!directed) edges.push({f:t,t:f,w,directed,twin:true});
+  updSel(); draw();
+}
+function removeNode(){
+  const id=parseInt(document.getElementById('rn-sel').value);
+  if(isNaN(id)) return;
+  nodes=nodes.filter(n=>n.id!==id); edges=edges.filter(e=>e.f!==id&&e.t!==id);
+  updSel(); draw();
+}
+function removeEdge(){
+  const f=parseInt(document.getElementById('re-from').value),t=parseInt(document.getElementById('re-to').value);
+  if(isNaN(f)||isNaN(t)) return;
+  edges=edges.filter(e=>!(e.f===f&&e.t===t));
+  updSel(); draw();
+}
+function updSel(){
+  ['ef','et','rn-sel','re-from','re-to'].forEach(id=>{
+    const s=document.getElementById(id);
+    s.innerHTML=nodes.map(n=>`<option value="${n.id}">${n.label}</option>`).join('');
+  });
+}
+function clearGraph(){
+  stopAlgo(); nodes=[];edges=[];nid=0;nodeColors={};edgeColors={};nodeLabels={};
+  updSel(); draw();
+}
+function loadPreset(name){
+  clearGraph();
+  const P={
+    simple:{n:['A','B','C','D','E'],e:[[0,1,1],[1,2,1],[2,3,1],[3,4,1],[1,3,1],[0,2,2]],dir:false},
+    weighted:{n:['S','A','B','C','T'],e:[[0,1,4],[0,2,2],[1,2,1],[1,3,5],[2,4,10],[3,4,2]],dir:true},
+    negcycle:{n:['A','B','C'],e:[[0,1,1],[1,2,-3],[2,0,2]],dir:true},
+    dag:{n:['A','B','C','D','E'],e:[[0,1,1],[0,2,3],[1,3,2],[2,3,1],[3,4,1],[2,4,4]],dir:true},
+    scc:{n:['A','B','C','D','E'],e:[[0,1,1],[1,2,1],[2,0,1],[2,3,1],[3,4,1],[4,3,1]],dir:true},
+    bipartite:{n:['A','B','C','D','E','F'],e:[[0,3,1],[0,4,1],[1,3,1],[1,5,1],[2,4,1],[2,5,1]],dir:false}
+  };
+  const p=P[name]||P.simple;
+  p.n.forEach((l,i)=>{const pos=getPos(i);nodes.push({id:nid++,label:l,x:pos.x,y:pos.y,z:pos.z});});
+  p.e.forEach(([f,t,w])=>edges.push({f,t,w:w||1,directed:p.dir}));
+  if(!p.dir) edges.forEach((e,i)=>{if(i<p.e.length) edges.push({f:e.t,t:e.f,w:e.w,directed:false,twin:true});});
+  updSel(); draw();
+}
+function parseEditor(){
+  const text=document.getElementById('editor').value;
+  clearGraph();
+  text.split('\n').forEach(line=>{
+    const p=line.trim().split(/\s+/);
+    if(p[0]==='addedge'&&p.length>=4){
+      const u=p[1],v=p[2],w=parseFloat(p[3])||1;
+      let nf=nodes.find(n=>n.label===u),nt=nodes.find(n=>n.label===v);
+      if(!nf){nf={id:nid++,label:u,x:Math.random()*4-2,y:Math.random()*4-2,z:Math.random()*4-2};nodes.push(nf);}
+      if(!nt){nt={id:nid++,label:v,x:Math.random()*4-2,y:Math.random()*4-2,z:Math.random()*4-2};nodes.push(nt);}
+      edges.push({f:nf.id,t:nt.id,w,directed:true});
+    }
+  });
+  updSel(); draw();
+}
 
-function addNode(){let label=document.getElementById('nl').value.trim()||String.fromCharCode(65+nodes.length);const pos=getPos(nodes.length);nodes.push({id:nid++,label,x:pos.x,y:pos.y,z:pos.z});document.getElementById('nl').value='';updSel();updRemoveSel();draw();}
-function addEdge(){const f=parseInt(document.getElementById('ef').value),t=parseInt(document.getElementById('et').value),w=parseFloat(document.getElementById('ew').value)||1;if(f===t||edges.find(e=>e.f===f&&e.t===t))return;edges.push({f,t,w});updRemoveSel();draw();}
-function removeNode(){const id=parseInt(document.getElementById('rn-sel').value);if(isNaN(id))return;nodes=nodes.filter(n=>n.id!==id);edges=edges.filter(e=>e.f!==id&&e.t!==id);updSel();updRemoveSel();draw();}
-function removeEdge(){const f=parseInt(document.getElementById('re-from').value),t=parseInt(document.getElementById('re-to').value);if(isNaN(f)||isNaN(t))return;edges=edges.filter(e=>!(e.f===f&&e.t===t));updRemoveSel();draw();}
-function updSel(){['ef','et'].forEach(id=>{const s=document.getElementById(id);s.innerHTML=nodes.map(n=>`<option value="${n.id}">${n.label}</option>`).join('');});}
-function updRemoveSel(){const rn=document.getElementById('rn-sel'),rf=document.getElementById('re-from'),rt=document.getElementById('re-to');rn.innerHTML=nodes.map(n=>`<option value="${n.id}">${n.label}</option>`).join('');rf.innerHTML=nodes.map(n=>`<option value="${n.id}">${n.label}</option>`).join('');rt.innerHTML=nodes.map(n=>`<option value="${n.id}">${n.label}</option>`).join('');}
-function clearGraph(){nodes=[];edges=[];nid=0;updSel();updRemoveSel();draw();}
-function loadPreset(name){clearGraph();const P={simple:{n:['A','B','C','D'],e:[[0,1,1],[1,2,1],[2,3,1]]},weighted:{n:['S','A','B','T'],e:[[0,1,4],[0,2,2],[1,3,5]]},negcycle:{n:['A','B','C'],e:[[0,1,1],[1,2,-3],[2,0,2]]},dag:{n:['A','B','C'],e:[[0,1,1],[0,2,1],[1,2,1]]},scc:{n:['A','B','C'],e:[[0,1,1],[1,2,1],[2,0,1]]},mst:{n:['A','B','C'],e:[[0,1,2],[0,2,3],[1,2,4]]},bipartite:{n:['A','B','C','D'],e:[[0,1,1],[0,2,1],[1,3,1]]}};const p=P[name]||P.simple;p.n.forEach((l,i)=>{const pos=getPos(i);nodes.push({id:nid++,label:l,x:pos.x,y:pos.y,z:pos.z});});p.e.forEach(([f,t,w])=>edges.push({f,t,w:w||1}));updSel();updRemoveSel();draw();}
-function parseEditor(){const text=document.getElementById('editor').value;clearGraph();text.split('\n').forEach(line=>{const p=line.trim().split(/\s+/);if(p[0]==='addedge'&&p.length>=4){const u=p[1],v=p[2],w=parseFloat(p[3])||1;let nf=nodes.find(n=>n.label===u),nt=nodes.find(n=>n.label===v);if(!nf){nf={id:nid++,label:u,x:Math.random()*4-2,y:Math.random()*4-2,z:Math.random()*4-2};nodes.push(nf);}if(!nt){nt={id:nid++,label:v,x:Math.random()*4-2,y:Math.random()*4-2,z:Math.random()*4-2};nodes.push(nt);}edges.push({f:nf.id,t:nt.id,w});}});updSel();updRemoveSel();draw();}
-
-// ====================== TUMHARA C++ CODE (EXACT) ======================
-const CODES = {
-  bfs: `void bfs_Traversal(int src, unordered_map<int,bool>&vis){\n    queue<int>q;\n    q.push(src);\n    vis[src]=true;\n    while(!q.empty()){\n        int frontnode=q.front();\n        cout<<frontnode <<" ";\n        q.pop();\n        for(auto nbr:adjlist[frontnode]){\n            int nbrnode=nbr.first;\n            if(!vis[nbrnode]){\n                q.push(nbrnode);\n                vis[nbrnode]=true;\n            }\n        }\n    }\n}`,
-  dfs: `void dfs(int src , unordered_map<int ,bool>&vis){\n    vis[src]=true;\n    cout<<src<<" ";\n    for(auto nbr: adjlist[src]){\n        int nbrnode=nbr.first;\n        if(!vis[nbrnode]){\n            dfs(nbrnode,vis);\n        }\n    }\n}`,
-  cycle_bfs: `bool cycle_detection_bfs(int src,unordered_map<int,bool>&vis,unordered_map<int,int>&parent){\n    queue<int>q;\n    q.push(src);\n    vis[src]=true;\n    parent[src]=-1;\n    while(!q.empty()){\n        int frontnode=q.front();\n        q.pop();\n        for(auto nbr:adjlist[frontnode]){\n            if(!vis[nbr]){\n                q.push(nbr);\n                vis[nbr]=true;\n                parent[nbr]=src;\n            }else if(vis[nbr]== true && nbr!=parent[frontnode] ) return true;\n        }\n    }\n    return false;\n}`,
-  cycle_dfs: `bool cycle_detection_DFS(int src,unordered_map<int,bool>&vis,int parent ){\n    vis[src]=true;\n    for(auto nbr: adjlist[src]){\n        if(!vis[nbr]){\n            bool ans=cycle_detection_DFS(nbr,vis,src);\n            if(ans==true ) return true;\n        }else if( vis[nbr]==true && nbr!=parent) return true;\n    }\n    return false;\n}`,
-  cycle_dir: `// Cycle Detection in Directed Graph (3-color DFS) - tumhara code incomplete tha`,
-  dag_sp: `void Shortest_path_in_directedG_DFS(int n,stack<int>&st){\n    vector<int>dist(n,INT_MAX);\n    int src=st.top(); st.pop();\n    dist[src]=0;\n    while(!st.empty()){\n        int u=st.top(); st.pop();\n        for(auto nbr:adjlist[u]){\n            int nbrnode=nbr.first;\n            int nbrdist=nbr.second;\n            if(dist[u] + nbrdist < dist[nbrnode])\n                dist[nbrnode]=dist[u] + nbrdist;\n        }\n    }\n}`,
-  dijkstra: `void Shortest_path_Dijkastra(int n, int src,int destination ){\n    vector<int>dist(n+1,INT_MAX);\n    set<pair<int,int>>st;\n    st.insert({0,src});\n    dist[src]=0;\n    while(!st.empty()){\n        auto topele=st.begin();\n        int topdist=topele->first;\n        int topnode=topele->second;\n        st.erase(st.begin());\n        for(pair<int,int> nbrpair :adjlist[topnode]){\n            int nbrnode=nbrpair.first;\n            int nbrdist=nbrpair.second;\n            if(topdist + nbrdist < dist[nbrnode]){\n                dist[nbrnode]=topdist + nbrdist;\n                st.insert({dist[nbrnode],nbrnode});\n            }\n        }\n    }\n}`,
-  kosaraju: `void dfs1(int src,stack<int>&st, unordered_map<int,bool>&vis){\n    vis[src]=true;\n    for(auto nbr :adjlist[src]){\n        if(!vis[nbr])dfs1(nbr,st,vis);\n    }\n    st.push(src);\n}\nvoid dfs2(int src, unordered_map<int,bool>&vis,unordered_map<int,list<int>>&newadjlist){\n    vis[src]=true;\n    cout<<src<<" ";\n    for(auto nbr:newadjlist[src]){\n        if(!vis[nbr]) dfs2(nbr,vis,newadjlist);\n    }\n}`,
-  tarjan: `void no_of_Bridge(int src,int parent ,int &timer, vector<int>&tin,vector<int>&low,unordered_map<int,bool>&vis){\n    vis[src]=true;\n    tin[src]=timer;\n    low[src]=timer;\n    timer++;\n    for(auto nbr:adjlist[src]){\n        if(nbr == parent ) continue;\n        if(!vis[nbr]){\n            no_of_Bridge(nbr,src,timer,tin,low,vis);\n            low[src]=min(low[src],low[nbr]);\n            if(low[nbr] > tin[src] ) cout<<nbr<<"----"<<src<<"is a bridge "<<endl;\n        }else{\n            low[src]=min(low[src],tin[nbr]);\n        }\n    }\n}`,
-  topo_dfs: `void toposort_dfs_directedG(int src , unordered_map<int,bool>&vis,stack<int>&st){\n    vis[src]=true;\n    for(auto nbr: adjlist[src]){\n        if(!vis[nbr]) toposort_dfs_directedG(nbr,vis,st);\n    }\n    st.push(src);\n}`,
-  kahn: `void toposort_BFS_directedG( int n){\n    unordered_map<int,int>indegree;\n    queue<int>q;\n    for(auto i:adjlist){\n        for(auto nbr:i.second) indegree[nbr]++;\n    }\n    for(int i=0;i<n; i++) {\n        if(indegree[i]==0) q.push(i);\n    }\n    while(!q.empty()){\n        int frontnode=q.front();\n        cout<<frontnode<<" ";\n        q.pop();\n        for(auto nbr:adjlist[frontnode]){\n            indegree[nbr]--;\n            if(indegree[nbr]==0)q.push(nbr);\n        }\n    }\n}`
+// ============================================================
+// ALGORITHM PROPERTIES
+// ============================================================
+const ALGO_INFO = {
+  bfs:{
+    name:'BFS — Breadth First Search',
+    desc:'Explores graph level by level using a queue. Visits all neighbors at current depth before going deeper.',
+    time:'O(V + E)',space:'O(V)',
+    tags:[
+      {t:'Unweighted SSSP',c:'green'},{t:'Level-order traversal',c:'blue'},
+      {t:'Shortest path (unit weights)',c:'green'},{t:'NOT for weighted graphs',c:'red'}
+    ],
+    works:['Unweighted graphs','Finding shortest path (unit weight)','Level-order traversal','Connected components'],
+    fails:['Weighted graphs','Negative weights']
+  },
+  dfs:{
+    name:'DFS — Depth First Search',
+    desc:'Explores as deep as possible before backtracking. Uses recursion/stack.',
+    time:'O(V + E)',space:'O(V)',
+    tags:[
+      {t:'Recursive/Stack',c:'blue'},{t:'Backtracking',c:'amber'},
+      {t:'NOT shortest path',c:'red'},{t:'All graphs',c:'green'}
+    ],
+    works:['Cycle detection','Topological sort','SCC (Kosaraju)','Connected components','Path finding'],
+    fails:['Shortest path in weighted graph','BFS-like level traversal']
+  },
+  cycle_bfs:{
+    name:'Cycle Detection — BFS (Undirected)',
+    desc:'Detects cycle in undirected graph. If a visited node is found that is NOT the parent of current node, a cycle exists.',
+    time:'O(V + E)',space:'O(V)',
+    tags:[
+      {t:'Undirected only',c:'amber'},{t:'Parent tracking',c:'blue'},
+      {t:'NOT for directed',c:'red'}
+    ],
+    works:['Undirected graph cycle detection'],
+    fails:['Directed graphs (use DFS with color)']
+  },
+  cycle_dfs:{
+    name:'Cycle Detection — DFS (Undirected)',
+    desc:'Uses DFS with parent tracking. If we visit an already-visited node that is not the parent, a cycle is detected.',
+    time:'O(V + E)',space:'O(V)',
+    tags:[{t:'Undirected only',c:'amber'},{t:'Recursive',c:'blue'},{t:'NOT for directed',c:'red'}],
+    works:['Undirected graph cycle detection'],
+    fails:['Directed graphs']
+  },
+  cycle_dir:{
+    name:'Cycle Detection — Directed Graph',
+    desc:'3-color DFS: WHITE(unvisited), GRAY(in recursion stack), BLACK(done). If we hit a GRAY node → back edge → cycle!',
+    time:'O(V + E)',space:'O(V)',
+    tags:[{t:'Directed only',c:'blue'},{t:'3-color DFS',c:'amber'},{t:'Back edge = Cycle',c:'red'}],
+    works:['Directed graph cycle detection','Detecting back edges'],
+    fails:['Undirected graphs (use parent approach instead)']
+  },
+  bipartite:{
+    name:'Bipartite Check — 2-Color BFS',
+    desc:'Graph is bipartite if we can color it with 2 colors such that no two adjacent nodes have same color. Uses BFS with alternating colors.',
+    time:'O(V + E)',space:'O(V)',
+    tags:[{t:'2-coloring',c:'blue'},{t:'BFS based',c:'green'},{t:'Undirected preferred',c:'amber'}],
+    works:['Checking if graph is bipartite','2-colorability','Detecting odd cycles'],
+    fails:['Directed graphs (complex case)']
+  },
+  dijkstra:{
+    name:"Dijkstra's Algorithm",
+    desc:'Greedy SSSP using a min-heap (set in C++). Always processes minimum distance node next. Cannot handle negative weights.',
+    time:'O((V+E) log V)',space:'O(V)',
+    tags:[
+      {t:'Greedy',c:'blue'},{t:'Min-heap based',c:'green'},
+      {t:'SSSP',c:'green'},{t:'NO negative weights',c:'red'},{t:'NO negative cycles',c:'red'}
+    ],
+    works:['Weighted directed/undirected graphs','Non-negative edge weights','Single Source Shortest Path'],
+    fails:['Negative weight edges','Negative cycles (use Bellman-Ford)']
+  },
+  dag_sp:{
+    name:'DAG Shortest Path',
+    desc:'For Directed Acyclic Graphs only. Uses topological sort then relaxes edges in topo order. Handles negative weights!',
+    time:'O(V + E)',space:'O(V)',
+    tags:[
+      {t:'DAG only',c:'amber'},{t:'Topo sort first',c:'blue'},
+      {t:'Handles -ve weights',c:'green'},{t:'No cycles allowed',c:'red'}
+    ],
+    works:['DAGs with negative weights','Faster than Dijkstra for DAGs'],
+    fails:['Cyclic graphs','Undirected graphs']
+  },
+  topo_dfs:{
+    name:'Topological Sort — DFS',
+    desc:'Push node to stack AFTER visiting all its neighbors (post-order). Stack top to bottom gives topological order.',
+    time:'O(V + E)',space:'O(V)',
+    tags:[{t:'DAG only',c:'amber'},{t:'Post-order DFS',c:'blue'},{t:'Stack based',c:'green'}],
+    works:['DAGs','Build order','Task scheduling','Dependency resolution'],
+    fails:['Cyclic graphs (no valid topo order)','Undirected graphs']
+  },
+  kahn:{
+    name:"Kahn's Algorithm — BFS Topo Sort",
+    desc:"BFS-based topo sort using in-degrees. Start with nodes having in-degree 0. Process and reduce neighbors' in-degree.",
+    time:'O(V + E)',space:'O(V)',
+    tags:[{t:'BFS based',c:'blue'},{t:'In-degree tracking',c:'amber'},{t:'Cycle detection bonus',c:'green'},{t:'DAG only',c:'amber'}],
+    works:["DAGs","Can detect cycles (if output size < V, cycle exists)","Task scheduling"],
+    fails:['Cyclic graphs']
+  },
+  kosaraju:{
+    name:"Kosaraju's SCC Algorithm",
+    desc:'2-pass DFS. Pass 1: DFS on original graph, push to stack in finish order. Pass 2: DFS on reversed graph in stack order → each DFS gives one SCC.',
+    time:'O(V + E)',space:'O(V)',
+    tags:[{t:'2-pass DFS',c:'blue'},{t:'Graph reversal',c:'amber'},{t:'Directed only',c:'amber'},{t:'SCC',c:'green'}],
+    works:['Strongly Connected Components in directed graph'],
+    fails:['Undirected graphs (use simple DFS for CC)']
+  },
+  tarjan:{
+    name:"Tarjan's Bridge Finding",
+    desc:'Uses DFS with discovery time (tin) and low value (low). An edge u→v is a bridge if low[v] > tin[u] — meaning v cannot reach u without this edge.',
+    time:'O(V + E)',space:'O(V)',
+    tags:[{t:'DFS based',c:'blue'},{t:'tin & low arrays',c:'amber'},{t:'Bridge detection',c:'red'},{t:'Undirected',c:'green'}],
+    works:['Finding bridge edges','Critical connections in network'],
+    fails:['Directed graphs (different formulation needed)']
+  }
 };
 
-// Run Algorithm
-function runThisAlgo(name){
-  algo = name;
-  document.querySelectorAll('.ab').forEach(b=>b.classList.remove('active'));
-  document.getElementById('ab-'+name).classList.add('active');
+// ============================================================
+// C++ CODE SNIPPETS (syntax-highlighted)
+// ============================================================
+const CODES = {
+  bfs:`<span class="cm">// BFS — Breadth First Search</span>
+<span class="kw">void</span> <span class="fn">bfs_Traversal</span>(<span class="tp">int</span> src, unordered_map&lt;<span class="tp">int</span>,<span class="tp">bool</span>&gt;&amp;vis){
+    queue&lt;<span class="tp">int</span>&gt; q;
+    q.push(src);
+    vis[src] = <span class="kw">true</span>;
+    <span class="kw">while</span>(!q.empty()){
+        <span class="tp">int</span> frontnode = q.front();
+        cout &lt;&lt; frontnode &lt;&lt; <span class="st">" "</span>;
+        q.pop();
+        <span class="kw">for</span>(<span class="kw">auto</span> nbr : adjlist[frontnode]){
+            <span class="tp">int</span> nbrnode = nbr.first;
+            <span class="kw">if</span>(!vis[nbrnode]){
+                q.push(nbrnode);
+                vis[nbrnode] = <span class="kw">true</span>;
+            }
+        }
+    }
+}`,
+  dfs:`<span class="cm">// DFS — Depth First Search</span>
+<span class="kw">void</span> <span class="fn">dfs</span>(<span class="tp">int</span> src, unordered_map&lt;<span class="tp">int</span>,<span class="tp">bool</span>&gt;&amp;vis){
+    vis[src] = <span class="kw">true</span>;
+    cout &lt;&lt; src &lt;&lt; <span class="st">" "</span>;
+    <span class="kw">for</span>(<span class="kw">auto</span> nbr : adjlist[src]){
+        <span class="tp">int</span> nbrnode = nbr.first;
+        <span class="kw">if</span>(!vis[nbrnode]){
+            <span class="fn">dfs</span>(nbrnode, vis);
+        }
+    }
+}`,
+  cycle_bfs:`<span class="cm">// Cycle Detection BFS (Undirected)</span>
+<span class="tp">bool</span> <span class="fn">cycle_detection_bfs</span>(<span class="tp">int</span> src,
+    unordered_map&lt;<span class="tp">int</span>,<span class="tp">bool</span>&gt;&amp;vis,
+    unordered_map&lt;<span class="tp">int</span>,<span class="tp">int</span>&gt;&amp;parent){
+    queue&lt;<span class="tp">int</span>&gt; q;
+    q.push(src); vis[src]=<span class="kw">true</span>; parent[src]=-<span class="nu">1</span>;
+    <span class="kw">while</span>(!q.empty()){
+        <span class="tp">int</span> frontnode = q.front(); q.pop();
+        <span class="kw">for</span>(<span class="kw">auto</span> nbr : adjlist[frontnode]){
+            <span class="kw">if</span>(!vis[nbr]){
+                q.push(nbr); vis[nbr]=<span class="kw">true</span>;
+                parent[nbr] = frontnode;
+            } <span class="kw">else if</span>(vis[nbr]==<span class="kw">true</span>
+                     &amp;&amp; nbr!=parent[frontnode])
+                <span class="kw">return true</span>;  <span class="cm">// CYCLE!</span>
+        }
+    }
+    <span class="kw">return false</span>;
+}`,
+  cycle_dfs:`<span class="cm">// Cycle Detection DFS (Undirected)</span>
+<span class="tp">bool</span> <span class="fn">cycle_detection_DFS</span>(<span class="tp">int</span> src,
+    unordered_map&lt;<span class="tp">int</span>,<span class="tp">bool</span>&gt;&amp;vis, <span class="tp">int</span> parent){
+    vis[src] = <span class="kw">true</span>;
+    <span class="kw">for</span>(<span class="kw">auto</span> nbr : adjlist[src]){
+        <span class="kw">if</span>(!vis[nbr]){
+            <span class="tp">bool</span> ans = <span class="fn">cycle_detection_DFS</span>(nbr,vis,src);
+            <span class="kw">if</span>(ans == <span class="kw">true</span>) <span class="kw">return true</span>;
+        } <span class="kw">else if</span>(vis[nbr]==<span class="kw">true</span> &amp;&amp; nbr!=parent)
+            <span class="kw">return true</span>;  <span class="cm">// CYCLE!</span>
+    }
+    <span class="kw">return false</span>;
+}`,
+  cycle_dir:`<span class="cm">// Cycle Detection — Directed Graph (3-color)</span>
+<span class="cm">// 0=WHITE(unvisited), 1=GRAY(in stack), 2=BLACK(done)</span>
+<span class="tp">bool</span> <span class="fn">dfs_cycle_dir</span>(<span class="tp">int</span> src,
+    unordered_map&lt;<span class="tp">int</span>,<span class="tp">int</span>&gt;&amp;color){
+    color[src] = <span class="nu">1</span>;  <span class="cm">// GRAY — in recursion stack</span>
+    <span class="kw">for</span>(<span class="kw">auto</span> nbr : adjlist[src]){
+        <span class="kw">if</span>(color[nbr] == <span class="nu">1</span>)
+            <span class="kw">return true</span>;  <span class="cm">// Back edge → CYCLE!</span>
+        <span class="kw">if</span>(color[nbr] == <span class="nu">0</span>){
+            <span class="kw">if</span>(<span class="fn">dfs_cycle_dir</span>(nbr, color))
+                <span class="kw">return true</span>;
+        }
+    }
+    color[src] = <span class="nu">2</span>;  <span class="cm">// BLACK — fully processed</span>
+    <span class="kw">return false</span>;
+}`,
+  bipartite:`<span class="cm">// Bipartite Check — 2-Color BFS</span>
+<span class="tp">bool</span> <span class="fn">isBipartite</span>(<span class="tp">int</span> src,
+    unordered_map&lt;<span class="tp">int</span>,<span class="tp">int</span>&gt;&amp;color){
+    queue&lt;<span class="tp">int</span>&gt; q;
+    q.push(src); color[src] = <span class="nu">0</span>;
+    <span class="kw">while</span>(!q.empty()){
+        <span class="tp">int</span> node = q.front(); q.pop();
+        <span class="kw">for</span>(<span class="kw">auto</span> nbr : adjlist[node]){
+            <span class="kw">if</span>(color.find(nbr)==color.end()){
+                color[nbr] = <span class="nu">1</span> - color[node];
+                q.push(nbr);
+            } <span class="kw">else if</span>(color[nbr]==color[node])
+                <span class="kw">return false</span>;  <span class="cm">// NOT bipartite!</span>
+        }
+    }
+    <span class="kw">return true</span>;
+}`,
+  dijkstra:`<span class="cm">// Dijkstra's Algorithm — SSSP</span>
+<span class="kw">void</span> <span class="fn">dijkstra</span>(<span class="tp">int</span> n, <span class="tp">int</span> src){
+    vector&lt;<span class="tp">int</span>&gt; dist(n+<span class="nu">1</span>, INT_MAX);
+    set&lt;pair&lt;<span class="tp">int</span>,<span class="tp">int</span>&gt;&gt; st;  <span class="cm">// {dist, node}</span>
+    st.insert({<span class="nu">0</span>, src});
+    dist[src] = <span class="nu">0</span>;
+    <span class="kw">while</span>(!st.empty()){
+        <span class="kw">auto</span> top = st.begin();
+        <span class="tp">int</span> topdist = top-&gt;first;
+        <span class="tp">int</span> topnode = top-&gt;second;
+        st.erase(st.begin());
+        <span class="kw">for</span>(<span class="kw">auto</span> nbrpair : adjlist[topnode]){
+            <span class="tp">int</span> nbrnode = nbrpair.first;
+            <span class="tp">int</span> nbrdist = nbrpair.second;
+            <span class="kw">if</span>(topdist + nbrdist &lt; dist[nbrnode]){
+                dist[nbrnode] = topdist + nbrdist;
+                st.insert({dist[nbrnode], nbrnode});
+            }
+        }
+    }
+}`,
+  dag_sp:`<span class="cm">// DAG Shortest Path (Topo Sort + Relax)</span>
+<span class="kw">void</span> <span class="fn">dagShortestPath</span>(<span class="tp">int</span> n){
+    <span class="cm">// Step 1: Topo sort</span>
+    stack&lt;<span class="tp">int</span>&gt; st;
+    unordered_map&lt;<span class="tp">int</span>,<span class="tp">bool</span>&gt; vis;
+    <span class="kw">for</span>(<span class="tp">int</span> i=<span class="nu">0</span>; i&lt;n; i++)
+        <span class="kw">if</span>(!vis[i]) <span class="fn">toposort_dfs</span>(i, vis, st);
+    <span class="cm">// Step 2: Relax edges in topo order</span>
+    vector&lt;<span class="tp">int</span>&gt; dist(n, INT_MAX);
+    <span class="tp">int</span> src = st.top(); st.pop();
+    dist[src] = <span class="nu">0</span>;
+    <span class="kw">while</span>(!st.empty()){
+        <span class="tp">int</span> u = st.top(); st.pop();
+        <span class="kw">if</span>(dist[u] != INT_MAX)
+            <span class="kw">for</span>(<span class="kw">auto</span> nbr : adjlist[u])
+                <span class="kw">if</span>(dist[u]+nbr.second &lt; dist[nbr.first])
+                    dist[nbr.first] = dist[u]+nbr.second;
+    }
+}`,
+  topo_dfs:`<span class="cm">// Topological Sort — DFS (post-order)</span>
+<span class="kw">void</span> <span class="fn">toposort_dfs</span>(<span class="tp">int</span> src,
+    unordered_map&lt;<span class="tp">int</span>,<span class="tp">bool</span>&gt;&amp;vis,
+    stack&lt;<span class="tp">int</span>&gt;&amp;st){
+    vis[src] = <span class="kw">true</span>;
+    <span class="kw">for</span>(<span class="kw">auto</span> nbr : adjlist[src]){
+        <span class="kw">if</span>(!vis[nbr])
+            <span class="fn">toposort_dfs</span>(nbr, vis, st);
+    }
+    st.push(src);  <span class="cm">// Push AFTER visiting all nbrs</span>
+}
+<span class="cm">// Main: call for all unvisited, print stack</span>`,
+  kahn:`<span class="cm">// Kahn's Algorithm — BFS Topological Sort</span>
+<span class="kw">void</span> <span class="fn">kahnTopSort</span>(<span class="tp">int</span> n){
+    unordered_map&lt;<span class="tp">int</span>,<span class="tp">int</span>&gt; indegree;
+    queue&lt;<span class="tp">int</span>&gt; q;
+    <span class="kw">for</span>(<span class="kw">auto</span> i : adjlist)
+        <span class="kw">for</span>(<span class="kw">auto</span> nbr : i.second)
+            indegree[nbr]++;
+    <span class="kw">for</span>(<span class="tp">int</span> i=<span class="nu">0</span>; i&lt;n; i++)
+        <span class="kw">if</span>(indegree[i]==<span class="nu">0</span>) q.push(i);
+    <span class="kw">while</span>(!q.empty()){
+        <span class="tp">int</span> front = q.front(); q.pop();
+        cout &lt;&lt; front &lt;&lt; <span class="st">" "</span>;
+        <span class="kw">for</span>(<span class="kw">auto</span> nbr : adjlist[front]){
+            indegree[nbr]--;
+            <span class="kw">if</span>(indegree[nbr]==<span class="nu">0</span>) q.push(nbr);
+        }
+    }
+}`,
+  kosaraju:`<span class="cm">// Kosaraju's SCC — 2-pass DFS</span>
+<span class="kw">void</span> <span class="fn">dfs1</span>(<span class="tp">int</span> src, stack&lt;<span class="tp">int</span>&gt;&amp;st,
+    unordered_map&lt;<span class="tp">int</span>,<span class="tp">bool</span>&gt;&amp;vis){
+    vis[src] = <span class="kw">true</span>;
+    <span class="kw">for</span>(<span class="kw">auto</span> nbr : adjlist[src])
+        <span class="kw">if</span>(!vis[nbr]) <span class="fn">dfs1</span>(nbr, st, vis);
+    st.push(src);  <span class="cm">// finish order</span>
+}
+<span class="kw">void</span> <span class="fn">dfs2</span>(<span class="tp">int</span> src, unordered_map&lt;<span class="tp">int</span>,<span class="tp">bool</span>&gt;&amp;vis,
+    unordered_map&lt;<span class="tp">int</span>,list&lt;<span class="tp">int</span>&gt;&gt;&amp;revAdj){
+    vis[src] = <span class="kw">true</span>;
+    cout &lt;&lt; src &lt;&lt; <span class="st">" "</span>;  <span class="cm">// one SCC</span>
+    <span class="kw">for</span>(<span class="kw">auto</span> nbr : revAdj[src])
+        <span class="kw">if</span>(!vis[nbr]) <span class="fn">dfs2</span>(nbr, vis, revAdj);
+}`,
+  tarjan:`<span class="cm">// Tarjan's Bridge Finding</span>
+<span class="kw">void</span> <span class="fn">findBridges</span>(<span class="tp">int</span> src, <span class="tp">int</span> parent,
+    <span class="tp">int</span> &amp;timer, vector&lt;<span class="tp">int</span>&gt;&amp;tin,
+    vector&lt;<span class="tp">int</span>&gt;&amp;low,
+    unordered_map&lt;<span class="tp">int</span>,<span class="tp">bool</span>&gt;&amp;vis){
+    vis[src]=<span class="kw">true</span>;
+    tin[src]=low[src]=timer++;
+    <span class="kw">for</span>(<span class="kw">auto</span> nbr : adjlist[src]){
+        <span class="kw">if</span>(nbr==parent) <span class="kw">continue</span>;
+        <span class="kw">if</span>(!vis[nbr]){
+            <span class="fn">findBridges</span>(nbr,src,timer,tin,low,vis);
+            low[src]=min(low[src],low[nbr]);
+            <span class="kw">if</span>(low[nbr] &gt; tin[src])
+                cout&lt;&lt;src&lt;&lt;<span class="st">"—"</span>&lt;&lt;nbr&lt;&lt;<span class="st">" is bridge\n"</span>;
+        } <span class="kw">else</span>
+            low[src]=min(low[src],tin[nbr]);
+    }
+}`
+};
 
-  document.getElementById('code-box').innerHTML = CODES[name] || '// Code coming soon...';
+// ============================================================
+// ALGORITHM STEP BUILDERS
+// ============================================================
+function buildAdj(dirOnly=false){
+  // Returns {nodeId: [{id, w, edgeIndex}]}
+  const adj={};
+  nodes.forEach(n=>adj[n.id]=[]);
+  edges.forEach((e,i)=>{
+    if(!e.twin) adj[e.f].push({id:e.t,w:e.w,ei:i});
+    if(!e.directed && !dirOnly){
+      // already have twin edge
+    }
+  });
+  return adj;
+}
 
-  if(nodes.length === 0){
-    alert("Pehle graph banao ya preset load karo!");
-    return;
-  }
-
-  const sid = nodes[0].id;
-  steps = buildSteps(name, sid);
-  cur = -1;
-
-  const spd = 700;
-  function next(){
-    if(cur < steps.length-1){
-      cur++;
-      applyStep(steps[cur]);
-      tmr = setTimeout(next, spd);
+function buildSteps_bfs(src){
+  const adj=buildAdj(); const steps=[];
+  const vis={}, parent={};
+  const queue=[src]; vis[src]=true; parent[src]=-1;
+  steps.push({type:'start',node:src,msg:`BFS starts from node ${nodeLabel(src)}`,
+    nc:{[src]:COLORS.current}, ec:{}});
+  while(queue.length){
+    const front=queue.shift();
+    steps.push({type:'process',node:front,msg:`Process node ${nodeLabel(front)}`,
+      nc:{...steps[steps.length-1].nc,[front]:COLORS.visited}});
+    for(const nbr of (adj[front]||[])){
+      if(!vis[nbr.id]){
+        vis[nbr.id]=true; parent[nbr.id]=front; queue.push(nbr.id);
+        const nc={...steps[steps.length-1].nc,[nbr.id]:COLORS.queued};
+        steps.push({type:'enqueue',node:nbr.id,from:front,ei:nbr.ei,
+          msg:`Enqueue ${nodeLabel(nbr.id)} (neighbor of ${nodeLabel(front)})`,
+          nc, ec:{...steps[steps.length-1].ec,[nbr.ei]:COLORS.edgeTrav}});
+      }
     }
   }
-  next();
+  steps.push({type:'done',msg:'BFS Complete! All reachable nodes visited.',nc:steps[steps.length-1].nc,ec:steps[steps.length-1].ec});
+  return steps;
 }
 
-function buildSteps(a, sid){
-  const S = [];
-  S.push({msg: a.toUpperCase() + " started from node " + sid});
-  return S;   // agar full step animation chahiye to batao, main add kar dunga
+function buildSteps_dfs(src){
+  const adj=buildAdj(); const steps=[];
+  const vis={}; const ec={};
+  function dfs(u,parentEi){
+    vis[u]=true;
+    const nc=Object.fromEntries(nodes.map(n=>[n.id,vis[n.id]?COLORS.visited:COLORS.default]));
+    nc[u]=COLORS.current;
+    steps.push({type:'visit',node:u,msg:`Visit node ${nodeLabel(u)}`,nc:{...nc},ec:{...ec}});
+    for(const nbr of (adj[u]||[])){
+      if(!vis[nbr.id]){
+        ec[nbr.ei]=COLORS.edgeTrav;
+        dfs(nbr.id,nbr.ei);
+        const nc2=Object.fromEntries(nodes.map(n=>[n.id,vis[n.id]?COLORS.visited:COLORS.default]));
+        nc2[u]=COLORS.current;
+        steps.push({type:'backtrack',node:u,msg:`Backtrack to ${nodeLabel(u)}`,nc:{...nc2},ec:{...ec}});
+      } else {
+        ec[nbr.ei]=COLORS.back;
+        steps.push({type:'back_edge',node:u,nbr:nbr.id,msg:`Back edge: ${nodeLabel(u)}→${nodeLabel(nbr.id)}`,
+          nc:{...steps[steps.length-1].nc},ec:{...ec}});
+      }
+    }
+  }
+  dfs(src,-1);
+  steps.push({type:'done',msg:'DFS Complete!',nc:steps[steps.length-1].nc,ec:steps[steps.length-1].ec});
+  return steps;
 }
 
-function applyStep(s){ draw(); }
+function buildSteps_dijkstra(src){
+  const adj=buildAdj(true); const steps=[];
+  const dist={}; nodes.forEach(n=>dist[n.id]=Infinity);
+  dist[src]=0;
+  const inSet=new Set(); nodes.forEach(n=>inSet.add(n.id));
+  const nc={}, ec={}, nl={};
+  nodes.forEach(n=>{nc[n.id]=COLORS.default; nl[n.id]='∞';});
+  nl[src]='0';
+  steps.push({type:'start',msg:`Dijkstra from ${nodeLabel(src)}. dist[src]=0`,nc:{...nc},ec:{...ec},nl:{...nl}});
+  for(let i=0;i<nodes.length;i++){
+    // pick min dist node in set
+    let u=null;
+    for(const id of inSet) if(u===null||dist[id]<dist[u]) u=id;
+    if(u===null||dist[u]===Infinity) break;
+    inSet.delete(u);
+    nc[u]=COLORS.current;
+    steps.push({type:'pick',node:u,msg:`Pick node ${nodeLabel(u)} (dist=${dist[u]})`,nc:{...nc},ec:{...ec},nl:{...nl}});
+    for(const nbr of (adj[u]||[])){
+      if(inSet.has(nbr.id)){
+        const newDist=dist[u]+nbr.w;
+        ec[nbr.ei]=COLORS.edgeTrav;
+        steps.push({type:'relax',msg:`Relax ${nodeLabel(u)}→${nodeLabel(nbr.id)}: ${dist[u]}+${nbr.w}=${newDist} vs ${dist[nbr.id]===Infinity?'∞':dist[nbr.id]}`,
+          nc:{...nc},ec:{...ec},nl:{...nl}});
+        if(newDist<dist[nbr.id]){
+          dist[nbr.id]=newDist;
+          nl[nbr.id]=String(newDist);
+          ec[nbr.ei]=COLORS.edgePath;
+          steps.push({type:'update',node:nbr.id,msg:`Update dist[${nodeLabel(nbr.id)}] = ${newDist}`,
+            nc:{...nc},ec:{...ec},nl:{...nl}});
+        }
+      }
+    }
+    nc[u]=COLORS.visited;
+  }
+  steps.push({type:'done',msg:'Dijkstra Complete! Shortest distances found.',nc:{...nc},ec:{...ec},nl:{...nl}});
+  return steps;
+}
 
+function buildSteps_topo_dfs(){
+  const adj=buildAdj(true); const steps=[];
+  const vis={}, stack=[], ec={};
+  function dfs(u){
+    vis[u]=true;
+    const nc=Object.fromEntries(nodes.map(n=>[n.id,vis[n.id]?COLORS.visited:COLORS.default]));
+    nc[u]=COLORS.current;
+    steps.push({type:'visit',node:u,msg:`Visit ${nodeLabel(u)}`,nc:{...nc},ec:{...ec}});
+    for(const nbr of (adj[u]||[])){
+      if(!vis[nbr.id]){ ec[nbr.ei]=COLORS.edgeTrav; dfs(nbr.id); }
+    }
+    stack.push(u);
+    const nl={}; stack.forEach((id,i)=>nl[id]=`#${i+1}`);
+    const nc2=Object.fromEntries(nodes.map(n=>[n.id,vis[n.id]?COLORS.visited:COLORS.default]));
+    steps.push({type:'push',node:u,msg:`Push ${nodeLabel(u)} to stack (pos #${stack.length})`,
+      nc:{...nc2},ec:{...ec},nl:{...nl}});
+  }
+  nodes.forEach(n=>{ if(!vis[n.id]) dfs(n.id); });
+  const order=stack.slice().reverse().map(id=>nodeLabel(id)).join(' → ');
+  steps.push({type:'done',msg:`Topo order: ${order}`,nc:steps[steps.length-1].nc,ec:steps[steps.length-1].ec});
+  return steps;
+}
+
+function buildSteps_kahn(){
+  const adj=buildAdj(true); const steps=[];
+  const indeg={}; nodes.forEach(n=>indeg[n.id]=0);
+  edges.forEach(e=>{ if(!e.twin) indeg[e.t]=(indeg[e.t]||0)+1; });
+  const queue=[]; nodes.forEach(n=>{ if(indeg[n.id]===0) queue.push(n.id); });
+  const nl={}, ec={};
+  nodes.forEach(n=>nl[n.id]=`in:${indeg[n.id]}`);
+  const nc=Object.fromEntries(nodes.map(n=>[n.id,indeg[n.id]===0?COLORS.queued:COLORS.default]));
+  steps.push({type:'start',msg:`Kahn's: Start with 0 in-degree nodes: ${queue.map(nodeLabel).join(',')}`,
+    nc:{...nc},ec:{...ec},nl:{...nl}});
+  const order=[];
+  while(queue.length){
+    const u=queue.shift(); order.push(u);
+    nc[u]=COLORS.current;
+    steps.push({type:'process',node:u,msg:`Process ${nodeLabel(u)} (in-degree=0)`,nc:{...nc},ec:{...ec},nl:{...nl}});
+    for(const nbr of (adj[u]||[])){
+      indeg[nbr.id]--; nl[nbr.id]=`in:${indeg[nbr.id]}`; ec[nbr.ei]=COLORS.edgeTrav;
+      if(indeg[nbr.id]===0){ queue.push(nbr.id); nc[nbr.id]=COLORS.queued; }
+      steps.push({type:'reduce',node:nbr.id,msg:`Reduce in-degree of ${nodeLabel(nbr.id)} → ${indeg[nbr.id]}`,
+        nc:{...nc},ec:{...ec},nl:{...nl}});
+    }
+    nc[u]=COLORS.visited;
+  }
+  const orderStr=order.map(nodeLabel).join(' → ');
+  steps.push({type:'done',msg:`Kahn's Complete! Topo order: ${orderStr}`,nc:{...nc},ec:{...ec},nl:{...nl}});
+  return steps;
+}
+
+function buildSteps_bipartite(){
+  const adj=buildAdj(); const steps=[];
+  const color={}; const nc={}, ec={};
+  nodes.forEach(n=>{nc[n.id]=COLORS.default;color[n.id]=-1;});
+  const src=nodes[0].id;
+  color[src]=0; nc[src]=COLORS.biA;
+  const queue=[src]; let isBip=true;
+  steps.push({type:'start',msg:`Bipartite check from ${nodeLabel(src)}. Color it SET-A (purple)`,nc:{...nc},ec:{...ec}});
+  while(queue.length&&isBip){
+    const u=queue.shift();
+    for(const nbr of (adj[u]||[])){
+      if(color[nbr.id]===-1){
+        color[nbr.id]=1-color[u];
+        nc[nbr.id]=color[nbr.id]===0?COLORS.biA:COLORS.biB;
+        ec[nbr.ei]=COLORS.edgeTrav; queue.push(nbr.id);
+        steps.push({type:'color',node:nbr.id,msg:`Color ${nodeLabel(nbr.id)} → ${color[nbr.id]===0?'SET-A':'SET-B'}`,
+          nc:{...nc},ec:{...ec}});
+      } else if(color[nbr.id]===color[u]){
+        isBip=false; ec[nbr.ei]=COLORS.edgeBack;
+        steps.push({type:'fail',msg:`CONFLICT! ${nodeLabel(u)} and ${nodeLabel(nbr.id)} same color → NOT bipartite!`,
+          nc:{...nc},ec:{...ec}});
+        break;
+      }
+    }
+  }
+  if(isBip) steps.push({type:'done',msg:'Graph IS Bipartite! Two sets correctly colored.',nc:{...nc},ec:{...ec}});
+  return steps;
+}
+
+function buildSteps_cycle_bfs(){
+  const adj=buildAdj(); const steps=[];
+  const vis={}, parent={}; const ec={};
+  const src=nodes[0].id;
+  const queue=[src]; vis[src]=true; parent[src]=-1;
+  const nc=Object.fromEntries(nodes.map(n=>[n.id,COLORS.default]));
+  nc[src]=COLORS.current;
+  steps.push({type:'start',msg:`Cycle detection BFS from ${nodeLabel(src)}`,nc:{...nc},ec:{...ec}});
+  let cycleFound=false;
+  while(queue.length&&!cycleFound){
+    const front=queue.shift();
+    nc[front]=COLORS.current;
+    steps.push({type:'process',node:front,msg:`Process ${nodeLabel(front)}`,nc:{...nc},ec:{...ec}});
+    for(const nbr of (adj[front]||[])){
+      if(!vis[nbr.id]){
+        vis[nbr.id]=true; parent[nbr.id]=front; queue.push(nbr.id);
+        nc[nbr.id]=COLORS.queued; ec[nbr.ei]=COLORS.edgeTrav;
+        steps.push({type:'enqueue',msg:`Enqueue ${nodeLabel(nbr.id)}, parent=${nodeLabel(front)}`,nc:{...nc},ec:{...ec}});
+      } else if(nbr.id!==parent[front]){
+        ec[nbr.ei]=COLORS.edgeBack; cycleFound=true;
+        steps.push({type:'cycle',msg:`CYCLE FOUND! ${nodeLabel(front)}→${nodeLabel(nbr.id)} is back edge!`,nc:{...nc},ec:{...ec}});
+        break;
+      }
+    }
+    if(!cycleFound) nc[front]=COLORS.visited;
+  }
+  if(!cycleFound) steps.push({type:'done',msg:'No cycle found in graph.',nc:steps[steps.length-1].nc,ec:steps[steps.length-1].ec});
+  return steps;
+}
+
+function buildSteps_cycle_dfs(){
+  const adj=buildAdj(); const steps=[];
+  const vis={}; const ec={};
+  let cycleFound=false;
+  function dfs(u,par){
+    if(cycleFound) return;
+    vis[u]=true;
+    const nc=Object.fromEntries(nodes.map(n=>[n.id,vis[n.id]?COLORS.visited:COLORS.default]));
+    nc[u]=COLORS.current;
+    steps.push({type:'visit',node:u,msg:`DFS visit ${nodeLabel(u)}, parent=${par===-1?'none':nodeLabel(par)}`,nc:{...nc},ec:{...ec}});
+    for(const nbr of (adj[u]||[])){
+      if(!vis[nbr.id]){ ec[nbr.ei]=COLORS.edgeTrav; dfs(nbr.id,u); }
+      else if(nbr.id!==par){ ec[nbr.ei]=COLORS.edgeBack; cycleFound=true;
+        steps.push({type:'cycle',msg:`CYCLE! Back edge ${nodeLabel(u)}→${nodeLabel(nbr.id)}`,nc:{...nc},ec:{...ec}}); return; }
+    }
+  }
+  nodes.forEach(n=>{ if(!vis[n.id]&&!cycleFound) dfs(n.id,-1); });
+  if(!cycleFound) steps.push({type:'done',msg:'No cycle found.',nc:steps[steps.length-1].nc,ec:steps[steps.length-1].ec});
+  return steps;
+}
+
+function buildSteps_cycle_dir(){
+  const adj=buildAdj(true); const steps=[];
+  const color={}; nodes.forEach(n=>color[n.id]=0); // 0=white,1=gray,2=black
+  const ec={}; let cycleFound=false;
+  function dfs(u){
+    if(cycleFound) return;
+    color[u]=1;
+    const nc=colorToNodeColors(color);
+    steps.push({type:'visit',node:u,msg:`Visit ${nodeLabel(u)} → GRAY (in recursion stack)`,nc:{...nc},ec:{...ec}});
+    for(const nbr of (adj[u]||[])){
+      if(color[nbr.id]===1){ ec[nbr.ei]=COLORS.edgeBack; cycleFound=true;
+        steps.push({type:'cycle',msg:`CYCLE! ${nodeLabel(u)}→${nodeLabel(nbr.id)} hits GRAY node!`,nc:{...nc},ec:{...ec}}); return; }
+      if(color[nbr.id]===0){ ec[nbr.ei]=COLORS.edgeTrav; dfs(nbr.id); }
+    }
+    color[u]=2;
+    const nc2=colorToNodeColors(color);
+    steps.push({type:'done_node',node:u,msg:`${nodeLabel(u)} → BLACK (fully processed)`,nc:{...nc2},ec:{...ec}});
+  }
+  nodes.forEach(n=>{ if(color[n.id]===0&&!cycleFound) dfs(n.id); });
+  if(!cycleFound) steps.push({type:'done',msg:'No cycle in directed graph.',nc:steps[steps.length-1].nc,ec:steps[steps.length-1].ec});
+  return steps;
+}
+function colorToNodeColors(color){
+  const map={0:COLORS.default,1:COLORS.current,2:COLORS.visited};
+  const nc={};
+  nodes.forEach(n=>nc[n.id]=map[color[n.id]]||COLORS.default);
+  return nc;
+}
+
+function buildSteps_kosaraju(){
+  const adj=buildAdj(true); const steps=[];
+  const vis={}, stack=[]; const ec={};
+  // Pass 1
+  steps.push({type:'info',msg:'PASS 1: DFS on original graph, push finish order to stack',
+    nc:Object.fromEntries(nodes.map(n=>[n.id,COLORS.default])),ec:{}});
+  function dfs1(u){
+    vis[u]=true;
+    const nc=Object.fromEntries(nodes.map(n=>[n.id,vis[n.id]?COLORS.visited:COLORS.default]));
+    nc[u]=COLORS.current;
+    steps.push({type:'visit',node:u,msg:`DFS1 visit ${nodeLabel(u)}`,nc:{...nc},ec:{...ec}});
+    for(const nbr of (adj[u]||[])){ if(!vis[nbr.id]){ ec[nbr.ei]=COLORS.edgeTrav; dfs1(nbr.id); } }
+    stack.push(u);
+    steps.push({type:'push',node:u,msg:`Push ${nodeLabel(u)} to stack`,nc:{...nc},ec:{...ec}});
+  }
+  nodes.forEach(n=>{ if(!vis[n.id]) dfs1(n.id); });
+  // Pass 2 on reversed
+  const vis2={}; let sccId=0;
+  const sccCols=[COLORS.scc0,COLORS.scc1,COLORS.scc2,COLORS.scc3,COLORS.scc4];
+  const nc2=Object.fromEntries(nodes.map(n=>[n.id,COLORS.default]));
+  steps.push({type:'info',msg:'PASS 2: DFS on reversed graph in stack order. Each DFS = one SCC.',nc:{...nc2},ec:{}});
+  // build rev adj
+  const revAdj={};nodes.forEach(n=>revAdj[n.id]=[]);
+  edges.forEach((e,i)=>{ if(!e.twin) revAdj[e.t].push({id:e.f,ei:i}); });
+  function dfs2(u,col,scc){
+    vis2[u]=true; nc2[u]=col; scc.push(u);
+    steps.push({type:'scc_visit',node:u,msg:`SCC-${sccId+1}: Include node ${nodeLabel(u)}`,nc:{...nc2},ec:{...ec}});
+    for(const nbr of (revAdj[u]||[])){ if(!vis2[nbr.id]) dfs2(nbr.id,col,scc); }
+  }
+  const order=[...stack].reverse();
+  for(const u of order){
+    if(!vis2[u]){
+      const scc=[]; dfs2(u,sccCols[sccId%sccCols.length],scc); sccId++;
+      steps.push({type:'scc_done',msg:`SCC-${sccId} found: {${scc.map(nodeLabel).join(',')}}`,nc:{...nc2},ec:{...ec}});
+    }
+  }
+  steps.push({type:'done',msg:`Kosaraju complete! ${sccId} SCC(s) found.`,nc:{...nc2},ec:{...ec}});
+  return steps;
+}
+
+function buildSteps_tarjan(){
+  const adj=buildAdj(); const steps=[];
+  const vis={}, tin={}, low={}; let timer=0;
+  const ec={}, nc=Object.fromEntries(nodes.map(n=>[n.id,COLORS.default]));
+  const bridges=[];
+  function dfs(u,par){
+    vis[u]=true; tin[u]=low[u]=timer++;
+    nc[u]=COLORS.current;
+    const nl={};
+    nodes.forEach(n=>nl[n.id]=vis[n.id]?`t:${tin[n.id]},l:${low[n.id]}`:'');
+    nl[u]=`t:${tin[u]},l:${low[u]}`;
+    steps.push({type:'visit',node:u,msg:`Visit ${nodeLabel(u)}: tin=${tin[u]}, low=${low[u]}`,nc:{...nc},ec:{...ec},nl:{...nl}});
+    for(const nbr of (adj[u]||[])){
+      if(nbr.id===par) continue;
+      if(!vis[nbr.id]){
+        ec[nbr.ei]=COLORS.edgeTrav; dfs(nbr.id,u);
+        low[u]=Math.min(low[u],low[nbr.id]);
+        nl[u]=`t:${tin[u]},l:${low[u]}`;
+        steps.push({type:'update_low',node:u,msg:`Update low[${nodeLabel(u)}] = min(${low[u]}, low[${nodeLabel(nbr.id)}]=${low[nbr.id]}) = ${low[u]}`,
+          nc:{...nc},ec:{...ec},nl:{...nl}});
+        if(low[nbr.id]>tin[u]){
+          ec[nbr.ei]=COLORS.edgeBridge; bridges.push([u,nbr.id]);
+          steps.push({type:'bridge',msg:`BRIDGE: ${nodeLabel(u)}—${nodeLabel(nbr.id)} (low[${nodeLabel(nbr.id)}]=${low[nbr.id]} > tin[${nodeLabel(u)}]=${tin[u]})`,
+            nc:{...nc},ec:{...ec},nl:{...nl}});
+        }
+      } else { low[u]=Math.min(low[u],tin[nbr.id]); }
+    }
+    nc[u]=COLORS.visited;
+  }
+  nodes.forEach(n=>{ if(!vis[n.id]) dfs(n.id,-1); });
+  const msg=bridges.length?`Found ${bridges.length} bridge(s): ${bridges.map(([a,b])=>nodeLabel(a)+'—'+nodeLabel(b)).join(', ')}`:'No bridges found.';
+  steps.push({type:'done',msg,nc:steps[steps.length-1].nc,ec:steps[steps.length-1].ec});
+  return steps;
+}
+
+function buildSteps_dag_sp(){
+  // Topo sort then relax
+  const adj=buildAdj(true); const steps=[];
+  const vis={}, stack=[]; const ec={};
+  function dfs(u){ vis[u]=true; for(const nbr of (adj[u]||[])){ if(!vis[nbr.id]) dfs(nbr.id); } stack.push(u); }
+  nodes.forEach(n=>{ if(!vis[n.id]) dfs(n.id); });
+  const topoOrder=[...stack].reverse();
+  const nc={}, nl={};
+  nodes.forEach(n=>{nc[n.id]=COLORS.default;nl[n.id]='∞';});
+  const src=topoOrder[0];
+  const dist={};nodes.forEach(n=>dist[n.id]=Infinity);
+  dist[src]=0; nl[src]='0'; nc[src]=COLORS.current;
+  steps.push({type:'start',msg:`DAG SP from ${nodeLabel(src)}. Topo order: ${topoOrder.map(nodeLabel).join('→')}`,nc:{...nc},ec:{...ec},nl:{...nl}});
+  for(const u of topoOrder){
+    if(dist[u]===Infinity) continue;
+    nc[u]=COLORS.current;
+    steps.push({type:'process',node:u,msg:`Process ${nodeLabel(u)} (dist=${dist[u]})`,nc:{...nc},ec:{...ec},nl:{...nl}});
+    for(const nbr of (adj[u]||[])){
+      const newDist=dist[u]+nbr.w; ec[nbr.ei]=COLORS.edgeTrav;
+      if(newDist<dist[nbr.id]){
+        dist[nbr.id]=newDist; nl[nbr.id]=String(newDist); ec[nbr.ei]=COLORS.edgePath;
+        steps.push({type:'relax',node:nbr.id,msg:`Update dist[${nodeLabel(nbr.id)}]=${newDist}`,nc:{...nc},ec:{...ec},nl:{...nl}});
+      }
+    }
+    nc[u]=COLORS.visited;
+  }
+  steps.push({type:'done',msg:'DAG SP complete!',nc:steps[steps.length-1].nc,ec:steps[steps.length-1].ec,nl:steps[steps.length-1].nl});
+  return steps;
+}
+
+function nodeLabel(id){ const n=nodes.find(n=>n.id===id); return n?n.label:String(id); }
+
+// ============================================================
+// ANIMATION ENGINE
+// ============================================================
+function applyStep(step){
+  if(!step) return;
+  nodeColors = {...step.nc}||{};
+  edgeColors = {...step.ec}||{};
+  nodeLabels = step.nl?{...step.nl}:{};
+  draw();
+  // Update step log
+  updateStepLog(step);
+}
+
+function updateStepLog(currentStep){
+  const log=document.getElementById('step-log');
+  const counter=document.getElementById('step-counter');
+  counter.textContent=`Step ${animCur+1} / ${animSteps.length}`;
+  let html='';
+  animSteps.forEach((s,i)=>{
+    const cls = i===animCur?'current':i<animCur?'done':'pending';
+    html+=`<div class="step-item ${cls}"><span class="step-num">${i+1}</span>${s.msg}</div>`;
+  });
+  log.innerHTML=html;
+  // Scroll to current
+  const items=log.querySelectorAll('.step-item');
+  if(items[animCur]) items[animCur].scrollIntoView({block:'nearest'});
+
+  // Alert for important findings
+  const alertEl=document.getElementById('alert-banner');
+  if(currentStep.type==='cycle'||currentStep.type==='fail'){
+    alertEl.textContent='⚠️ '+currentStep.msg; alertEl.classList.add('show');
+  } else if(currentStep.type==='done'){
+    alertEl.textContent='✅ '+currentStep.msg; alertEl.classList.add('show');
+  } else if(currentStep.type==='bridge'){
+    alertEl.textContent='🌉 '+currentStep.msg; alertEl.classList.add('show');
+  } else {
+    alertEl.classList.remove('show');
+  }
+}
+
+function getSpeed(){ return parseInt(document.getElementById('speed').value); }
+
+function runAnimation(){
+  animTimer=setInterval(()=>{
+    if(animPaused) return;
+    if(animCur<animSteps.length-1){
+      animCur++;
+      applyStep(animSteps[animCur]);
+    } else {
+      clearInterval(animTimer); animTimer=null;
+      document.getElementById('pause-btn').style.display='none';
+    }
+  }, 2001-getSpeed());
+}
+
+function stopAlgo(){
+  if(animTimer){ clearInterval(animTimer); animTimer=null; }
+  animSteps=[]; animCur=-1; animPaused=false;
+  nodeColors={}; edgeColors={}; nodeLabels={};
+  draw();
+  document.getElementById('step-log').innerHTML='<div style="color:#bbb;font-size:11px;text-align:center;padding:20px 0">Steps will appear here during execution...</div>';
+  document.getElementById('step-counter').textContent='';
+  document.getElementById('alert-banner').classList.remove('show');
+  ['pause-btn','back-btn','fwd-btn','stop-btn'].forEach(id=>document.getElementById(id).style.display='none');
+  document.querySelectorAll('.ab').forEach(b=>b.classList.remove('active','running'));
+}
+
+function pauseResume(){
+  animPaused=!animPaused;
+  document.getElementById('pause-btn').textContent=animPaused?'▶ Resume':'⏸ Pause';
+}
+
+function stepForward(){
+  if(animCur<animSteps.length-1){ animCur++; applyStep(animSteps[animCur]); }
+}
+
+function stepBack(){
+  if(animCur>0){ animCur--; applyStep(animSteps[animCur]); }
+}
+
+function runAlgo(name){
+  if(!nodes.length){ alert('Pehle graph banao ya preset load karo!'); return; }
+  stopAlgo();
+
+  // Set active button
+  document.querySelectorAll('.ab').forEach(b=>b.classList.remove('active','running'));
+  document.getElementById('ab-'+name).classList.add('active','running');
+
+  // Show properties
+  showProperties(name);
+
+  // Show C++ code
+  document.getElementById('code-box').innerHTML = CODES[name]||'<span style="color:#888">// Code coming soon</span>';
+
+  // Build steps
+  const sid=nodes[0].id;
+  const builders={
+    bfs:()=>buildSteps_bfs(sid),
+    dfs:()=>buildSteps_dfs(sid),
+    cycle_bfs:()=>buildSteps_cycle_bfs(),
+    cycle_dfs:()=>buildSteps_cycle_dfs(),
+    cycle_dir:()=>buildSteps_cycle_dir(),
+    bipartite:()=>buildSteps_bipartite(),
+    dijkstra:()=>buildSteps_dijkstra(sid),
+    dag_sp:()=>buildSteps_dag_sp(),
+    topo_dfs:()=>buildSteps_topo_dfs(),
+    kahn:()=>buildSteps_kahn(),
+    kosaraju:()=>buildSteps_kosaraju(),
+    tarjan:()=>buildSteps_tarjan(),
+  };
+  animSteps = builders[name] ? builders[name]() : [];
+  if(!animSteps.length){ alert('Algorithm ke liye valid graph chahiye!'); return; }
+  animCur=-1;
+
+  // Show controls
+  ['pause-btn','back-btn','fwd-btn','stop-btn'].forEach(id=>document.getElementById(id).style.display='');
+
+  runAnimation();
+}
+
+function showProperties(name){
+  const info=ALGO_INFO[name];
+  if(!info) return;
+  const panel=document.getElementById('prop-panel');
+  const tagsHTML=info.tags.map(t=>`<span class="tag ${t.c}">${t.t}</span>`).join('');
+  const worksHTML=info.works.map(w=>`<div style="display:flex;gap:5px;align-items:flex-start;margin-bottom:3px"><span style="color:#1D9E75;font-size:12px">✓</span><span style="font-size:11px">${w}</span></div>`).join('');
+  const failsHTML=info.fails.map(f=>`<div style="display:flex;gap:5px;align-items:flex-start;margin-bottom:3px"><span style="color:#c42b2b;font-size:12px">✗</span><span style="font-size:11px">${f}</span></div>`).join('');
+  panel.innerHTML=`
+    <div class="algo-title">${info.name}</div>
+    <div class="algo-subtitle">${info.desc}</div>
+    <div class="complexity-row">
+      <div class="cbox"><div class="cbox-label">Time</div><div class="cbox-val">${info.time}</div></div>
+      <div class="cbox"><div class="cbox-label">Space</div><div class="cbox-val">${info.space}</div></div>
+    </div>
+    <div class="tag-row">${tagsHTML}</div>
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:8px">
+      <div><div style="font-size:10px;font-weight:700;color:#0f6e56;margin-bottom:4px;text-transform:uppercase">Works For</div>${worksHTML}</div>
+      <div><div style="font-size:10px;font-weight:700;color:#a32d2d;margin-bottom:4px;text-transform:uppercase">Doesn't Work</div>${failsHTML}</div>
+    </div>
+  `;
+}
+
+// ============================================================
+// INIT
+// ============================================================
 window.addEventListener('resize',resizeCanvas);
 resizeCanvas();
 loadPreset('simple');
 updSel();
-updRemoveSel();
 </script>
 </body>
 </html> 
