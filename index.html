@@ -3,277 +3,353 @@
 <head>
 <meta charset="UTF-8"/>
 <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-<title>Graphora • 3D Algorithm Explorer</title>
+<title>3D Graph Visualizer — Algorithm Explorer</title>
 <style>
-    :root {
-        --primary: #0066ff;
-        --primary-dark: #0044cc;
-        --bg: #0f0f1a;
-        --card: #1a1a2e;
-        --border: #2a2a40;
-        --text: #e0e0ff;
-        --text-light: #a0a0cc;
-    }
-    
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body {
-        font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-        background: var(--bg);
-        color: var(--text);
-        height: 100vh;
-        overflow: hidden;
-    }
-    
-    .topbar {
-        background: rgba(15,15,26,0.95);
-        backdrop-filter: blur(12px);
-        padding: 0 20px;
-        height: 56px;
-        display: flex;
-        align-items: center;
-        justify-content: space-between;
-        border-bottom: 1px solid var(--border);
-        z-index: 100;
-    }
-    
-    .logo {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        font-weight: 700;
-        font-size: 18px;
-        letter-spacing: -0.5px;
-    }
-    
-    .logo-dot {
-        width: 8px;
-        height: 8px;
-        background: var(--primary);
-        border-radius: 50%;
-        box-shadow: 0 0 12px var(--primary);
-    }
-    
-    .main {
-        display: grid;
-        grid-template-columns: 260px 1fr 300px;
-        gap: 12px;
-        padding: 12px;
-        height: calc(100vh - 56px);
-    }
-    
-    .card {
-        background: var(--card);
-        border: 1px solid var(--border);
-        border-radius: 16px;
-        padding: 16px;
-        box-shadow: 0 4px 20px rgba(0,0,0,0.2);
-    }
-    
-    .ct {
-        font-size: 13px;
-        font-weight: 600;
-        color: #fff;
-        margin-bottom: 12px;
-        letter-spacing: 0.5px;
-    }
-    
-    .btn {
-        padding: 8px 14px;
-        border-radius: 10px;
-        font-size: 12px;
-        font-weight: 500;
-        cursor: pointer;
-        border: none;
-        transition: all 0.2s;
-    }
-    
-    .btn.p {
-        background: var(--primary);
-        color: white;
-    }
-    
-    .btn.p:hover {
-        background: #3388ff;
-        transform: translateY(-1px);
-    }
-    
-    .btn.d {
-        background: #c42b2b;
-        color: white;
-    }
-    
-    .algo-grid {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 6px;
-    }
-    
-    .ab {
-        padding: 10px 8px;
-        border-radius: 12px;
-        font-size: 12.5px;
-        text-align: center;
-        background: #25253a;
-        border: 1px solid var(--border);
-        cursor: pointer;
-        transition: all 0.2s;
-    }
-    
-    .ab:hover {
-        background: #2f2f4a;
-        border-color: var(--primary);
-    }
-    
-    .ab.active {
-        background: var(--primary);
-        color: white;
-        border-color: var(--primary);
-        box-shadow: 0 0 15px rgba(0,102,255,0.4);
-    }
-    
-    .canvas-wrap {
-        background: #11111f;
-        border-radius: 16px;
-        overflow: hidden;
-        position: relative;
-        border: 1px solid var(--border);
-    }
-    
-    canvas {
-        display: block;
-        width: 100%;
-        height: 100%;
-        cursor: grab;
-    }
-    
-    .legend {
-        position: absolute;
-        top: 16px;
-        left: 16px;
-        background: rgba(26,26,46,0.92);
-        backdrop-filter: blur(8px);
-        padding: 12px;
-        border-radius: 12px;
-        border: 1px solid var(--border);
-        font-size: 11px;
-        line-height: 1.6;
-    }
-    
-    .li {
-        display: flex;
-        align-items: center;
-        gap: 8px;
-    }
-    
-    .ld {
-        width: 10px;
-        height: 10px;
-        border-radius: 50%;
-        flex-shrink: 0;
-    }
-    
-    .right-panel .card {
-        display: flex;
-        flex-direction: column;
-    }
-    
-    .code-box {
-        background: #0a0a14;
-        border-radius: 10px;
-        padding: 14px;
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 11.5px;
-        line-height: 1.65;
-        overflow: auto;
-        flex: 1;
-    }
-    
-    .editor-area {
-        background: #0a0a14;
-        border: 1px solid #33334d;
-        border-radius: 10px;
-        padding: 12px;
-        font-family: 'JetBrains Mono', monospace;
-        font-size: 12px;
-        color: #c0c0ff;
-        resize: none;
-        flex: 1;
-    }
-    
-    .hint {
-        position: absolute;
-        bottom: 14px;
-        right: 14px;
-        font-size: 10px;
-        color: #666699;
-        background: rgba(0,0,0,0.5);
-        padding: 4px 10px;
-        border-radius: 20px;
-    }
+    *{box-sizing:border-box;margin:0;padding:0}
+    body{font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;background:#f0f2f5;color:#1a1a1a;height:100vh;overflow:hidden}
+    .topbar{background:#1a1a2e;padding:0 16px;display:flex;align-items:center;justify-content:space-between;height:42px}
+    .logo-name{font-size:13px;font-weight:600;color:#fff}
+    .logo-sub{font-size:10px;color:#8b9ec7;border-left:1px solid #3a3a5c;padding-left:8px;margin-left:4px}
+    .tb-pill{font-size:10px;padding:2px 8px;border-radius:20px;border:1px solid #3a3a5c;color:#8b9ec7}
+    .main{display:grid;grid-template-columns:240px 1fr 300px;gap:10px;padding:10px;height:calc(100vh - 42px)}
+    .card{background:#fff;border:1px solid #e5e5e5;border-radius:12px;padding:14px;flex-shrink:0}
+    .ct{font-size:13px;font-weight:600;color:#1a1a1a;margin-bottom:10px}
+    .sl{font-size:11px;color:#666;margin-bottom:6px}
+    .row{display:flex;gap:6px;margin-bottom:8px;align-items:center}
+    input[type=text],input[type=number],select{padding:6px 8px;border:1px solid #ddd;border-radius:6px;font-size:12px;flex:1}
+    .btn{padding:6px 12px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;border:1px solid #ddd;background:#fff}
+    .btn.p{background:#185FA5;color:#fff;border-color:#185FA5}
+    .btn.d{background:#c42b2b;color:#fff;border-color:#c42b2b}
+    .btn.sm{padding:4px 8px;font-size:11px}
+    .remove-section{margin-top:12px;padding-top:12px;border-top:1px solid #eee}
+    .canvas-wrap{background:#fff;border:1px solid #e5e5e5;border-radius:12px;overflow:hidden;position:relative}
+    canvas{display:block;width:100%;height:100%;cursor:grab}
+    .hint{position:absolute;bottom:12px;right:12px;font-size:11px;color:#888}
 </style>
 </head>
 <body>
 
 <div class="topbar">
-    <div class="logo">
-        <span class="logo-dot"></span>
-        <span>Graphora</span>
-    </div>
-    <div style="color:#888;font-size:13px;">3D Graph Algorithm Visualizer</div>
+  <div style="display:flex;align-items:center;gap:8px">
+    <span class="logo-name">3D Graph Visualizer</span>
+    <span class="logo-sub">All Graph Algorithms — C++ · OpenGL · STL</span>
+  </div>
+  <div style="display:flex;gap:6px">
+    <span class="tb-pill">17 Algorithms</span>
+    <span class="tb-pill">C++ Code</span>
+    <span class="tb-pill">Live Editor</span>
+  </div>
 </div>
 
 <div class="main">
-    <!-- Left Sidebar -->
-    <div class="sidebar">
-        <!-- Graph Builder, Algorithms, Run controls same as before but with new styling -->
-        <!-- (Tumhara pura sidebar code yahan daal sakta hoon, but for now I'm showing the new look) -->
-    </div>
+  <!-- Left Sidebar -->
+  <div>
+    <div class="card">
+      <div class="ct">Graph Builder</div>
+      
+      <div class="sl">Add Node</div>
+      <div class="row">
+        <input type="text" id="nl" placeholder="A or 1">
+        <button class="btn p sm" onclick="addNode()">+ Node</button>
+      </div>
 
-    <!-- Center Canvas -->
-    <div class="canvas-wrap">
-        <canvas id="gc"></canvas>
-        <div class="legend">
-            <div class="li"><div class="ld" style="background:#0066ff"></div>Unvisited</div>
-            <div class="li"><div class="ld" style="background:#00cc88"></div>Visited</div>
-            <div class="li"><div class="ld" style="background:#ff3366"></div>Current</div>
-            <div class="li"><div class="ld" style="background:#ffaa00"></div>Path / MST</div>
-        </div>
-        <div class="hint">Drag to rotate • Scroll to zoom • Right click for more</div>
-    </div>
+      <div class="sl">Add Edge</div>
+      <div class="row">
+        <select id="ef"></select>
+        <span style="color:#888;padding:0 4px">→</span>
+        <select id="et"></select>
+      </div>
+      <div class="row">
+        <input type="number" id="ew" value="1" style="width:70px">
+        <label style="font-size:12px;display:flex;align-items:center;gap:4px;white-space:nowrap">
+          <input type="checkbox" id="dir" checked> Dir
+        </label>
+        <button class="btn p sm" onclick="addEdge()">+ Edge</button>
+      </div>
 
-    <!-- Right Panel -->
-    <div class="right-panel">
-        <div class="card">
-            <div class="ct">C++ Implementation</div>
-            <pre class="code-box" id="code-box">// Select an algorithm to see clean C++ code</pre>
+      <!-- Remove Section -->
+      <div class="remove-section">
+        <div class="ct" style="color:#c42b2b">Remove</div>
+        <div class="sl">Remove Node</div>
+        <div class="row">
+          <select id="rn-sel" style="flex:1"></select>
+          <button class="btn d sm" onclick="removeNode()">- Node</button>
         </div>
-        
-        <div class="card" style="flex:1;display:flex;flex-direction:column">
-            <div class="ct">Live Graph Editor</div>
-            <textarea class="editor-area" id="editor" placeholder="addedge A B 1 0"></textarea>
-            <div style="margin-top:10px;display:flex;gap:8px">
-                <button class="btn p" onclick="parseEditor()">Build Graph</button>
-                <button class="btn" style="background:#333" onclick="clearEditor()">Clear</button>
-            </div>
+
+        <div class="sl">Remove Edge</div>
+        <div class="row">
+          <select id="re-from" style="flex:1"></select>
+          <span style="color:#888;padding:0 4px">→</span>
+          <select id="re-to" style="flex:1"></select>
+          <button class="btn d sm" onclick="removeEdge()">- Edge</button>
         </div>
+      </div>
+
+      <div style="margin-top:12px">
+        <div class="sl">Presets</div>
+        <div style="display:flex;gap:4px;flex-wrap:wrap">
+          <button class="btn sm" onclick="loadPreset('simple')">Simple</button>
+          <button class="btn sm" onclick="loadPreset('weighted')">Wtd</button>
+          <button class="btn sm" onclick="loadPreset('negcycle')">NegCyc</button>
+          <button class="btn sm" onclick="loadPreset('dag')">DAG</button>
+        </div>
+      </div>
     </div>
+  </div>
+
+  <!-- Canvas -->
+  <div class="canvas-wrap">
+    <canvas id="gc"></canvas>
+    <div class="hint">Drag to rotate • Scroll to zoom</div>
+  </div>
+
+  <!-- Right Panel -->
+  <div style="display:flex;flex-direction:column;gap:10px">
+    <div class="card">
+      <div class="ct">C++ Implementation</div>
+      <pre id="code-box" style="background:#1a1a2e;color:#c9d1d9;padding:12px;font-size:12px;border-radius:8px;height:260px;overflow:auto">Select algorithm to see code...</pre>
+    </div>
+    <div class="card" style="flex:1;display:flex;flex-direction:column">
+      <div class="ct">Live Code Editor</div>
+      <textarea id="editor" style="flex:1;font-family:monospace;font-size:12px;padding:10px;border:1px solid #ddd;border-radius:8px" placeholder="addedge A B 1 1"></textarea>
+      <div style="margin-top:8px;display:flex;gap:8px">
+        <button class="btn p" onclick="parseEditor()">Build Graph</button>
+        <button class="btn" onclick="clearGraph()">Clear All</button>
+      </div>
+    </div>
+  </div>
 </div>
 
 <script>
-// Tumhara pura JavaScript code yahan paste kar do (same as before)
-// Bas canvas aur colors thode update ho jayenge
+// Core variables
+const canvas = document.getElementById('gc');
+const ctx = canvas.getContext('2d');
+let nodes = [], edges = [], nid = 0;
+let rotX = 0.3, rotY = 0.4, zoom = 1;
+let drag = false, lmx = 0, lmy = 0;
 
-// Example: Better colors
+// Colors
 const C = {
-    node: '#0066ff',
-    vis: '#00cc88',
-    curr: '#ff3366',
-    edge: '#555577',
-    trav: '#44aaff',
-    path: '#ffaa00',
-    back: '#ff8800',
-    // ... baaki colors
+  node: '#185FA5',
+  edge: '#D0D0D0'
 };
+
+// Project 3D to 2D
+function project(x, y, z) {
+  const cx = Math.cos(rotX), sx = Math.sin(rotX);
+  const cy = Math.cos(rotY), sy = Math.sin(rotY);
+  const nx = x * cy + z * sy;
+  const ny = x * sx * sy + y * cx - z * sx * cy;
+  const s = zoom * Math.min(canvas.width, canvas.height) * 0.22;
+  return { px: canvas.width/2 + nx*s, py: canvas.height/2 - ny*s };
+}
+
+// Draw function
+function draw() {
+  ctx.clearRect(0, 0, canvas.width, canvas.height);
+  if (!nodes.length) {
+    ctx.fillStyle = '#888';
+    ctx.font = '14px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText('Add nodes or load a preset', canvas.width/2, canvas.height/2);
+    return;
+  }
+
+  // Draw edges
+  edges.forEach(e => {
+    const n1 = nodes.find(n => n.id === e.f);
+    const n2 = nodes.find(n => n.id === e.t);
+    if (!n1 || !n2) return;
+    const p1 = project(n1.x, n1.y, n1.z);
+    const p2 = project(n2.x, n2.y, n2.z);
+    ctx.beginPath();
+    ctx.moveTo(p1.px, p1.py);
+    ctx.lineTo(p2.px, p2.py);
+    ctx.strokeStyle = C.edge;
+    ctx.lineWidth = 2;
+    ctx.stroke();
+
+    // Weight
+    const wx = (p1.px + p2.px)/2;
+    const wy = (p1.py + p2.py)/2;
+    ctx.fillStyle = '#333';
+    ctx.font = '10px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.fillText(e.w, wx, wy);
+  });
+
+  // Draw nodes
+  nodes.forEach(n => {
+    const p = project(n.x, n.y, n.z);
+    ctx.beginPath();
+    ctx.arc(p.px, p.py, 18, 0, Math.PI*2);
+    ctx.fillStyle = '#fff';
+    ctx.strokeStyle = C.node;
+    ctx.lineWidth = 3;
+    ctx.fill();
+    ctx.stroke();
+    ctx.fillStyle = C.node;
+    ctx.font = 'bold 13px sans-serif';
+    ctx.textAlign = 'center';
+    ctx.textBaseline = 'middle';
+    ctx.fillText(n.label, p.px, p.py);
+  });
+}
+
+// Resize
+function resizeCanvas() {
+  canvas.width = canvas.parentElement.clientWidth;
+  canvas.height = canvas.parentElement.clientHeight;
+  draw();
+}
+
+// Mouse controls
+canvas.addEventListener('mousedown', e => { drag = true; lmx = e.clientX; lmy = e.clientY; });
+canvas.addEventListener('mousemove', e => {
+  if (!drag) return;
+  rotY += (e.clientX - lmx) * 0.008;
+  rotX += (e.clientY - lmy) * 0.008;
+  lmx = e.clientX; lmy = e.clientY;
+  draw();
+});
+canvas.addEventListener('mouseup', () => drag = false);
+canvas.addEventListener('mouseleave', () => drag = false);
+canvas.addEventListener('wheel', e => {
+  zoom *= e.deltaY > 0 ? 0.9 : 1.1;
+  zoom = Math.max(0.4, Math.min(3, zoom));
+  draw();
+  e.preventDefault();
+}, {passive: false});
+
+// Simple position generator
+function getPos(i) {
+  const angle = i * 1.8;
+  return {
+    x: 2.5 * Math.cos(angle),
+    y: 1.2 * Math.sin(angle * 1.3),
+    z: 1.8 * Math.sin(angle * 0.7)
+  };
+}
+
+// Add Node
+function addNode() {
+  let label = document.getElementById('nl').value.trim();
+  if (!label) label = nodes.length < 26 ? String.fromCharCode(65 + nodes.length) : String(nodes.length);
+  const pos = getPos(nodes.length);
+  nodes.push({id: nid++, label, x: pos.x, y: pos.y, z: pos.z});
+  document.getElementById('nl').value = '';
+  updSel();
+  updRemoveSel();
+  draw();
+}
+
+// Add Edge
+function addEdge() {
+  const f = parseInt(document.getElementById('ef').value);
+  const t = parseInt(document.getElementById('et').value);
+  const w = parseFloat(document.getElementById('ew').value) || 1;
+  if (isNaN(f) || isNaN(t) || f === t) return;
+  if (edges.find(e => e.f === f && e.t === t)) return;
+  edges.push({f, t, w});
+  updRemoveSel();
+  draw();
+}
+
+// Remove Node
+function removeNode() {
+  const id = parseInt(document.getElementById('rn-sel').value);
+  if (isNaN(id)) return;
+  nodes = nodes.filter(n => n.id !== id);
+  edges = edges.filter(e => e.f !== id && e.t !== id);
+  updSel();
+  updRemoveSel();
+  draw();
+}
+
+// Remove Edge
+function removeEdge() {
+  const f = parseInt(document.getElementById('re-from').value);
+  const t = parseInt(document.getElementById('re-to').value);
+  if (isNaN(f) || isNaN(t)) return;
+  edges = edges.filter(e => !(e.f === f && e.t === t));
+  updRemoveSel();
+  draw();
+}
+
+// Update selects
+function updSel() {
+  ['ef', 'et'].forEach(id => {
+    const s = document.getElementById(id);
+    s.innerHTML = nodes.map(n => `<option value="${n.id}">${n.label}</option>`).join('');
+  });
+}
+
+function updRemoveSel() {
+  const rn = document.getElementById('rn-sel');
+  const rf = document.getElementById('re-from');
+  const rt = document.getElementById('re-to');
+  rn.innerHTML = nodes.map(n => `<option value="${n.id}">${n.label}</option>`).join('');
+  rf.innerHTML = nodes.map(n => `<option value="${n.id}">${n.label}</option>`).join('');
+  rt.innerHTML = nodes.map(n => `<option value="${n.id}">${n.label}</option>`).join('');
+}
+
+// Clear
+function clearGraph() {
+  nodes = []; edges = []; nid = 0;
+  updSel();
+  updRemoveSel();
+  draw();
+}
+
+// Presets
+function loadPreset(name) {
+  clearGraph();
+  const presets = {
+    simple: {n: ['A','B','C','D'], e: [[0,1,1],[1,2,1],[2,3,1],[3,0,1]]},
+    weighted: {n: ['S','A','B','T'], e: [[0,1,4],[0,2,2],[1,3,5],[2,3,10]]},
+    negcycle: {n: ['A','B','C'], e: [[0,1,1],[1,2,-3],[2,0,2]]},
+    dag: {n: ['A','B','C'], e: [[0,1,1],[0,2,1],[1,2,1]]}
+  };
+  const p = presets[name] || presets.simple;
+  p.n.forEach((label,i) => {
+    const pos = getPos(i);
+    nodes.push({id: nid++, label, x: pos.x, y: pos.y, z: pos.z});
+  });
+  p.e.forEach(([f,t,w]) => edges.push({f,t,w: w||1}));
+  updSel();
+  updRemoveSel();
+  draw();
+}
+
+// Live Editor
+function parseEditor() {
+  const text = document.getElementById('editor').value.trim();
+  if (!text) return;
+  text.split('\n').forEach(line => {
+    line = line.trim();
+    if (!line || line.startsWith('//')) return;
+    const parts = line.split(/\s+/);
+    if (parts[0] === 'addedge' && parts.length >= 4) {
+      const u = parts[1], v = parts[2], w = parseFloat(parts[3]) || 1;
+      let nf = nodes.find(n => n.label === u);
+      let nt = nodes.find(n => n.label === v);
+      if (!nf) { nf = {id: nid++, label: u, x: Math.random()*4-2, y: Math.random()*4-2, z: Math.random()*4-2}; nodes.push(nf); }
+      if (!nt) { nt = {id: nid++, label: v, x: Math.random()*4-2, y: Math.random()*4-2, z: Math.random()*4-2}; nodes.push(nt); }
+      edges.push({f: nf.id, t: nt.id, w});
+    }
+  });
+  updSel();
+  updRemoveSel();
+  draw();
+}
+
+// Init
+window.addEventListener('resize', resizeCanvas);
+resizeCanvas();
+loadPreset('simple');
+updSel();
+updRemoveSel();
+
 </script>
 </body>
 </html> 
