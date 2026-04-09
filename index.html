@@ -95,7 +95,7 @@ canvas:active{cursor:grabbing}
     <span class="logo-sub">All Graph Algorithms — C++ · OpenGL · STL</span>
   </div>
   <div style="display:flex;gap:6px">
-    <span class="tb-pill">14 Algorithms</span>
+    <span class="tb-pill">16 Algorithms</span>
     <span class="tb-pill">Step-by-Step</span>
     <span class="tb-pill">C++ Code</span>
   </div>
@@ -174,6 +174,7 @@ canvas:active{cursor:grabbing}
         <button class="btn sm" onclick="loadPreset('scc')" title="Graph with Strongly Connected Components">SCC</button>
         <button class="btn sm" onclick="loadPreset('bipartite')" title="Bipartite graph">Bipartite</button>
         <button class="btn sm" onclick="loadPreset('mst')" title="Undirected weighted graph for MST">MST</button>
+        <button class="btn sm" onclick="loadPreset('negweight')" title="Directed graph with negative weights (Bellman-Ford)">NegWt</button>
         <button class="btn sm" onclick="clearGraph()" style="color:#c42b2b;border-color:#fecaca">Clear All</button>
       </div>
     </div>
@@ -197,6 +198,8 @@ canvas:active{cursor:grabbing}
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
         <div class="ab" id="ab-dijkstra" onclick="runAlgo('dijkstra')">Dijkstra</div>
         <div class="ab" id="ab-dag_sp" onclick="runAlgo('dag_sp')">DAG SP</div>
+        <div class="ab" id="ab-bellman" onclick="runAlgo('bellman')">Bellman-Ford</div>
+        <div class="ab" id="ab-floyd" onclick="runAlgo('floyd')">Floyd-Warshall</div>
       </div>
       <div class="sl">Topological Sort</div>
       <div style="display:grid;grid-template-columns:1fr 1fr;gap:4px">
@@ -245,7 +248,7 @@ canvas:active{cursor:grabbing}
   </div>
 
   <!-- Right Panel -->
-  <div class="right-panel">
+  <div class="right-panel"> 
     <!-- Properties (collapsible) -->
     <div class="prop-card" id="prop-panel-wrap">
       <div class="prop-card-header" onclick="toggleProps()">
@@ -493,7 +496,8 @@ function loadPreset(name){
     dag:{n:['A','B','C','D','E'],e:[[0,1,1],[0,2,3],[1,3,2],[2,3,1],[3,4,1],[2,4,4]],dir:true},
     scc:{n:['A','B','C','D','E'],e:[[0,1,1],[1,2,1],[2,0,1],[2,3,1],[3,4,1],[4,3,1]],dir:true},
     bipartite:{n:['A','B','C','D','E','F'],e:[[0,3,1],[0,4,1],[1,3,1],[1,5,1],[2,4,1],[2,5,1]],dir:false},
-    mst:{n:['A','B','C','D','E'],e:[[0,1,2],[0,3,6],[1,2,3],[1,3,8],[1,4,5],[2,4,7],[3,4,9]],dir:false}
+    mst:{n:['A','B','C','D','E'],e:[[0,1,2],[0,3,6],[1,2,3],[1,3,8],[1,4,5],[2,4,7],[3,4,9]],dir:false},
+    negweight:{n:['S','A','B','C','T'],e:[[0,1,6],[0,2,7],[1,2,8],[1,3,-4],[1,4,5],[2,4,-3],[2,3,9],[3,0,2],[4,3,7]],dir:true}
   };
   const p=P[name]||P.simple;
   p.n.forEach((l,i)=>{const pos=getPos(i);nodes.push({id:nid++,label:l,x:pos.x,y:pos.y,z:pos.z});});
@@ -647,6 +651,28 @@ const ALGO_INFO = {
     tags:[{t:'Greedy',c:'blue'},{t:'Union-Find',c:'amber'},{t:'Sort edges first',c:'green'},{t:'Undirected',c:'amber'}],
     works:['Undirected weighted graphs','Sparse graphs (better than Prim)','Finding MST'],
     fails:['Directed graphs','When edges are hard to sort']
+  },
+  bellman:{
+    name:'Bellman-Ford Algorithm',
+    desc:'Relaxes ALL edges V-1 times. After V-1 passes, distances are optimal. One more pass (Vth) — if any edge still relaxes → negative cycle exists!',
+    time:'O(V × E)',space:'O(V)',
+    tags:[
+      {t:'DP based',c:'blue'},{t:'Handles -ve weights',c:'green'},
+      {t:'Detects -ve cycles',c:'amber'},{t:'SSSP',c:'green'},{t:'Slower than Dijkstra',c:'amber'}
+    ],
+    works:['Negative weight edges','Negative cycle detection','Directed graphs','Currency arbitrage'],
+    fails:['Negative cycles (path = -∞)','When speed matters (use Dijkstra if no -ve weights)']
+  },
+  floyd:{
+    name:'Floyd-Warshall Algorithm',
+    desc:'All-pairs shortest path using DP. For each intermediate node k, check if path i→k→j is shorter than direct i→j. Fills a V×V distance matrix.',
+    time:'O(V³)',space:'O(V²)',
+    tags:[
+      {t:'DP / All-pairs',c:'blue'},{t:'V×V matrix',c:'amber'},
+      {t:'Handles -ve weights',c:'green'},{t:'NO -ve cycles',c:'red'},{t:'Dense graphs',c:'blue'}
+    ],
+    works:['All-pairs shortest path','Small dense graphs','Transitive closure','Negative weights (no cycles)'],
+    fails:['Negative cycles (gives wrong answer)','Large graphs (O(V³) too slow)','Sparse graphs (Dijkstra from each node is faster)']
   }
 };
 
@@ -899,6 +925,47 @@ const CODES = {
     <span class="kw">for</span>(<span class="kw">auto</span>&amp;[u,v,w] : edges)
         <span class="kw">if</span>(<span class="fn">unionSets</span>(u,v,parent,rank))
             cost += w; <span class="cm">// add to MST</span>
+}`,
+  bellman:`<span class="cm">// Bellman-Ford — SSSP with negative weights</span>
+<span class="kw">void</span> <span class="fn">bellmanFord</span>(<span class="tp">int</span> n, <span class="tp">int</span> src,
+    vector&lt;tuple&lt;<span class="tp">int</span>,<span class="tp">int</span>,<span class="tp">int</span>&gt;&gt;&amp;edges){
+    vector&lt;<span class="tp">int</span>&gt; dist(n, INT_MAX);
+    dist[src] = <span class="nu">0</span>;
+    <span class="cm">// Relax all edges V-1 times</span>
+    <span class="kw">for</span>(<span class="tp">int</span> i=<span class="nu">0</span>; i&lt;n-<span class="nu">1</span>; i++){
+        <span class="kw">for</span>(<span class="kw">auto</span>&amp;[u,v,w] : edges){
+            <span class="kw">if</span>(dist[u]!=INT_MAX &amp;&amp;
+               dist[u]+w &lt; dist[v])
+                dist[v] = dist[u]+w;
+        }
+    }
+    <span class="cm">// V-th pass: detect negative cycle</span>
+    <span class="kw">for</span>(<span class="kw">auto</span>&amp;[u,v,w] : edges){
+        <span class="kw">if</span>(dist[u]!=INT_MAX &amp;&amp;
+           dist[u]+w &lt; dist[v]){
+            cout &lt;&lt; <span class="st">"Negative cycle exists!"</span>;
+            <span class="kw">return</span>;
+        }
+    }
+}`,
+  floyd:`<span class="cm">// Floyd-Warshall — All-pairs shortest path</span>
+<span class="kw">void</span> <span class="fn">floydWarshall</span>(<span class="tp">int</span> n,
+    vector&lt;vector&lt;<span class="tp">int</span>&gt;&gt;&amp;dist){
+    <span class="cm">// dist[i][j] = direct edge weight (INF if no edge)</span>
+    <span class="cm">// dist[i][i] = 0</span>
+    <span class="kw">for</span>(<span class="tp">int</span> k=<span class="nu">0</span>; k&lt;n; k++){      <span class="cm">// intermediate node</span>
+        <span class="kw">for</span>(<span class="tp">int</span> i=<span class="nu">0</span>; i&lt;n; i++){  <span class="cm">// source</span>
+            <span class="kw">for</span>(<span class="tp">int</span> j=<span class="nu">0</span>; j&lt;n; j++){ <span class="cm">// dest</span>
+                <span class="kw">if</span>(dist[i][k]!=INF &amp;&amp;
+                   dist[k][j]!=INF &amp;&amp;
+                   dist[i][k]+dist[k][j]
+                       &lt; dist[i][j])
+                    dist[i][j] =
+                        dist[i][k]+dist[k][j];
+            }
+        }
+    }
+    <span class="cm">// Neg cycle: if dist[i][i] &lt; 0</span>
 }`
 };
 
@@ -1375,6 +1442,109 @@ function buildSteps_kruskal(){
   return steps;
 }
 
+function buildSteps_bellman(){
+  // Use all edges (directed), no adj needed — iterate raw edges
+  const src=nodes[0].id;
+  const dist={}; nodes.forEach(n=>dist[n.id]=Infinity);
+  dist[src]=0;
+  const nc={}, nl={}, ec={};
+  nodes.forEach(n=>{nc[n.id]=COLORS.default; nl[n.id]='∞';});
+  nc[src]=COLORS.src; nl[src]='0';
+  const srcDest={[src]:'SRC'};
+  const steps=[];
+  const allEdges=edges.filter(e=>!e.twin);
+  steps.push({type:'start',msg:`Bellman-Ford from ${nodeLabel(src)}. Will relax ALL ${allEdges.length} edges × ${nodes.length-1} passes.`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
+
+  let negCycle=false;
+  for(let pass=1; pass<=nodes.length; pass++){
+    let relaxed=false;
+    steps.push({type:'pass',msg:`Pass ${pass}${pass===nodes.length?' (Vth — negative cycle check)':''}:`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
+    for(let i=0;i<allEdges.length;i++){
+      const e=allEdges[i]; const ei=edges.indexOf(e);
+      if(dist[e.f]===Infinity) continue;
+      const newDist=dist[e.f]+e.w;
+      ec[ei]=COLORS.edgeTrav;
+      if(newDist<dist[e.t]){
+        if(pass===nodes.length){
+          // Vth pass relaxation = negative cycle
+          ec[ei]=COLORS.edgeBack; negCycle=true;
+          steps.push({type:'cycle',msg:`⚠ NEGATIVE CYCLE! Edge ${nodeLabel(e.f)}→${nodeLabel(e.t)} still relaxes on pass ${pass}. dist = -∞`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
+          break;
+        }
+        dist[e.t]=newDist; nl[e.t]=String(newDist);
+        nc[e.t]=COLORS.queued; ec[ei]=COLORS.edgePath; relaxed=true;
+        steps.push({type:'relax',msg:`Pass ${pass}: Relax ${nodeLabel(e.f)}→${nodeLabel(e.t)}: ${dist[e.f]}+${e.w}=${newDist} ✓ updated`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
+      }
+      if(negCycle) break;
+    }
+    if(negCycle) break;
+    if(!relaxed && pass<nodes.length){
+      steps.push({type:'done',msg:`Early termination at pass ${pass} — no relaxations. Optimal!`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
+      break;
+    }
+  }
+  if(!negCycle){
+    // Mark all reachable nodes green
+    nodes.forEach(n=>{ if(dist[n.id]<Infinity) nc[n.id]=COLORS.visited; });
+    steps.push({type:'done',msg:`Bellman-Ford done! Distances: ${nodes.map(n=>nodeLabel(n.id)+'='+(dist[n.id]===Infinity?'∞':dist[n.id])).join(', ')}`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
+  }
+  return steps;
+}
+
+function buildSteps_floyd(){
+  // Floyd-Warshall: V×V matrix, show each k-pass
+  const n=nodes.length;
+  const ids=nodes.map(nd=>nd.id);
+  const INF=Infinity;
+  // Init dist matrix
+  const dist={}; // dist[i][j]
+  ids.forEach(i=>{ dist[i]={}; ids.forEach(j=>dist[i][j]=(i===j?0:INF)); });
+  // Fill from edges
+  edges.forEach(e=>{ if(!e.twin && dist[e.f][e.t]>e.w) dist[e.f][e.t]=e.w; });
+
+  const steps=[];
+  const nc={}, ec={};
+  nodes.forEach(nd=>nc[nd.id]=COLORS.default);
+  // Build readable dist summary
+  function distSummary(){ return ids.map(i=>nodeLabel(i)+'→['+ids.map(j=>dist[i][j]===INF?'∞':dist[i][j]).join(',')+']').join(' | '); }
+  steps.push({type:'start',msg:`Floyd-Warshall: All-pairs SP. Init dist matrix from edges. Now try each node k as intermediate.`,nc:{...nc},ec:{...ec}});
+
+  for(let ki=0;ki<ids.length;ki++){
+    const k=ids[ki];
+    nc[k]=COLORS.current;
+    steps.push({type:'intermediate',node:k,msg:`Try k=${nodeLabel(k)} as intermediate node. Check all i→k→j paths.`,nc:{...nc},ec:{...ec}});
+    for(let ii=0;ii<ids.length;ii++){
+      const i=ids[ii];
+      for(let ji=0;ji<ids.length;ji++){
+        const j=ids[ji];
+        if(i===j||dist[i][k]===INF||dist[k][j]===INF) continue;
+        const via=dist[i][k]+dist[k][j];
+        if(via<dist[i][j]){
+          // Find edge index for highlight if direct edge exists
+          const ei=edges.findIndex(e=>!e.twin&&e.f===i&&e.t===j);
+          const ek1=edges.findIndex(e=>!e.twin&&e.f===i&&e.t===k);
+          const ek2=edges.findIndex(e=>!e.twin&&e.f===k&&e.t===j);
+          if(ek1>=0) ec[ek1]=COLORS.edgeTrav;
+          if(ek2>=0) ec[ek2]=COLORS.edgeTrav;
+          if(ei>=0) ec[ei]=COLORS.edgePath;
+          nc[i]=COLORS.queued; nc[j]=COLORS.queued;
+          dist[i][j]=via;
+          steps.push({type:'update',msg:`Update dist[${nodeLabel(i)}][${nodeLabel(j)}] via ${nodeLabel(k)}: ${dist[i][k]}+${dist[k][j]}=${via}`,nc:{...nc},ec:{...ec}});
+          nc[i]=COLORS.default; nc[j]=COLORS.default;
+          if(ei>=0) ec[ei]=COLORS.edgePath;
+        }
+      }
+    }
+    nc[k]=COLORS.visited;
+  }
+  // Negative cycle check: dist[i][i] < 0
+  let negCyc=false;
+  ids.forEach(i=>{ if(dist[i][i]<0){ negCyc=true;
+    steps.push({type:'cycle',msg:`⚠ Negative cycle detected! dist[${nodeLabel(i)}][${nodeLabel(i)}]=${dist[i][i]} < 0`,nc:{...nc},ec:{...ec}}); }});
+  if(!negCyc) steps.push({type:'done',msg:`Floyd-Warshall done! All-pairs distances computed. ${distSummary()}`,nc:Object.fromEntries(ids.map(i=>[i,COLORS.visited])),ec:{...ec}});
+  return steps;
+}
+
 function nodeLabel(id){ const n=nodes.find(n=>n.id===id); return n?n.label:String(id); }
 
 // ============================================================
@@ -1499,6 +1669,8 @@ function runAlgo(name){
     tarjan:()=>buildSteps_tarjan(),
     prims:()=>buildSteps_prims(),
     kruskal:()=>buildSteps_kruskal(),
+    bellman:()=>buildSteps_bellman(),
+    floyd:()=>buildSteps_floyd(),
   };
   animSteps = builders[name] ? builders[name]() : [];
   if(!animSteps.length){ alert('Algorithm ke liye valid graph chahiye!'); return; }
@@ -1552,4 +1724,4 @@ loadPreset('simple');
 updSel();
 </script>
 </body>
-</html>  
+</html> 
