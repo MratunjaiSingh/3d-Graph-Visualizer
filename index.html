@@ -1,4 +1,4 @@
- <!DOCTYPE html>
+<!DOCTYPE html>
 <html lang="en">
 <head>
 <meta charset="UTF-8"/>
@@ -101,7 +101,7 @@ canvas:active{cursor:grabbing}
     <a href="g_algo_reference.html" target="_blank" style="font-size:10px;padding:3px 10px;border-radius:20px;border:1px solid #4a9eff;color:#4a9eff;text-decoration:none;display:flex;align-items:center;gap:4px;font-weight:600;transition:all .15s" onmouseover="this.style.background='#4a9eff';this.style.color='#fff'" onmouseout="this.style.background='transparent';this.style.color='#4a9eff'">📖 Algo Reference</a>
   </div>
 </div>
-
+ 
 <div class="main">
   <!-- Left Sidebar -->
   <div style="display:flex;flex-direction:column;gap:7px;overflow-y:auto">
@@ -1018,66 +1018,70 @@ function buildSteps_bfs(src){
 function buildSteps_dfs(src){
   const adj=buildAdj(); const steps=[];
   const vis={}; const ec={};
-  function dfs(u,parentEi){
-    vis[u]=true;
-    const nc=Object.fromEntries(nodes.map(n=>[n.id,vis[n.id]?COLORS.visited:COLORS.default]));
-    nc[u]=COLORS.current;
+  const nc=Object.fromEntries(nodes.map(n=>[n.id,COLORS.default]));
+  steps.push({type:'start',msg:`DFS from ${nodeLabel(src)}. Goes deep first, backtracks when stuck.`,nc:{...nc},ec:{...ec}});
+  function dfs(u){
+    vis[u]=true; nc[u]=COLORS.current;
     steps.push({type:'visit',node:u,msg:`Visit node ${nodeLabel(u)}`,nc:{...nc},ec:{...ec}});
     for(const nbr of (adj[u]||[])){
       if(!vis[nbr.id]){
         ec[nbr.ei]=COLORS.edgeTrav;
-        dfs(nbr.id,nbr.ei);
-        const nc2=Object.fromEntries(nodes.map(n=>[n.id,vis[n.id]?COLORS.visited:COLORS.default]));
-        nc2[u]=COLORS.current;
-        steps.push({type:'backtrack',node:u,msg:`Backtrack to ${nodeLabel(u)}`,nc:{...nc2},ec:{...ec}});
+        dfs(nbr.id);
+        nc[u]=COLORS.current;
+        steps.push({type:'backtrack',node:u,msg:`Backtrack to ${nodeLabel(u)}`,nc:{...nc},ec:{...ec}});
       } else {
-        ec[nbr.ei]=COLORS.back;
-        steps.push({type:'back_edge',node:u,nbr:nbr.id,msg:`Back edge: ${nodeLabel(u)}→${nodeLabel(nbr.id)}`,
-          nc:{...steps[steps.length-1].nc},ec:{...ec}});
-      }
-    }
-  }
-  dfs(src,-1);
-  steps.push({type:'done',msg:'DFS Complete!',nc:steps[steps.length-1].nc,ec:steps[steps.length-1].ec});
-  return steps;
-}
-
-function buildSteps_dijkstra(src){
-  const adj=buildAdj(true); const steps=[];
-  const dist={}; nodes.forEach(n=>dist[n.id]=Infinity);
-  dist[src]=0;
-  const inSet=new Set(); nodes.forEach(n=>inSet.add(n.id));
-  const nc={}, ec={}, nl={};
-  nodes.forEach(n=>{nc[n.id]=COLORS.default; nl[n.id]='∞';});
-  nl[src]='0'; nc[src]=COLORS.src;
-  // SRC badge shown via nodeLabels - we use a separate srcDest map
-  const srcDest={}; srcDest[src]='SRC';
-  steps.push({type:'start',msg:`Dijkstra from ${nodeLabel(src)}. dist[${nodeLabel(src)}]=0`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
-  for(let i=0;i<nodes.length;i++){
-    let u=null;
-    for(const id of inSet) if(u===null||dist[id]<dist[u]) u=id;
-    if(u===null||dist[u]===Infinity) break;
-    inSet.delete(u);
-    nc[u]=COLORS.current;
-    steps.push({type:'pick',node:u,msg:`Pick min-dist node ${nodeLabel(u)} (dist=${dist[u]})`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
-    for(const nbr of (adj[u]||[])){
-      if(inSet.has(nbr.id)){
-        const newDist=dist[u]+nbr.w;
-        ec[nbr.ei]=COLORS.edgeTrav;
-        steps.push({type:'relax',msg:`Relax ${nodeLabel(u)}→${nodeLabel(nbr.id)}: ${dist[u]}+${nbr.w}=${newDist} vs ${dist[nbr.id]===Infinity?'∞':dist[nbr.id]}`,
-          nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
-        if(newDist<dist[nbr.id]){
-          dist[nbr.id]=newDist;
-          nl[nbr.id]=String(newDist);
-          ec[nbr.ei]=COLORS.edgePath;
-          steps.push({type:'update',node:nbr.id,msg:`✓ Better path! dist[${nodeLabel(nbr.id)}] = ${newDist}`,
-            nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
+        if(ec[nbr.ei]!==COLORS.edgeTrav){ // don't overwrite tree edges
+          ec[nbr.ei]=COLORS.back;
+          steps.push({type:'back_edge',node:u,msg:`Back edge: ${nodeLabel(u)}→${nodeLabel(nbr.id)} (already visited)`,nc:{...nc},ec:{...ec}});
         }
       }
     }
     nc[u]=COLORS.visited;
   }
-  steps.push({type:'done',msg:`Dijkstra done! Final distances: ${nodes.map(n=>nodeLabel(n.id)+'='+( dist[n.id]===Infinity?'∞':dist[n.id])).join(', ')}`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
+  // Handle disconnected components
+  dfs(src);
+  nodes.forEach(n=>{ if(!vis[n.id]){ steps.push({type:'info',msg:`Component gap — start DFS from unvisited node ${nodeLabel(n.id)}`,nc:{...nc},ec:{...ec}}); dfs(n.id); }});
+  steps.push({type:'done',msg:'DFS Complete! All nodes visited.',nc:{...nc},ec:{...ec}});
+  return steps;
+}
+
+function buildSteps_dijkstra(src){
+  // Works on both directed and undirected — use full adj
+  const adj=buildAdj(); const steps=[];
+  const dist={}; nodes.forEach(n=>dist[n.id]=Infinity);
+  dist[src]=0;
+  const visited=new Set();
+  const nc={}, ec={}, nl={};
+  nodes.forEach(n=>{nc[n.id]=COLORS.default; nl[n.id]='∞';});
+  nl[src]='0'; nc[src]=COLORS.src;
+  const srcDest={}; srcDest[src]='SRC';
+  steps.push({type:'start',msg:`Dijkstra from ${nodeLabel(src)}. All weights must be ≥ 0. dist[${nodeLabel(src)}]=0`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
+  for(let i=0;i<nodes.length;i++){
+    // Pick unvisited node with min dist
+    let u=null;
+    nodes.forEach(n=>{ if(!visited.has(n.id)&&(u===null||dist[n.id]<dist[u])) u=n.id; });
+    if(u===null||dist[u]===Infinity) break;
+    visited.add(u);
+    nc[u]=COLORS.current;
+    steps.push({type:'pick',node:u,msg:`Pick min-dist node ${nodeLabel(u)} (dist=${dist[u]}) → finalize`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
+    for(const nbr of (adj[u]||[])){
+      if(visited.has(nbr.id)) continue;
+      if(nbr.w<0){
+        steps.push({type:'skip',msg:`Skip ${nodeLabel(u)}→${nodeLabel(nbr.id)}: negative weight ${nbr.w} (Dijkstra doesn't handle negatives!)`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
+        continue;
+      }
+      const newDist=dist[u]+nbr.w;
+      ec[nbr.ei]=COLORS.edgeTrav;
+      steps.push({type:'relax',msg:`Relax ${nodeLabel(u)}→${nodeLabel(nbr.id)}: ${dist[u]}+${nbr.w}=${newDist} vs ${dist[nbr.id]===Infinity?'∞':dist[nbr.id]}`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
+      if(newDist<dist[nbr.id]){
+        dist[nbr.id]=newDist; nl[nbr.id]=String(newDist);
+        ec[nbr.ei]=COLORS.edgePath;
+        steps.push({type:'update',node:nbr.id,msg:`✓ Better! dist[${nodeLabel(nbr.id)}] = ${newDist}`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
+      }
+    }
+    nc[u]=COLORS.visited;
+  }
+  steps.push({type:'done',msg:`Dijkstra done! Final distances: ${nodes.map(n=>nodeLabel(n.id)+'='+(dist[n.id]===Infinity?'∞':dist[n.id])).join(', ')}`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
   return steps;
 }
 
@@ -1105,32 +1109,34 @@ function buildSteps_topo_dfs(){
 
 function buildSteps_kahn(){
   const adj=buildAdj(true); const steps=[];
-  // Count in-degree from directed edges only (no twins)
+  // In-degree: count only directed edges (topo sort is for DAGs = directed)
   const indeg={}; nodes.forEach(n=>indeg[n.id]=0);
-  edges.forEach(e=>{ if(!e.twin && e.directed) indeg[e.t]=(indeg[e.t]||0)+1; });
-  // Also count undirected treated as directed (no twin)
-  edges.forEach(e=>{ if(!e.twin && !e.directed) indeg[e.t]=(indeg[e.t]||0)+1; });
+  edges.forEach(e=>{ if(!e.twin) indeg[e.t]=(indeg[e.t]||0)+1; });
   const queue=[]; nodes.forEach(n=>{ if(indeg[n.id]===0) queue.push(n.id); });
   const nl={}, ec={};
   nodes.forEach(n=>nl[n.id]=`in:${indeg[n.id]}`);
   const nc=Object.fromEntries(nodes.map(n=>[n.id,indeg[n.id]===0?COLORS.queued:COLORS.default]));
-  steps.push({type:'start',msg:`Kahn's BFS Topo Sort. In-degrees: ${nodes.map(n=>nodeLabel(n.id)+':'+indeg[n.id]).join(', ')}. Zero-indegree start: {${queue.map(nodeLabel).join(',')}}`,nc:{...nc},ec:{...ec},nl:{...nl}});
+  steps.push({type:'start',msg:`Kahn's BFS Topo Sort (DAG only). In-degrees: ${nodes.map(n=>nodeLabel(n.id)+':'+indeg[n.id]).join(', ')}. Start: {${queue.map(nodeLabel).join(',')}}`,nc:{...nc},ec:{...ec},nl:{...nl}});
   const order=[];
   while(queue.length){
     const u=queue.shift(); order.push(u);
     nc[u]=COLORS.current;
-    steps.push({type:'process',node:u,msg:`Process ${nodeLabel(u)} (in-degree=0) → add to topo order`,nc:{...nc},ec:{...ec},nl:{...nl}});
+    steps.push({type:'process',node:u,msg:`Process ${nodeLabel(u)} → add to topo order [${order.map(nodeLabel).join('→')}]`,nc:{...nc},ec:{...ec},nl:{...nl}});
     for(const nbr of (adj[u]||[])){
-      indeg[nbr.id]--; nl[nbr.id]=`in:${indeg[nbr.id]}`; ec[nbr.ei]=COLORS.edgeTrav;
-      steps.push({type:'reduce',node:nbr.id,msg:`Reduce in-degree of ${nodeLabel(nbr.id)}: ${indeg[nbr.id]+1}→${indeg[nbr.id]}`,nc:{...nc},ec:{...ec},nl:{...nl}});
-      if(indeg[nbr.id]===0){ queue.push(nbr.id); nc[nbr.id]=COLORS.queued;
-        steps.push({type:'enqueue',node:nbr.id,msg:`${nodeLabel(nbr.id)} in-degree=0 → enqueue`,nc:{...nc},ec:{...ec},nl:{...nl}}); }
+      indeg[nbr.id]--;
+      nl[nbr.id]=`in:${indeg[nbr.id]}`;
+      ec[nbr.ei]=COLORS.edgeTrav;
+      steps.push({type:'reduce',node:nbr.id,msg:`in-degree[${nodeLabel(nbr.id)}]: ${indeg[nbr.id]+1} → ${indeg[nbr.id]}`,nc:{...nc},ec:{...ec},nl:{...nl}});
+      if(indeg[nbr.id]===0){
+        queue.push(nbr.id); nc[nbr.id]=COLORS.queued;
+        steps.push({type:'enqueue',node:nbr.id,msg:`${nodeLabel(nbr.id)} in-degree=0 → enqueue`,nc:{...nc},ec:{...ec},nl:{...nl}});
+      }
     }
     nc[u]=COLORS.visited;
   }
   const orderStr=order.map(nodeLabel).join(' → ');
   if(order.length<nodes.length){
-    steps.push({type:'cycle',msg:`⚠ Only ${order.length}/${nodes.length} nodes processed → CYCLE EXISTS! No valid topo order. Order so far: ${orderStr}`,nc:{...nc},ec:{...ec},nl:{...nl}});
+    steps.push({type:'cycle',msg:`⚠ CYCLE DETECTED! Only ${order.length}/${nodes.length} nodes processed. No valid topo order possible. Partial: ${orderStr}`,nc:{...nc},ec:{...ec},nl:{...nl}});
   } else {
     steps.push({type:'done',msg:`✓ Kahn's done! Topo order: ${orderStr}`,nc:{...nc},ec:{...ec},nl:{...nl}});
   }
@@ -1300,33 +1306,38 @@ function buildSteps_tarjan(){
   const vis={}, tin={}, low={}; let timer=0;
   const ec={}, nc=Object.fromEntries(nodes.map(n=>[n.id,COLORS.default]));
   const bridges=[];
-  function dfs(u,par){
+  // Use parent edge index to handle parallel edges correctly
+  function dfs(u, parEi){
     vis[u]=true; tin[u]=low[u]=timer++;
     nc[u]=COLORS.current;
     const nl={};
-    nodes.forEach(n=>nl[n.id]=vis[n.id]?`t:${tin[n.id]},l:${low[n.id]}`:'');
-    nl[u]=`t:${tin[u]},l:${low[u]}`;
+    nodes.forEach(n=>nl[n.id]=vis[n.id]?`t:${tin[n.id]} l:${low[n.id]}`:'');
+    nl[u]=`t:${tin[u]} l:${low[u]}`;
     steps.push({type:'visit',node:u,msg:`Visit ${nodeLabel(u)}: tin=${tin[u]}, low=${low[u]}`,nc:{...nc},ec:{...ec},nl:{...nl}});
     for(const nbr of (adj[u]||[])){
-      if(nbr.id===par) continue;
+      if(nbr.ei===parEi) continue; // skip the exact edge we came from
       if(!vis[nbr.id]){
-        ec[nbr.ei]=COLORS.edgeTrav; dfs(nbr.id,u);
-        low[u]=Math.min(low[u],low[nbr.id]);
-        nl[u]=`t:${tin[u]},l:${low[u]}`;
-        steps.push({type:'update_low',node:u,msg:`Update low[${nodeLabel(u)}] = min(${low[u]}, low[${nodeLabel(nbr.id)}]=${low[nbr.id]}) = ${low[u]}`,
-          nc:{...nc},ec:{...ec},nl:{...nl}});
+        ec[nbr.ei]=COLORS.edgeTrav; dfs(nbr.id, nbr.ei);
+        low[u]=Math.min(low[u], low[nbr.id]);
+        const nl2={}; nodes.forEach(n=>nl2[n.id]=vis[n.id]?`t:${tin[n.id]} l:${low[n.id]}`:'');
+        steps.push({type:'update_low',node:u,msg:`Back at ${nodeLabel(u)}: low[${nodeLabel(u)}]=min(${low[u]},low[${nodeLabel(nbr.id)}]=${low[nbr.id]})=${low[u]}`,nc:{...nc},ec:{...ec},nl:{...nl2}});
         if(low[nbr.id]>tin[u]){
           ec[nbr.ei]=COLORS.edgeBridge; bridges.push([u,nbr.id]);
-          steps.push({type:'bridge',msg:`BRIDGE: ${nodeLabel(u)}—${nodeLabel(nbr.id)} (low[${nodeLabel(nbr.id)}]=${low[nbr.id]} > tin[${nodeLabel(u)}]=${tin[u]})`,
-            nc:{...nc},ec:{...ec},nl:{...nl}});
+          steps.push({type:'bridge',msg:`🌉 BRIDGE: ${nodeLabel(u)}—${nodeLabel(nbr.id)}  (low[${nodeLabel(nbr.id)}]=${low[nbr.id]} > tin[${nodeLabel(u)}]=${tin[u]})`,nc:{...nc},ec:{...ec},nl:{...nl2}});
         }
-      } else { low[u]=Math.min(low[u],tin[nbr.id]); }
+      } else {
+        low[u]=Math.min(low[u], tin[nbr.id]);
+        const nl2={}; nodes.forEach(n=>nl2[n.id]=vis[n.id]?`t:${tin[n.id]} l:${low[n.id]}`:'');
+        steps.push({type:'cross',node:u,msg:`Cross/back edge ${nodeLabel(u)}→${nodeLabel(nbr.id)}: low[${nodeLabel(u)}]=min(${low[u]},tin[${nodeLabel(nbr.id)}]=${tin[nbr.id]})=${low[u]}`,nc:{...nc},ec:{...ec},nl:{...nl2}});
+      }
     }
     nc[u]=COLORS.visited;
   }
-  nodes.forEach(n=>{ if(!vis[n.id]) dfs(n.id,-1); });
-  const msg=bridges.length?`Found ${bridges.length} bridge(s): ${bridges.map(([a,b])=>nodeLabel(a)+'—'+nodeLabel(b)).join(', ')}`:'No bridges found.';
-  steps.push({type:'done',msg,nc:steps[steps.length-1].nc,ec:steps[steps.length-1].ec});
+  nodes.forEach(n=>{ if(!vis[n.id]) dfs(n.id, -1); });
+  const msg=bridges.length
+    ?`Found ${bridges.length} bridge(s): ${bridges.map(([a,b])=>nodeLabel(a)+'—'+nodeLabel(b)).join(', ')}`
+    :'No bridges found. Graph is 2-edge-connected.';
+  steps.push({type:'done',msg,nc:{...nc},ec:{...ec}});
   return steps;
 }
 
@@ -1444,7 +1455,6 @@ function buildSteps_kruskal(){
 }
 
 function buildSteps_bellman(){
-  // Use all edges (directed), no adj needed — iterate raw edges
   const src=nodes[0].id;
   const dist={}; nodes.forEach(n=>dist[n.id]=Infinity);
   dist[src]=0;
@@ -1453,39 +1463,42 @@ function buildSteps_bellman(){
   nc[src]=COLORS.src; nl[src]='0';
   const srcDest={[src]:'SRC'};
   const steps=[];
-  const allEdges=edges.filter(e=>!e.twin);
-  steps.push({type:'start',msg:`Bellman-Ford from ${nodeLabel(src)}. Will relax ALL ${allEdges.length} edges × ${nodes.length-1} passes.`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
+  // Collect all unique edges with their real array index
+  const allEdges=[];
+  edges.forEach((e,i)=>{ if(!e.twin) allEdges.push({f:e.f,t:e.t,w:e.w,ei:i}); });
+  steps.push({type:'start',msg:`Bellman-Ford from ${nodeLabel(src)}. Handles negative weights! Relaxes all ${allEdges.length} edges × ${nodes.length-1} passes.`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
 
   let negCycle=false;
   for(let pass=1; pass<=nodes.length; pass++){
-    let relaxed=false;
-    steps.push({type:'pass',msg:`Pass ${pass}${pass===nodes.length?' (Vth — negative cycle check)':''}:`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
-    for(let i=0;i<allEdges.length;i++){
-      const e=allEdges[i]; const ei=edges.indexOf(e);
-      if(dist[e.f]===Infinity) continue;
+    let anyRelaxed=false;
+    const isLastPass=(pass===nodes.length);
+    steps.push({type:'pass',msg:`── Pass ${pass}${isLastPass?' (V-th pass: negative cycle check)':''} ──`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
+    for(const e of allEdges){
+      if(dist[e.f]===Infinity) continue; // unreachable source
       const newDist=dist[e.f]+e.w;
-      ec[ei]=COLORS.edgeTrav;
+      ec[e.ei]=COLORS.edgeTrav;
       if(newDist<dist[e.t]){
-        if(pass===nodes.length){
-          // Vth pass relaxation = negative cycle
-          ec[ei]=COLORS.edgeBack; negCycle=true;
-          steps.push({type:'cycle',msg:`⚠ NEGATIVE CYCLE! Edge ${nodeLabel(e.f)}→${nodeLabel(e.t)} still relaxes on pass ${pass}. dist = -∞`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
+        if(isLastPass){
+          ec[e.ei]=COLORS.edgeBack; negCycle=true;
+          nc[e.f]=COLORS.current; nc[e.t]=COLORS.current;
+          steps.push({type:'cycle',msg:`⚠ NEGATIVE CYCLE DETECTED! ${nodeLabel(e.f)}→${nodeLabel(e.t)} relaxes on pass ${pass} → shortest path = −∞`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
           break;
         }
         dist[e.t]=newDist; nl[e.t]=String(newDist);
-        nc[e.t]=COLORS.queued; ec[ei]=COLORS.edgePath; relaxed=true;
-        steps.push({type:'relax',msg:`Pass ${pass}: Relax ${nodeLabel(e.f)}→${nodeLabel(e.t)}: ${dist[e.f]}+${e.w}=${newDist} ✓ updated`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
+        nc[e.t]=COLORS.queued; ec[e.ei]=COLORS.edgePath; anyRelaxed=true;
+        steps.push({type:'relax',msg:`Pass ${pass}: ${nodeLabel(e.f)}→${nodeLabel(e.t)}: ${dist[e.f]}+${e.w}=${newDist} ✓ dist updated`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
       }
       if(negCycle) break;
     }
     if(negCycle) break;
-    if(!relaxed && pass<nodes.length){
-      steps.push({type:'done',msg:`Early termination at pass ${pass} — no relaxations. Optimal!`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
-      break;
+    // Early exit if no relaxations in this pass
+    if(!anyRelaxed && !isLastPass){
+      nodes.forEach(n=>{ if(dist[n.id]<Infinity) nc[n.id]=COLORS.visited; });
+      steps.push({type:'done',msg:`Early stop at pass ${pass} — no relaxations. All shortest paths optimal! Distances: ${nodes.map(n=>nodeLabel(n.id)+'='+(dist[n.id]===Infinity?'∞':dist[n.id])).join(', ')}`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
+      return steps;
     }
   }
   if(!negCycle){
-    // Mark all reachable nodes green
     nodes.forEach(n=>{ if(dist[n.id]<Infinity) nc[n.id]=COLORS.visited; });
     steps.push({type:'done',msg:`Bellman-Ford done! Distances: ${nodes.map(n=>nodeLabel(n.id)+'='+(dist[n.id]===Infinity?'∞':dist[n.id])).join(', ')}`,nc:{...nc},ec:{...ec},nl:{...nl},sd:{...srcDest}});
   }
@@ -1493,56 +1506,63 @@ function buildSteps_bellman(){
 }
 
 function buildSteps_floyd(){
-  // Floyd-Warshall: V×V matrix, show each k-pass
-  const n=nodes.length;
   const ids=nodes.map(nd=>nd.id);
   const INF=Infinity;
-  // Init dist matrix
-  const dist={}; // dist[i][j]
+  const dist={};
   ids.forEach(i=>{ dist[i]={}; ids.forEach(j=>dist[i][j]=(i===j?0:INF)); });
-  // Fill from edges
-  edges.forEach(e=>{ if(!e.twin && dist[e.f][e.t]>e.w) dist[e.f][e.t]=e.w; });
+  // Fill edges — undirected goes both ways
+  edges.forEach(e=>{
+    if(e.twin) return;
+    if(e.w < dist[e.f][e.t]) dist[e.f][e.t]=e.w;
+    if(!e.directed && e.w < dist[e.t][e.f]) dist[e.t][e.f]=e.w;
+  });
 
   const steps=[];
   const nc={}, ec={};
   nodes.forEach(nd=>nc[nd.id]=COLORS.default);
-  // Build readable dist summary
-  function distSummary(){ return ids.map(i=>nodeLabel(i)+'→['+ids.map(j=>dist[i][j]===INF?'∞':dist[i][j]).join(',')+']').join(' | '); }
-  steps.push({type:'start',msg:`Floyd-Warshall: All-pairs SP. Init dist matrix from edges. Now try each node k as intermediate.`,nc:{...nc},ec:{...ec}});
+  const lbls=ids.map(i=>nodeLabel(i));
+  function matrixSummary(){
+    return 'dist matrix:\n'+lbls.map((l,ii)=>l+': ['+ids.map(j=>dist[ids[ii]][j]===INF?'∞':dist[ids[ii]][j]).join(',')+']').join('  ');
+  }
+  steps.push({type:'start',msg:`Floyd-Warshall: All-Pairs Shortest Path. For each intermediate k, update dist[i][j] = min(dist[i][j], dist[i][k]+dist[k][j]).`,nc:{...nc},ec:{...ec}});
 
   for(let ki=0;ki<ids.length;ki++){
     const k=ids[ki];
     nc[k]=COLORS.current;
-    steps.push({type:'intermediate',node:k,msg:`Try k=${nodeLabel(k)} as intermediate node. Check all i→k→j paths.`,nc:{...nc},ec:{...ec}});
+    steps.push({type:'intermediate',node:k,msg:`Intermediate k = ${nodeLabel(k)}: try routing all i→${nodeLabel(k)}→j`,nc:{...nc},ec:{...ec}});
     for(let ii=0;ii<ids.length;ii++){
       const i=ids[ii];
+      if(dist[i][k]===INF) continue; // no path i→k, skip
       for(let ji=0;ji<ids.length;ji++){
         const j=ids[ji];
-        if(i===j||dist[i][k]===INF||dist[k][j]===INF) continue;
+        if(i===j||dist[k][j]===INF) continue;
         const via=dist[i][k]+dist[k][j];
         if(via<dist[i][j]){
-          // Find edge index for highlight if direct edge exists
-          const ei=edges.findIndex(e=>!e.twin&&e.f===i&&e.t===j);
           const ek1=edges.findIndex(e=>!e.twin&&e.f===i&&e.t===k);
           const ek2=edges.findIndex(e=>!e.twin&&e.f===k&&e.t===j);
+          const eij=edges.findIndex(e=>!e.twin&&e.f===i&&e.t===j);
           if(ek1>=0) ec[ek1]=COLORS.edgeTrav;
           if(ek2>=0) ec[ek2]=COLORS.edgeTrav;
-          if(ei>=0) ec[ei]=COLORS.edgePath;
           nc[i]=COLORS.queued; nc[j]=COLORS.queued;
+          const oldVal=dist[i][j]===INF?'∞':dist[i][j];
           dist[i][j]=via;
-          steps.push({type:'update',msg:`Update dist[${nodeLabel(i)}][${nodeLabel(j)}] via ${nodeLabel(k)}: ${dist[i][k]}+${dist[k][j]}=${via}`,nc:{...nc},ec:{...ec}});
+          if(eij>=0) ec[eij]=COLORS.edgePath;
+          steps.push({type:'update',msg:`dist[${nodeLabel(i)}][${nodeLabel(j)}]: ${oldVal} → ${via}  (via ${nodeLabel(k)}: ${dist[i][k]}+${dist[k][j]})`,nc:{...nc},ec:{...ec}});
           nc[i]=COLORS.default; nc[j]=COLORS.default;
-          if(ei>=0) ec[ei]=COLORS.edgePath;
         }
       }
     }
     nc[k]=COLORS.visited;
+    steps.push({type:'pass_done',msg:`k=${nodeLabel(k)} done. ${matrixSummary()}`,nc:{...nc},ec:{...ec}});
   }
-  // Negative cycle check: dist[i][i] < 0
+  // Negative cycle check
   let negCyc=false;
-  ids.forEach(i=>{ if(dist[i][i]<0){ negCyc=true;
-    steps.push({type:'cycle',msg:`⚠ Negative cycle detected! dist[${nodeLabel(i)}][${nodeLabel(i)}]=${dist[i][i]} < 0`,nc:{...nc},ec:{...ec}}); }});
-  if(!negCyc) steps.push({type:'done',msg:`Floyd-Warshall done! All-pairs distances computed. ${distSummary()}`,nc:Object.fromEntries(ids.map(i=>[i,COLORS.visited])),ec:{...ec}});
+  ids.forEach(i=>{ if(dist[i][i]<0){ negCyc=true; nc[i]=COLORS.current;
+    steps.push({type:'cycle',msg:`⚠ Negative cycle! dist[${nodeLabel(i)}][${nodeLabel(i)}]=${dist[i][i]} < 0`,nc:{...nc},ec:{...ec}}); }});
+  if(!negCyc){
+    ids.forEach(i=>nc[i]=COLORS.visited);
+    steps.push({type:'done',msg:`Floyd-Warshall done! ${matrixSummary()}`,nc:{...nc},ec:{...ec}});
+  }
   return steps;
 }
 
@@ -1725,4 +1745,4 @@ loadPreset('simple');
 updSel();
 </script>
 </body>
-</html> 
+</html>
